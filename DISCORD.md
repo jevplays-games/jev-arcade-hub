@@ -38,3 +38,15 @@ check when you save it and refuses the URL otherwise. The game must already have
 - **Minesweeper**: Clear the field without hitting a mine. A logic puzzle with JEV-assisted play and a record of each decision.
 - **Sudoku**: Fill the grid so every row, column and box holds each digit once, with analytics on how you solve.
 - **2048**: Slide and merge tiles to reach 2048. An arcade puzzle with JEV play and a record of each decision.
+
+## Activities
+
+All nine games run as Discord Activities (Embedded App SDK). Each app has Activities enabled and the URL
+mapping `/` -> `<slug>.jevplay.games`. Discord creates a primary Entry Point command when Activities are
+enabled; the games' `discord:register` scripts upsert a single command, so they leave it alone.
+
+- Sign-in inside the Activity uses `POST /api/activity/session` on each game (see each repo's `docs/ACTIVITY.md`).
+- User-installed apps cannot launch Activities in servers with more than 25 members until the app is
+  verified. Install to the server (guild install) for anything larger.
+- Verified live: Tic-Tac-Toe (SDK sign-in, bearer session, a full game against JEV). The other eight are
+  deployed with the same pattern but have not been launched inside Discord yet.
