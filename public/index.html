@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JEV Arcade</title>
+  <meta name="description" content="Pick a game and play against JEV.">
+  <link rel="icon" href="/brand/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="/brand/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/brand/brand.css">
+  <link rel="stylesheet" href="/hub.css">
+  <script type="module" src="/hub.js"></script>
+</head>
+<body class="hub">
+  <header class="hub-head">
+    <img src="/brand/mark.svg" alt="" width="36" height="36">
+    <div>
+      <h1>JEV Arcade</h1>
+      <p>Nine games. Pick one and play against JEV.</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="hub-tools">
+      <label class="visually-hidden" for="q">Search games</label>
+      <input id="q" type="search" placeholder="Search games" autocomplete="off">
+      <div id="tags" class="hub-tags" role="group" aria-label="Filter by tag"></div>
+    </div>
+
+    <p id="empty" class="hub-empty" hidden>No games match that search.</p>
+    <ul id="grid" class="hub-grid" aria-live="polite"></ul>
+    <noscript><p class="hub-empty">The launcher needs JavaScript. Each game lives at <code>&lt;game&gt;.jevplay.games</code>.</p></noscript>
+  </main>
+
+  <footer class="hub-foot">
+    <span id="status-note">Checking game status…</span>
+    <span>Each game is its own app with its own sign-in. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></span>
+  </footer>
+</body>
+</html>

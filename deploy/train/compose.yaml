@@ -1,0 +1,32 @@
+# Runs Minesweeper and Sudoku on Train behind a Cloudflare Tunnel.
+# Lives at ~/jevplay-games on the server. Secrets are NOT stored here:
+#   minesweeper.env, sudoku.env  (mode 600, built from each game's .env)
+#   cloudflared/                 (cert.pem, <tunnel-id>.json, config.yml; mode 600)
+name: jevplay-games
+services:
+  minesweeper:
+    build: ./minesweeper          # copy of jev-minesweeper (Dockerfile in that repo)
+    env_file: minesweeper.env
+    volumes: [minesweeper-data:/app/data]
+    networks: [games]
+    restart: unless-stopped
+  sudoku:
+    build: ./sudoku               # copy of jev-sudoku-analytics; its own compose Caddy is not used
+    env_file: sudoku.env
+    volumes: [sudoku-data:/app/data]
+    networks: [games]
+    restart: unless-stopped
+    stop_grace_period: 61m
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    user: "1000:1000"
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes: [./cloudflared:/etc/cloudflared:ro]
+    networks: [games]
+    restart: unless-stopped
+    depends_on: [minesweeper, sudoku]
+networks:
+  games: {}
+volumes:
+  minesweeper-data: {}
+  sudoku-data: {}

@@ -1,0 +1,11 @@
+[
+  { "slug": "tic-tac-toe", "name": "Tic-Tac-Toe", "tagline": "Three in a row against JEV.", "tags": ["classic", "2-player"] },
+  { "slug": "connect-four", "name": "Connect Four", "tagline": "Drop discs and line up four.", "tags": ["classic", "strategy"] },
+  { "slug": "checkers", "name": "Checkers", "tagline": "Jump, king and outmaneuver JEV, with move analytics.", "tags": ["classic", "analytics"] },
+  { "slug": "dots-and-boxes", "name": "Dots and Boxes", "tagline": "Claim the most boxes by closing squares.", "tags": ["classic", "strategy"] },
+  { "slug": "guess-who", "name": "Guess Who", "tagline": "Narrow down the hidden character with yes/no questions.", "tags": ["deduction"] },
+  { "slug": "mastermind", "name": "Mastermind", "tagline": "Crack the secret code from feedback alone.", "tags": ["deduction", "puzzle"] },
+  { "slug": "minesweeper", "name": "Minesweeper", "tagline": "Clear the field without hitting a mine.", "tags": ["puzzle", "classic"] },
+  { "slug": "sudoku", "name": "Sudoku", "tagline": "Fill the grid, with analytics on how you solve.", "tags": ["puzzle", "analytics"] },
+  { "slug": "2048", "name": "2048", "tagline": "Slide and merge tiles to reach 2048.", "tags": ["puzzle", "arcade"] }
+]
