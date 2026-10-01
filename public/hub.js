@@ -4,6 +4,17 @@ const search = document.getElementById('q');
 const empty = document.getElementById('empty');
 const note = document.getElementById('status-note');
 
+// Inside a Discord Activity (opened with frame_id) the iframe cannot navigate to other sites, so links open outside Discord.
+const inActivity = new URLSearchParams(location.search).has('frame_id');
+let sdk = null;
+function openOutside(url) {
+  return (event) => {
+    if (!sdk) return;
+    event.preventDefault();
+    sdk.commands.openExternalLink({ url }).catch(() => {});
+  };
+}
+
 let games = [];
 let state = new Map();
 let activeTag = '';
@@ -24,11 +35,13 @@ function card(game) {
     el('p', {}, game.tagline),
     el('footer', {}, el('span', { className: 'host' }, dot, new URL(game.url).host), el('span', { className: 'play' }, 'Play →')));
   link.setAttribute('aria-label', `Play ${game.name}`);
+  link.addEventListener('click', openOutside(game.url));
   const kids = [link];
   if (/^\d{17,20}$/.test(game.discordAppId ?? '')) {
     // Guild install: anyone with Manage Server can add the game to their own server (it only requests the slash-command scope).
     const add = el('a', { className: 'hub-add', rel: 'noopener', target: '_blank', href: `https://discord.com/oauth2/authorize?client_id=${game.discordAppId}&scope=applications.commands&integration_type=0` }, 'Add to a Discord server');
     add.setAttribute('aria-label', `Add ${game.name} to a Discord server`);
+    add.addEventListener('click', openOutside(add.href));
     kids.push(add);
   }
   return el('li', { className: 'hub-item' }, ...kids);
@@ -77,6 +90,19 @@ async function loadStatus() {
 }
 
 search.addEventListener('input', render);
+
+if (inActivity) {
+  document.getElementById('activity-note').hidden = false;
+  try {
+    const { DiscordSDK } = await import('/vendor/discord-embedded-app-sdk.js');
+    const { clientId } = await getJson('/api/activity/config');
+    sdk = new DiscordSDK(clientId);
+    await sdk.ready();
+  } catch {
+    // Without the SDK the page still lists the games; links just open normally.
+    sdk = null;
+  }
+}
 
 try {
   games = (await getJson('/api/games')).games;

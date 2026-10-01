@@ -24,6 +24,11 @@ const HEADERS = {
   'content-security-policy': "default-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
 };
 
+// Discord Activity: the hub is opened inside Discord's iframe (the URL carries frame_id). Only the HTML document is made frameable,
+// and only by Discord's own origins; everything else keeps frame-ancestors 'none'.
+const ACTIVITY_CSP = "default-src 'self'; img-src 'self' data:; frame-ancestors https://discord.com https://ptb.discord.com https://canary.discord.com; base-uri 'none'; form-action 'none'";
+const HUB_DISCORD_CLIENT_ID = '1554746719227613214';
+
 const PROBE_TTL_MS = 60_000;
 const PROBE_TIMEOUT_MS = 3_000;
 
@@ -56,7 +61,7 @@ export function createHub({ env = process.env, games = loadGames(), fetchImpl = 
     res.end(JSON.stringify(body));
   };
 
-  async function serveStatic(req, res, pathname) {
+  async function serveStatic(req, res, pathname, search = '') {
     let rel;
     try {
       rel = decodeURIComponent(pathname);
@@ -81,6 +86,7 @@ export function createHub({ env = process.env, games = loadGames(), fetchImpl = 
         'content-length': body.length,
         'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=3600',
         ...HEADERS,
+        ...(ext === '.html' && new URLSearchParams(search).has('frame_id') ? { 'content-security-policy': ACTIVITY_CSP } : {}),
       });
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch {
@@ -89,12 +95,13 @@ export function createHub({ env = process.env, games = loadGames(), fetchImpl = 
   }
 
   const handler = async (req, res) => {
-    const { pathname } = new URL(req.url, 'http://hub.local');
+    const { pathname, search } = new URL(req.url, 'http://hub.local');
     if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'method_not_allowed' }, { allow: 'GET, HEAD' });
     if (pathname === '/healthz') return json(res, 200, { ok: true });
     if (pathname === '/api/games') return json(res, 200, { games: catalog });
     if (pathname === '/api/status') return json(res, 200, await status());
-    return serveStatic(req, res, pathname);
+    if (pathname === '/api/activity/config') return json(res, 200, { clientId: env.DISCORD_CLIENT_ID || HUB_DISCORD_CLIENT_ID });
+    return serveStatic(req, res, pathname, search);
   };
 
   return { handler, catalog };
