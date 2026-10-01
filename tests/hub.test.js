@@ -34,7 +34,7 @@ test('serves the launcher, catalog and health check', async () => {
   await withHub({ env: {} }, async (base) => {
     const page = await fetch(`${base}/`);
     assert.equal(page.status, 200);
-    assert.match(await page.text(), /JEV Arcade/);
+    assert.match(await page.text(), /JevPlay Arcade/);
     assert.equal((await (await fetch(`${base}/api/games`)).json()).games.length, 9);
     const listed = (await (await fetch(`${base}/api/games`)).json()).games;
     assert.ok(listed.every((g) => /^\d{17,20}$/.test(g.discordAppId)), 'every game carries its Discord app id');
@@ -77,5 +77,21 @@ test('status probes each game and treats 403 as reachable, 5xx and errors as dow
     assert.equal(by.sudoku, false);
     assert.equal(by.mastermind, false);
     assert.equal(by['tic-tac-toe'], true);
+  });
+});
+
+test('is frameable by Discord only when opened as an Activity, and exposes its client id', async () => {
+  await withHub({ env: {} }, async (base) => {
+    const plain = await fetch(base + '/');
+    assert.ok(plain.headers.get('content-security-policy').includes("frame-ancestors 'none'"));
+    const activity = await fetch(base + '/?frame_id=abc&instance_id=1');
+    const csp = activity.headers.get('content-security-policy');
+    assert.ok(csp.includes('frame-ancestors https://discord.com https://ptb.discord.com https://canary.discord.com'));
+    assert.ok(!csp.includes("frame-ancestors 'none'"));
+    // non-document responses stay unframeable even with frame_id
+    const css = await fetch(base + '/hub.css?frame_id=abc');
+    assert.ok(css.headers.get('content-security-policy').includes("frame-ancestors 'none'"));
+    const config = await (await fetch(base + '/api/activity/config')).json();
+    assert.equal(config.clientId, '1554746719227613214');
   });
 });
