@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { pathToFileURL } = require('url');
-const { GAMES, cover } = require('./render-art.cjs');
+const { ARCADE, GAMES, cover } = require('./render-art.cjs');
 const [pwDir, exe, outArg, ...only] = process.argv.slice(2);
 if (!pwDir || !exe) { console.error('usage: node art/render-video.cjs <playwright-dir> <chromium-exe> [outDir] [slug...]'); process.exit(1); }
 const { chromium } = require(pwDir);
@@ -50,7 +50,7 @@ const scene = g => {
 
 (async () => {
   const browser = await chromium.launch({ executablePath: exe });
-  for (const g of GAMES.filter(x => !only.length || only.includes(x.slug))) {
+  for (const g of [...GAMES, ARCADE].filter(x => only.length ? only.includes(x.slug) : x !== ARCADE)) {
     const tmp = path.join(outDir, `.rec-${g.slug}`);
     fs.rmSync(tmp, { recursive: true, force: true });
     fs.mkdirSync(tmp, { recursive: true });

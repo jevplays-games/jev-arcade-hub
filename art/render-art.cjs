@@ -99,6 +99,17 @@ const MOTIFS = {
   },
 };
 
+// The hub: a 3x3 mosaic of the nine game boards, each motif scaled into its own tile.
+MOTIFS.arcade = () => {
+  const order = ['tic-tac-toe', 'connect-four', 'checkers', 'dots-and-boxes', 'guess-who', 'mastermind', 'minesweeper', 'sudoku', '2048'];
+  let s = '';
+  order.forEach((slug, i) => {
+    const x = 2 + (i % 3) * 32.7, y = 2 + Math.floor(i / 3) * 32.7;
+    s += `<g transform="translate(${x} ${y}) scale(.3)"><rect x="-2" y="-2" width="104" height="104" rx="9" fill="#171a24" stroke="#ffffff22" stroke-width="1.2"/>${MOTIFS[slug]()}</g>`;
+  });
+  return s;
+};
+
 const GAMES = [
   { slug: 'tic-tac-toe', title: 'Tic-Tac-Toe', accent: '#a99bff', tag: 'Three in a row against JEV' },
   { slug: 'connect-four', title: 'Connect Four', accent: '#f5c451', tag: 'Drop discs, line up four' },
@@ -110,6 +121,8 @@ const GAMES = [
   { slug: 'sudoku', title: 'Sudoku', accent: '#60a5fa', tag: 'Fill the grid, one digit each' },
   { slug: '2048', title: '2048', accent: '#edc22e', tag: 'Slide, merge, reach 2048' },
 ];
+// Not one of the nine: the hub app's own Activity artwork. Rendered by name (`arcade`), kept out of GAMES so the per-game loops are unchanged.
+const ARCADE = { slug: 'arcade', title: 'JevPlay Arcade', accent: '#a99bff', tag: 'Nine games. Pick one, play JEV.', brand: 'JEVPLAY.GAMES', url: 'jevplay.games' };
 
 const svg = (slug, size, extra = '') => `<svg viewBox="0 0 100 100" width="${size}" height="${size}" ${extra}>${MOTIFS[slug]()}</svg>`;
 const mark = `<svg viewBox="0 0 64 64" width="34" height="34"><rect width="64" height="64" rx="15" fill="#171a24" stroke="#b3a0ff" stroke-opacity=".35" stroke-width="1.5"/><path d="M34 14v20.5c0 5.2-4.2 9.5-9.5 9.5S15 39.7 15 34.5" fill="none" stroke="#eef0f7" stroke-width="6" stroke-linecap="round"/><path d="M40.3 33v22M47.7 33v22M33 40.3h22M33 47.7h22" stroke="#b3a0ff" stroke-width="1.8" opacity=".55"/></svg>`;
@@ -122,14 +135,14 @@ const shell = (inner, accent) => `<!doctype html><meta charset="utf-8"><style>
 </style><body><div class="glow"></div><div class="grid"></div>${inner}</body>`;
 
 const cover = g => shell(`
-  <div style="position:absolute;left:64px;top:64px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}JEV ARCADE</div>
+  <div style="position:absolute;left:64px;top:64px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}${g.brand || 'JEV ARCADE'}</div>
   <div style="position:absolute;left:64px;top:190px;width:470px">
     <div style="font-size:${g.title.length > 11 ? 76 : 92}px;line-height:.98;font-weight:850;letter-spacing:-.03em">${g.title}</div>
     <div style="margin-top:26px;font-size:26px;font-weight:600;color:${g.accent}">${g.tag}</div>
     <div style="margin-top:34px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#ffffff10;border:1px solid #ffffff22;font-size:17px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:#6fdcc8"></span>Play against JEV</div>
   </div>
   <div style="position:absolute;right:56px;top:76px;width:424px;height:424px;filter:drop-shadow(0 24px 40px #00000088)">${svg(g.slug, 424)}</div>
-  <div style="position:absolute;left:64px;bottom:44px;font-size:14px;color:#78809a;letter-spacing:.06em">${g.slug}.jevplay.games</div>`, g.accent);
+  <div style="position:absolute;left:64px;bottom:44px;font-size:14px;color:#78809a;letter-spacing:.06em">${g.url || g.slug + '.jevplay.games'}</div>`, g.accent);
 
 // Background: art hugging the edges, the middle left clear for the game's own UI.
 const background = g => shell(`
@@ -138,14 +151,14 @@ const background = g => shell(`
   <div style="position:absolute;right:120px;bottom:-40px;width:170px;height:170px;opacity:.28;transform:rotate(-14deg)">${svg(g.slug, 170)}</div>
   <div style="position:absolute;left:150px;top:-30px;width:150px;height:150px;opacity:.28;transform:rotate(12deg)">${svg(g.slug, 150)}</div>`, g.accent);
 
-module.exports = { GAMES, MOTIFS, svg, shell, cover, background, mark, font };
+module.exports = { ARCADE, GAMES, MOTIFS, svg, shell, cover, background, mark, font };
 if (isMain) (async () => {
   const { chromium } = require(pwDir);
   const outDir = path.resolve(outArg || path.join(__dirname, 'out'));
   fs.mkdirSync(outDir, { recursive: true });
   const browser = await chromium.launch({ executablePath: exe });
   const page = await browser.newPage({ viewport: { width: 1024, height: 576 } });
-  for (const g of GAMES) {
+  for (const g of [...GAMES, ARCADE]) {
     for (const [kind, fn] of [['cover', cover], ['background', background]]) {
       const html = path.join(outDir, `.${g.slug}-${kind}.html`);
       fs.writeFileSync(html, fn(g));
