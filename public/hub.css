@@ -14,6 +14,10 @@
 .hub-tags button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
 
 .hub-grid{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.hub-item{display:flex;flex-direction:column;gap:6px}
+.hub-item .hub-card{flex:1}
+.hub-add{align-self:flex-start;padding:4px 2px;color:var(--muted);font-size:var(--fs-xs);text-decoration:none;border-bottom:1px solid transparent}
+.hub-add:hover,.hub-add:focus-visible{color:var(--accent);border-bottom-color:var(--accent)}
 .hub-card{display:flex;flex-direction:column;gap:10px;height:100%;padding:18px;box-sizing:border-box;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s,background .15s}
 .hub-card:hover{border-color:var(--accent);background:var(--raised);transform:translateY(-2px)}
 .hub-card:focus-visible,.hub-tags button:focus-visible,.hub-tools input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}

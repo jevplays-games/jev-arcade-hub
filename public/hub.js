@@ -24,7 +24,14 @@ function card(game) {
     el('p', {}, game.tagline),
     el('footer', {}, el('span', { className: 'host' }, dot, new URL(game.url).host), el('span', { className: 'play' }, 'Play →')));
   link.setAttribute('aria-label', `Play ${game.name}`);
-  return el('li', {}, link);
+  const kids = [link];
+  if (/^\d{17,20}$/.test(game.discordAppId ?? '')) {
+    // Guild install: anyone with Manage Server can add the game to their own server (it only requests the slash-command scope).
+    const add = el('a', { className: 'hub-add', rel: 'noopener', target: '_blank', href: `https://discord.com/oauth2/authorize?client_id=${game.discordAppId}&scope=applications.commands&integration_type=0` }, 'Add to a Discord server');
+    add.setAttribute('aria-label', `Add ${game.name} to a Discord server`);
+    kids.push(add);
+  }
+  return el('li', { className: 'hub-item' }, ...kids);
 }
 
 function render() {

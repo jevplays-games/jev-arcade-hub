@@ -36,6 +36,8 @@ test('serves the launcher, catalog and health check', async () => {
     assert.equal(page.status, 200);
     assert.match(await page.text(), /JEV Arcade/);
     assert.equal((await (await fetch(`${base}/api/games`)).json()).games.length, 9);
+    const listed = (await (await fetch(`${base}/api/games`)).json()).games;
+    assert.ok(listed.every((g) => /^\d{17,20}$/.test(g.discordAppId)), 'every game carries its Discord app id');
     assert.deepEqual(await (await fetch(`${base}/healthz`)).json(), { ok: true });
   });
 });
