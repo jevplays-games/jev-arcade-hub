@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/banner.jpg" alt="Pixel-art robot Jev standing in a hall of glowing neon arcade cabinets, choosing a game" width="100%"></p>
+
 # JEV Arcade Hub
 
 Front door for the nine JEV games. It is a launcher: each card links to that game's own
