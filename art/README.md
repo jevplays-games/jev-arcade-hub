@@ -16,3 +16,27 @@ node art/render-video.cjs <playwright-dir> <chromium-exe> art/out [slug...]
 
 Edit `GAMES` and `MOTIFS` in `render-art.cjs` to change a title, tagline, accent colour or board.
 Do not include `art/` in the GoDaddy zip; the hub does not serve it.
+
+## Web landing artwork
+
+`render-landing.cjs` reuses the exported `MOTIFS`, `GAMES`, `ARCADE`, `shell`
+(including the local Inter font), and rounded J# `mark` from `render-art.cjs`.
+Tiles have solid fills with accent edge shadows; the glow and faint grid belong
+to the background. No runtime dependencies or network requests are added.
+
+```sh
+node art/render-landing.cjs <playwright-dir> <chromium-exe> [outDir]
+node art/render-landing.cjs "C:/Users/timot/AppData/Local/Temp/pw" "C:/Users/timot/AppData/Local/ms-playwright/chromium-1243/chrome-win64/chrome.exe"
+```
+
+The Playwright argument accepts a module directory or an installation directory
+containing `node_modules/playwright-core`. The default output is `public/brand`:
+
+- `arcade-hero.png`: 1600×900, desktop landing hero.
+- `arcade-og.png`: 1200×630, social sharing card and compact mobile hero.
+- `arcade-icon-1024.png`: 1024×1024, centred mark with background glow.
+
+The page uses the hero with accessible title, description and image alt text;
+Open Graph and Twitter metadata reference the absolute social-card URL.
+Regenerate and inspect all three images after changing the art. Include the
+generated `public/brand` assets with the normal site upload.
