@@ -7,7 +7,9 @@ subdomain (`tic-tac-toe.jevplay.games`, `sudoku.jevplay.games`, …). Every game
 separate app with its own Discord application, secrets and origin checks, so nothing in the
 games changes.
 
-Zero runtime dependencies, native Node `http`.
+Zero runtime dependencies, native Node `http`. Requires Node 18 or newer (`engines` in `package.json`).
+
+To try it locally, run `npm start` and open `http://localhost:3000`. The live hub is at [jevplay.games](https://jevplay.games).
 
 ```sh
 npm run build   # validates games.json and the shipped assets
@@ -25,7 +27,7 @@ server-side (cached 60 s) and any response under 500, including a 403 `origin_re
 
 Follows the [upload guide](https://www.godaddy.com/help/upload-my-ai-generated-app-to-godaddy-nodejs-hosting-42987):
 root `package.json` with `build` and `start`, port from `PORT`, no `node_modules` in the zip
-(build the zip with `npm run zip`-style tooling or by hand), well under 100 MB, one app per upload.
+(`package.json` has no zip script, so build the zip by hand), well under 100 MB, one app per upload.
 
 1. `npm test && npm run build`
 2. Zip the folder contents (not the folder, no `node_modules`, no `.env`).
