@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Minesweeper">
+  <title>Minesweeper</title>
+  <defs>
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#22a85a"/>
+      <stop offset="0.42" stop-color="#0f4a2a"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <linearGradient id="t-edge" gradientUnits="userSpaceOnUse" x1="100" y1="120" x2="400" y2="400">
+      <stop offset="0" stop-color="#eafff1"/>
+      <stop offset="0.3" stop-color="#8ff0b4"/>
+      <stop offset="1" stop-color="#157a40"/>
+    </linearGradient>
+    <linearGradient id="t-face" gradientUnits="userSpaceOnUse" x1="120" y1="140" x2="390" y2="390">
+      <stop offset="0" stop-color="#9af2bb"/>
+      <stop offset="0.5" stop-color="#4ade80"/>
+      <stop offset="1" stop-color="#1f9a52"/>
+    </linearGradient>
+    <radialGradient id="m-body" cx="0.32" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#8d96b8"/>
+      <stop offset="0.35" stop-color="#3a4062"/>
+      <stop offset="1" stop-color="#0d0f1d"/>
+    </radialGradient>
+    <linearGradient id="f-cloth" gradientUnits="userSpaceOnUse" x1="300" y1="140" x2="400" y2="220">
+      <stop offset="0" stop-color="#ffb4b4"/>
+      <stop offset="0.45" stop-color="#f87171"/>
+      <stop offset="1" stop-color="#c22b3a"/>
+    </linearGradient>
+    <linearGradient id="f-pole" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b9bfd6"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <rect id="tile" x="108" y="136" width="276" height="276" rx="52"/>
+    <clipPath id="tile-clip"><rect x="122" y="150" width="248" height="248" rx="40"/></clipPath>
+    <!-- Mine: body plus eight spikes as one path group -->
+    <g id="mine">
+      <circle cx="226" cy="318" r="62"/>
+      <g stroke-width="22" stroke-linecap="round" stroke="currentColor">
+        <path d="M226 318V240M226 318V396M226 318H148M226 318H304M226 318L171 263M226 318L281 373M226 318L281 263M226 318L171 373"/>
+      </g>
+    </g>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.055" stroke-width="12" stroke-linecap="round" transform="rotate(-8 256 256)">
+    <path d="M178 -20V532M334 -20V532M-20 178H532M-20 334H532"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="rotate(-8 256 256)">
+    <!-- Tile -->
+    <use href="#tile" fill="#4ade80" opacity="0.4" filter="url(#blur-xl)"/>
+    <use href="#tile" fill="#04050a" opacity="0.6" transform="translate(14 22)" filter="url(#blur-m)"/>
+    <use href="#tile" fill="#0d5a30" transform="translate(7 11)"/>
+    <use href="#tile" fill="#0d5a30" transform="translate(3.5 5.5)"/>
+    <use href="#tile" fill="url(#t-edge)"/>
+    <rect x="122" y="150" width="248" height="248" rx="40" fill="url(#t-face)"/>
+    <g clip-path="url(#tile-clip)">
+      <rect x="110" y="140" width="280" height="130" fill="url(#gloss)" opacity="0.55"/>
+    </g>
+    <path d="M148 178Q148 160 168 160H250" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)"/>
+
+    <!-- Mine, sunk into the tile: contact shadow, thickness, body, gloss -->
+    <use href="#mine" color="#04140a" fill="#04140a" opacity="0.6" transform="translate(8 12)" filter="url(#blur-m)"/>
+    <use href="#mine" color="#05060c" fill="#05060c" transform="translate(4 6)"/>
+    <use href="#mine" color="#2c3152" fill="url(#m-body)"/>
+    <circle cx="226" cy="318" r="50" fill="url(#m-body)"/>
+    <ellipse cx="208" cy="298" rx="22" ry="14" fill="#ffffff" opacity="0.5" transform="rotate(-35 208 298)" filter="url(#blur-s)"/>
+
+    <!-- Flag planted in the tile -->
+    <path d="M334 372L322 150" fill="none" stroke="#04140a" stroke-opacity="0.55" stroke-width="20" stroke-linecap="round" transform="translate(6 8)"/>
+    <path d="M334 372L322 150" fill="none" stroke="url(#f-pole)" stroke-width="15" stroke-linecap="round"/>
+    <path d="M326 146L238 190L330 232Z" fill="#7a1220" transform="translate(5 7)" stroke="#7a1220" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M326 146L238 190L330 232Z" fill="url(#f-cloth)" stroke="url(#f-cloth)" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M318 160L262 188" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="8" stroke-linecap="round" filter="url(#blur-s)"/>
+    <ellipse cx="334" cy="376" rx="22" ry="9" fill="#0d5a30"/>
+  </g>
+
+  <g fill="#ffffff">
+    <path d="M420 74l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="452" cy="130" r="4" opacity="0.6"/>
+    <circle cx="70" cy="402" r="3.5" opacity="0.45"/>
+  </g>
+
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#4ade80" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

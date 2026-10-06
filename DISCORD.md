@@ -3,7 +3,10 @@
 Team: JevPlay.Games. Hub domain: `https://jevplay.games`.
 
 Every app uses the same Terms of Service URL (`https://jevplay.games/terms`) and Privacy Policy URL
-(`https://jevplay.games/privacy`), served by this hub, and the same icon (`public/brand/discord-icon-1024.png`).
+(`https://jevplay.games/privacy`), served by this hub. Each app has its own icon, cover art, background and preview
+video, all rendered from `art/emblems/<slug>.svg` by the scripts in `art/` (the hub's icon is the arcade emblem, `art/out/arcade-icon-1024.png`;
+`public/brand/discord-icon-1024.png` is now a copy of it, kept because `scripts/build.mjs` requires that filename). Uploads are manual: follow
+`art/UPLOAD-CHECKLIST.md`.
 
 All nine games expose the same two routes:
 

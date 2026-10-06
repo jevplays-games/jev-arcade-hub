@@ -25,15 +25,27 @@ const el = (tag, props = {}, ...kids) => {
   return node;
 };
 
+const STATUS = { up: 'Online', down: 'Offline', unknown: 'Checking' };
+
 function card(game) {
   const s = state.get(game.slug);
+  const status = s ? (s.up ? 'up' : 'down') : 'unknown';
   const dot = el('span', { className: 'dot' });
-  dot.dataset.state = s ? (s.up ? 'up' : 'down') : 'unknown';
-  dot.title = s ? (s.up ? 'Online' : 'Not responding') : 'Status unknown';
+  dot.dataset.state = status;
+  const art = el('img', { className: 'hub-art', src: game.art ?? `/brand/games/${game.slug}.png`, alt: '', width: 160, height: 160, loading: 'lazy', decoding: 'async' });
+  const tags = el('ul', { className: 'hub-chips' }, ...(game.tags ?? []).map((t) => el('li', {}, t)));
   const link = el('a', { className: 'hub-card', href: game.url, rel: 'noopener' },
-    el('h2', {}, game.name),
-    el('p', {}, game.tagline),
-    el('footer', {}, el('span', { className: 'host' }, dot, new URL(game.url).host), el('span', { className: 'play' }, 'Play →')));
+    el('span', { className: 'hub-art-wrap' }, art),
+    el('div', { className: 'hub-body' },
+      el('h2', {}, game.name),
+      el('p', {}, game.tagline),
+      tags,
+      el('div', { className: 'hub-foot-row' },
+        el('span', { className: 'hub-status' }, dot, STATUS[status]),
+        el('span', { className: 'play' }, 'Play →'))));
+  link.dataset.game = game.slug;
+  // CSP forbids style attributes in markup; the CSSOM is allowed.
+  if (/^#[0-9a-f]{6}$/i.test(game.accent ?? '')) link.style.setProperty('--accent', game.accent);
   link.setAttribute('aria-label', `Play ${game.name}`);
   link.addEventListener('click', openOutside(game.url));
   const kids = [link];

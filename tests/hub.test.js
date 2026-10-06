@@ -20,6 +20,10 @@ test('catalog lists nine unique games', () => {
   const games = loadGames();
   assert.equal(games.length, 9);
   assert.equal(new Set(games.map((g) => g.slug)).size, 9);
+  for (const g of games) {
+    assert.equal(g.art, `/brand/games/${g.slug}.png`);
+    assert.match(g.accent, /^#[0-9a-f]{6}$/);
+  }
 });
 
 test('urls default to <slug>.jevplay.games and honour overrides', () => {
@@ -38,6 +42,10 @@ test('serves the launcher, catalog and health check', async () => {
     assert.equal((await (await fetch(`${base}/api/games`)).json()).games.length, 9);
     const listed = (await (await fetch(`${base}/api/games`)).json()).games;
     assert.ok(listed.every((g) => /^\d{17,20}$/.test(g.discordAppId)), 'every game carries its Discord app id');
+    assert.ok(listed.every((g) => g.art && g.accent), 'every game carries card art and an accent');
+    const art = await fetch(`${base}${listed[0].art}`);
+    assert.equal(art.status, 200);
+    assert.equal(art.headers.get('content-type'), 'image/png');
     assert.deepEqual(await (await fetch(`${base}/healthz`)).json(), { ok: true });
   });
 });

@@ -1,51 +1,133 @@
 /* Hub layout. Colour, type and spacing tokens come from /brand/brand.css. */
-.hub{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--font)}
-.hub main,.hub-head,.hub-foot{width:min(1100px,100% - 32px);margin-inline:auto}
+.hub{
+  margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--font);
+  --gutter:16px;
+  padding:var(--sa-t) var(--gutter) 0;
+}
+@supports (padding:max(1px,2px)){
+  .hub{padding:var(--sa-t) max(var(--gutter),var(--sa-r)) 0 max(var(--gutter),var(--sa-l))}
+}
+.hub main,.hub-head,.hub-foot{width:min(1800px,100%);margin-inline:auto;box-sizing:border-box}
+.hub-head,.hub-foot{max-width:1100px}
+.hub-foot{max-width:1800px}
+.doc{max-width:70ch}
 
 .hub-head{display:flex;align-items:center;gap:14px;padding:32px 0 20px}
 .hub-head h1{margin:0;font-size:var(--fs-2xl);line-height:1.1;letter-spacing:-.01em}
 .hub-head p{margin:4px 0 0;color:var(--muted);font-size:var(--fs-sm)}
 
-.hub-hero{width:min(1280px,100% - 32px);margin:24px auto 32px;border:1px solid var(--line);border-radius:var(--radius-xl);overflow:hidden;background:var(--bg)}
+/* Hero: never taller than ~60% of the viewport, so the first row of cards is always in sight. */
+.hub-hero{
+  width:min(1600px,100%);margin:16px auto 24px;
+  border:1px solid var(--line);border-radius:var(--radius-xl);overflow:hidden;background:var(--bg);
+  box-shadow:var(--raise);
+}
+@supports (width:min(1px,1svh)){
+  .hub-hero{width:min(1600px,100%,calc(110svh - 40px))}
+}
 .hub-hero picture,.hub-hero img{display:block;width:100%}
 .hub-hero img{height:auto}
-@media(max-width:600px){.hub-hero{width:100%;margin:0 auto 24px;border:0;border-radius:0}.hub-hero img{aspect-ratio:1200/630}}
+@media (max-width:600px){.hub-hero img{aspect-ratio:1200/630}}
+@media (max-width:600px) and (orientation:landscape){.hub-hero img{aspect-ratio:1600/900}}
 
 .hub-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:20px}
-.hub-tools input{flex:1 1 220px;min-height:44px;padding:0 14px;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:10px;font:inherit}
+.hub-tools input{flex:1 1 220px;min-height:var(--tap);padding:0 14px;box-sizing:border-box;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);font:inherit;box-shadow:var(--well)}
 .hub-tools input::placeholder{color:var(--subtle)}
 .hub-tags{display:flex;flex-wrap:wrap;gap:8px}
-.hub-tags button{min-height:44px;padding:0 14px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;font:inherit;font-size:var(--fs-sm);cursor:pointer}
-.hub-tags button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.hub-tags button{min-height:var(--tap);min-width:var(--tap);padding:0 16px;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:var(--radius-pill);font:inherit;font-size:var(--fs-sm);cursor:pointer;box-shadow:inset 0 1px 0 var(--light)}
+@media (max-width:600px){
+  /* One scrollable strip instead of three wrapped rows, so the first card stays near the top. */
+  .hub-tags{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);scroll-padding-inline:var(--gutter);scrollbar-width:none}
+  .hub-tags::-webkit-scrollbar{display:none}
+  .hub-tags button{flex:none}
+}
+.hub-tags button:active{transform:translateY(1px)}
+.hub-tags button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600;box-shadow:inset 0 1px 0 var(--light-strong),0 2px 0 var(--lip)}
 
-.hub-grid{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-.hub-item{display:flex;flex-direction:column;gap:6px}
+/* Grid: 1 column on phones, 2 on tablets, then three so nine games make a clean 3x3 at any desktop size. */
+.hub-grid{list-style:none;margin:0;padding:0;display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:600px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1000px){.hub-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
+@media (max-height:500px) and (min-width:600px){.hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.hub-item{display:flex;flex-direction:column;gap:6px;min-width:0}
 .hub-item .hub-card{flex:1}
-.hub-add{align-self:flex-start;padding:4px 2px;color:var(--muted);font-size:var(--fs-xs);text-decoration:none;border-bottom:1px solid transparent}
-.hub-add:hover,.hub-add:focus-visible{color:var(--accent);border-bottom-color:var(--accent)}
-.hub-card{display:flex;flex-direction:column;gap:10px;height:100%;padding:18px;box-sizing:border-box;background:var(--surface);border:1px solid var(--line);border-radius:14px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s,background .15s}
-.hub-card:hover{border-color:var(--accent);background:var(--raised);transform:translateY(-2px)}
-.hub-card:focus-visible,.hub-tags button:focus-visible,.hub-tools input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.hub-card h2{margin:0;font-size:var(--fs-lg)}
-.hub-card p{margin:0;color:var(--muted);font-size:var(--fs-sm);line-height:1.45;flex:1}
-.hub-card footer{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:var(--fs-xs);color:var(--subtle)}
-.hub-card .host{font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hub-card .play{color:var(--accent);font-weight:600;font-size:var(--fs-sm)}
+.hub-add{align-self:flex-start;display:inline-flex;align-items:center;min-height:var(--tap);padding:0 4px;color:var(--muted);font-size:var(--fs-xs);text-decoration:none;border-bottom:1px solid transparent}
+.hub-add:hover,.hub-add:focus-visible{color:var(--accent-text);border-bottom-color:currentColor}
+
+/* The card: a lacquered tile that carries its game's accent. --accent is set per card from games.json. */
+.hub-card{
+  --card-gap:14px;
+  position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--card-gap);
+  height:100%;padding:14px;box-sizing:border-box;min-height:var(--tap);
+  background:linear-gradient(160deg,var(--surface-hi),var(--surface));
+  border:1px solid var(--accent);border-radius:var(--radius-lg);
+  box-shadow:var(--raise),0 0 22px -6px var(--accent);
+  color:inherit;text-decoration:none;
+  transition:transform .15s var(--ease-out),box-shadow .15s,border-color .15s;
+}
+@supports (color:color-mix(in srgb,red 50%,blue)){
+  .hub-card{
+    border-color:color-mix(in srgb,var(--accent) 55%,var(--line));
+    background:radial-gradient(120% 90% at 0 0,color-mix(in srgb,var(--accent) 16%,transparent),transparent 62%),linear-gradient(160deg,var(--surface-hi),var(--surface));
+    box-shadow:var(--raise),0 0 26px -8px color-mix(in srgb,var(--accent) 60%,transparent);
+  }
+  .hub-card:hover,.hub-card:focus-visible{border-color:var(--accent);box-shadow:var(--raise),0 0 34px -4px color-mix(in srgb,var(--accent) 55%,transparent)}
+}
+.hub-card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.hub-card:active{transform:translateY(0) scale(.985);transition-duration:.05s}
+.hub-card:focus-visible,.hub-tags button:focus-visible,.hub-tools input:focus-visible,.hub-add:focus-visible{outline:var(--focus-w) solid var(--accent);outline-offset:var(--focus-offset)}
+/* Red and purple need a lighter tone to hold 4.5:1 as text on the dark shell. */
+.hub-card[data-game="checkers"]{--accent-text:#f2767a}
+.hub-card[data-game="mastermind"]{--accent-text:#c084fc}
+
+.hub-art-wrap{display:block;flex:none;width:clamp(88px,9vw,200px);aspect-ratio:1;border-radius:18%;overflow:hidden;background:var(--sunken);box-shadow:0 0 0 1px var(--lip),0 6px 14px rgba(0,0,0,.5),0 0 18px -4px var(--accent)}
+.hub-art{display:block;width:100%;height:100%;object-fit:cover}
+@media (max-width:359px){.hub-art-wrap{width:80px}.hub-card{--card-gap:10px;padding:10px}}
+@media (min-width:600px) and (max-width:999px){.hub-art-wrap{width:88px}}
+
+.hub-body{display:flex;flex-direction:column;gap:6px;min-width:0;height:100%}
+.hub-card h2{margin:0;font-size:clamp(1.125rem,.9rem + .5vw,1.75rem);line-height:var(--lh-tight);letter-spacing:-.005em}
+.hub-card p{margin:0;color:var(--muted);font-size:clamp(.875rem,.75rem + .3vw,1.25rem);line-height:1.4}
+.hub-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.hub-chips li{padding:2px 9px;border-radius:var(--radius-pill);background:var(--accent-soft);border:1px solid var(--accent-line);color:var(--muted);font-size:clamp(.75rem,.65rem + .2vw,1rem);line-height:1.5}
+.hub-foot-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:2px;font-size:clamp(.75rem,.65rem + .2vw,1rem);color:var(--muted)}
+.hub-status{display:inline-flex;align-items:center}
+.hub-card .play{color:var(--accent-text);font-weight:700;font-size:clamp(.875rem,.75rem + .3vw,1.25rem);white-space:nowrap}
+
+/* Fallbacks for engines without color-mix: the chip background and ring stay neutral. */
+.hub-card{--accent-soft:rgba(255,255,255,.07);--accent-line:rgba(255,255,255,.2)}
+@supports (color:color-mix(in srgb,red 50%,blue)){
+  .hub-card{--accent-soft:color-mix(in srgb,var(--accent) 13%,transparent);--accent-line:color-mix(in srgb,var(--accent) 42%,transparent)}
+}
+
+/* Tiny frames (Discord picture-in-picture): drop the extras, keep the tile tappable. */
+@media (max-height:300px){
+  .hub-hero{margin:8px auto 12px}
+  .hub-card p,.hub-chips{display:none}
+  .hub-art-wrap{width:72px}
+}
 
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--subtle)}
 .dot[data-state="up"]{background:var(--ok)}
 .dot[data-state="down"]{background:var(--danger)}
 
 .hub-empty{color:var(--muted);text-align:center;padding:40px 0}
-.hub-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:auto;padding:32px 0;color:var(--subtle);font-size:var(--fs-xs)}
+.hub-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:auto;padding:32px 0 calc(32px + var(--sa-b));color:var(--subtle);font-size:var(--fs-xs)}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-@media (prefers-reduced-motion:reduce){.hub-card{transition:none}.hub-card:hover{transform:none}}
+@media (prefers-reduced-motion:reduce){.hub-card,.hub-tags button{transition:none}.hub-card:hover,.hub-card:active,.hub-tags button:active{transform:none}}
 
 /* Terms and privacy pages */
-.doc{padding-bottom:24px;max-width:70ch;line-height:1.6}
+.doc{padding-bottom:24px;line-height:1.6}
 .doc h2{margin:28px 0 6px;font-size:var(--fs-lg)}
 .doc p{margin:0;color:var(--muted)}
 .hub-foot a,.hub-head a{color:inherit}
+.hub-head>a{display:inline-flex;align-items:center;justify-content:center;min-width:var(--tap);min-height:var(--tap)}
+.hub-foot a{display:inline-flex;align-items:center;min-height:var(--tap)}
 
-.hub-activity-note{margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:var(--fs-sm)}
+.hub-activity-note{margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);color:var(--muted);font-size:var(--fs-sm)}
+
+/* Short landscape frames: give the first row of cards more of the screen. */
+@supports (width:min(1px,1svh)){
+  @media (max-height:500px){.hub-hero{width:min(1600px,100%,calc(90svh - 20px))}}
+}

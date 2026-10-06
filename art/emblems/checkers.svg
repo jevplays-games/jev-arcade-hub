@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Checkers">
+  <title>Checkers</title>
+  <defs>
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#b02a31"/>
+      <stop offset="0.42" stop-color="#4a1418"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <linearGradient id="p-edge" gradientUnits="userSpaceOnUse" x1="120" y1="220" x2="380" y2="400">
+      <stop offset="0" stop-color="#ffd0d0"/>
+      <stop offset="0.35" stop-color="#f2767a"/>
+      <stop offset="1" stop-color="#8f1f27"/>
+    </linearGradient>
+    <linearGradient id="p-face" gradientUnits="userSpaceOnUse" x1="130" y1="230" x2="370" y2="380">
+      <stop offset="0" stop-color="#f58b8e"/>
+      <stop offset="0.5" stop-color="#e5484d"/>
+      <stop offset="1" stop-color="#b02a31"/>
+    </linearGradient>
+    <linearGradient id="p-side" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c63a41"/>
+      <stop offset="1" stop-color="#6e151c"/>
+    </linearGradient>
+    <linearGradient id="g-edge" gradientUnits="userSpaceOnUse" x1="170" y1="190" x2="340" y2="320">
+      <stop offset="0" stop-color="#fff6c8"/>
+      <stop offset="0.35" stop-color="#ffd86b"/>
+      <stop offset="1" stop-color="#b87a14"/>
+    </linearGradient>
+    <linearGradient id="g-face" gradientUnits="userSpaceOnUse" x1="180" y1="200" x2="330" y2="316">
+      <stop offset="0" stop-color="#ffe58a"/>
+      <stop offset="0.5" stop-color="#f5c451"/>
+      <stop offset="1" stop-color="#c8922a"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <path id="crown" d="M196 312L186 226L222 262L252 212L282 262L318 226L308 312Q252 330 196 312Z"/>
+    <clipPath id="top-clip"><ellipse cx="252" cy="296" rx="124" ry="62"/></clipPath>
+  </defs>
+
+  <!-- 1. Ground: board corner as 5% squares -->
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="#ffffff" fill-opacity="0.055" transform="rotate(-8 256 256)">
+    <rect x="-20" y="-20" width="110" height="110"/><rect x="200" y="-20" width="110" height="110"/><rect x="420" y="-20" width="110" height="110"/>
+    <rect x="90" y="90" width="110" height="110"/><rect x="310" y="90" width="110" height="110"/>
+    <rect x="-20" y="200" width="110" height="110"/><rect x="200" y="200" width="110" height="110"/><rect x="420" y="200" width="110" height="110"/>
+    <rect x="90" y="310" width="110" height="110"/><rect x="310" y="310" width="110" height="110"/>
+    <rect x="-20" y="420" width="110" height="110"/><rect x="200" y="420" width="110" height="110"/><rect x="420" y="420" width="110" height="110"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="rotate(-8 256 270)">
+    <!-- 2. Two stacked pucks -->
+    <ellipse cx="252" cy="330" rx="150" ry="76" fill="#e5484d" opacity="0.42" filter="url(#blur-xl)"/>
+    <ellipse cx="266" cy="410" rx="140" ry="66" fill="#04050a" opacity="0.62" filter="url(#blur-m)"/>
+    <!-- bottom puck -->
+    <path d="M112 342V376A140 70 0 0 0 392 376V342Z" fill="#5c1018"/>
+    <ellipse cx="252" cy="376" rx="140" ry="70" fill="#5c1018"/>
+    <path d="M112 338V370A140 70 0 0 0 392 370V338Z" fill="url(#p-side)"/>
+    <ellipse cx="252" cy="338" rx="140" ry="70" fill="url(#p-edge)"/>
+    <ellipse cx="252" cy="338" rx="118" ry="57" fill="url(#p-face)"/>
+    <!-- top puck -->
+    <path d="M112 300V334A140 70 0 0 0 392 334V300Z" fill="#5c1018"/>
+    <path d="M112 296V330A140 70 0 0 0 392 330V296Z" fill="url(#p-side)"/>
+    <path d="M122 316A140 70 0 0 0 382 316" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="3"/>
+    <ellipse cx="252" cy="296" rx="140" ry="70" fill="url(#p-edge)"/>
+    <ellipse cx="252" cy="296" rx="116" ry="56" fill="url(#p-face)"/>
+    <ellipse cx="252" cy="296" rx="84" ry="38" fill="none" stroke="#8f1f27" stroke-opacity="0.55" stroke-width="5"/>
+    <g clip-path="url(#top-clip)">
+      <rect x="120" y="236" width="260" height="60" fill="url(#gloss)" opacity="0.6"/>
+    </g>
+    <path d="M150 268A112 54 0 0 1 226 244" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)"/>
+
+    <!-- 3. Gold crown on the top puck -->
+    <ellipse cx="256" cy="318" rx="76" ry="16" fill="#04050a" opacity="0.5" filter="url(#blur-s)"/>
+    <use href="#crown" fill="#7a4a0c" transform="translate(7 10)" stroke="#7a4a0c" stroke-width="16" stroke-linejoin="round"/>
+    <use href="#crown" fill="#7a4a0c" transform="translate(3 5)" stroke="#7a4a0c" stroke-width="16" stroke-linejoin="round"/>
+    <use href="#crown" fill="url(#g-edge)" stroke="url(#g-edge)" stroke-width="16" stroke-linejoin="round"/>
+    <use href="#crown" fill="url(#g-face)" stroke="url(#g-face)" stroke-width="4" stroke-linejoin="round"/>
+    <g fill="url(#g-edge)">
+      <circle cx="186" cy="218" r="13"/><circle cx="252" cy="203" r="14"/><circle cx="318" cy="218" r="13"/>
+    </g>
+    <path d="M204 296L196 236" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="8" stroke-linecap="round" filter="url(#blur-s)"/>
+    <path d="M240 232L252 216" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="8" stroke-linecap="round" filter="url(#blur-s)"/>
+    <circle cx="252" cy="294" r="9" fill="#e5484d"/><circle cx="224" cy="292" r="5" fill="#fff3b8" opacity="0.7"/><circle cx="280" cy="292" r="5" fill="#fff3b8" opacity="0.7"/>
+  </g>
+
+  <!-- 4. Sparks -->
+  <g fill="#ffffff">
+    <path d="M418 92l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="448" cy="150" r="4" opacity="0.6"/>
+    <circle cx="70" cy="140" r="3.5" opacity="0.45"/>
+  </g>
+
+  <!-- 5. J badge -->
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#e5484d" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

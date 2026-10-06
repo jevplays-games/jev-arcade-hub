@@ -1,11 +1,11 @@
 [
-  { "slug": "tic-tac-toe", "discordAppId": "1552421200100065280", "name": "Tic-Tac-Toe", "tagline": "Three in a row against JEV.", "tags": ["classic", "2-player"] },
-  { "slug": "connect-four", "discordAppId": "1552421867057315940", "name": "Connect Four", "tagline": "Drop discs and line up four.", "tags": ["classic", "strategy"] },
-  { "slug": "checkers", "discordAppId": "1552421947541950514", "name": "Checkers", "tagline": "Jump, king and outmaneuver JEV, with move analytics.", "tags": ["classic", "analytics"] },
-  { "slug": "dots-and-boxes", "discordAppId": "1552421783792128140", "name": "Dots and Boxes", "tagline": "Claim the most boxes by closing squares.", "tags": ["classic", "strategy"] },
-  { "slug": "guess-who", "discordAppId": "1552421506703687741", "name": "Guess Who", "tagline": "Narrow down the hidden character with yes/no questions.", "tags": ["deduction"] },
-  { "slug": "mastermind", "discordAppId": "1552421410775765052", "name": "Mastermind", "tagline": "Crack the secret code from feedback alone.", "tags": ["deduction", "puzzle"] },
-  { "slug": "minesweeper", "discordAppId": "1552421309139521628", "name": "Minesweeper", "tagline": "Clear the field without hitting a mine.", "tags": ["puzzle", "classic"] },
-  { "slug": "sudoku", "discordAppId": "1552422232234397726", "name": "Sudoku", "tagline": "Fill the grid, with analytics on how you solve.", "tags": ["puzzle", "analytics"] },
-  { "slug": "2048", "discordAppId": "1552422046762278912", "name": "2048", "tagline": "Slide and merge tiles to reach 2048.", "tags": ["puzzle", "arcade"] }
+  {"slug": "tic-tac-toe", "discordAppId": "1552421200100065280", "name": "Tic-Tac-Toe", "tagline": "Three in a row against JEV.", "tags": ["classic", "2-player"], "art": "/brand/games/tic-tac-toe.png", "accent": "#a99bff"},
+  {"slug": "connect-four", "discordAppId": "1552421867057315940", "name": "Connect Four", "tagline": "Drop discs and line up four.", "tags": ["classic", "strategy"], "art": "/brand/games/connect-four.png", "accent": "#f5c451"},
+  {"slug": "checkers", "discordAppId": "1552421947541950514", "name": "Checkers", "tagline": "Jump, king and outmaneuver JEV, with move analytics.", "tags": ["classic", "analytics"], "art": "/brand/games/checkers.png", "accent": "#e5484d"},
+  {"slug": "dots-and-boxes", "discordAppId": "1552421783792128140", "name": "Dots and Boxes", "tagline": "Claim the most boxes by closing squares.", "tags": ["classic", "strategy"], "art": "/brand/games/dots-and-boxes.png", "accent": "#2dd4bf"},
+  {"slug": "guess-who", "discordAppId": "1552421506703687741", "name": "Guess Who", "tagline": "Narrow down the hidden character with yes/no questions.", "tags": ["deduction"], "art": "/brand/games/guess-who.png", "accent": "#fb923c"},
+  {"slug": "mastermind", "discordAppId": "1552421410775765052", "name": "Mastermind", "tagline": "Crack the secret code from feedback alone.", "tags": ["deduction", "puzzle"], "art": "/brand/games/mastermind.png", "accent": "#a855f7"},
+  {"slug": "minesweeper", "discordAppId": "1552421309139521628", "name": "Minesweeper", "tagline": "Clear the field without hitting a mine.", "tags": ["puzzle", "classic"], "art": "/brand/games/minesweeper.png", "accent": "#4ade80"},
+  {"slug": "sudoku", "discordAppId": "1552422232234397726", "name": "Sudoku", "tagline": "Fill the grid, with analytics on how you solve.", "tags": ["puzzle", "analytics"], "art": "/brand/games/sudoku.png", "accent": "#60a5fa"},
+  {"slug": "2048", "discordAppId": "1552422046762278912", "name": "2048", "tagline": "Slide and merge tiles to reach 2048.", "tags": ["puzzle", "arcade"], "art": "/brand/games/2048.png", "accent": "#edc22e"}
 ]
