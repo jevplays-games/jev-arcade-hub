@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Tic-Tac-Toe">
+  <title>Tic-Tac-Toe</title>
+  <defs>
+    <!-- Ground: near-black, lit from the top-left in the game's accent. -->
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#5343c4"/>
+      <stop offset="0.42" stop-color="#231b5c"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <!-- X: violet lacquer. Edge is the bevel, face sits inside it. -->
+    <linearGradient id="x-edge" gradientUnits="userSpaceOnUse" x1="96" y1="96" x2="330" y2="340">
+      <stop offset="0" stop-color="#f1edff"/>
+      <stop offset="0.35" stop-color="#b9adff"/>
+      <stop offset="1" stop-color="#4a3bb5"/>
+    </linearGradient>
+    <linearGradient id="x-face" gradientUnits="userSpaceOnUse" x1="110" y1="100" x2="320" y2="340">
+      <stop offset="0" stop-color="#c4b8ff"/>
+      <stop offset="0.5" stop-color="#8f7dff"/>
+      <stop offset="1" stop-color="#5540d8"/>
+    </linearGradient>
+    <!-- O: teal lacquer. -->
+    <linearGradient id="o-edge" gradientUnits="userSpaceOnUse" x1="232" y1="212" x2="412" y2="404">
+      <stop offset="0" stop-color="#eafffb"/>
+      <stop offset="0.35" stop-color="#8cebd9"/>
+      <stop offset="1" stop-color="#17786a"/>
+    </linearGradient>
+    <linearGradient id="o-face" gradientUnits="userSpaceOnUse" x1="240" y1="214" x2="404" y2="400">
+      <stop offset="0" stop-color="#a4f7e6"/>
+      <stop offset="0.5" stop-color="#3fd6bc"/>
+      <stop offset="1" stop-color="#12917e"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <path id="x" d="M112 118L300 306M300 118L112 306"/>
+    <circle id="o" cx="322" cy="312" r="82"/>
+    <mask id="x-mask"><use href="#x" fill="none" stroke="#fff" stroke-width="58" stroke-linecap="round"/></mask>
+    <mask id="o-mask"><use href="#o" fill="none" stroke="#fff" stroke-width="40"/></mask>
+  </defs>
+
+  <!-- 1. Ground -->
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.055" stroke-width="12" stroke-linecap="round" transform="rotate(-8 256 256)">
+    <path d="M178 -20V532M334 -20V532M-20 178H532M-20 334H532"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="rotate(-8 256 256)">
+    <!-- 2. O, behind -->
+    <use href="#o" fill="none" stroke="#6fdcc8" stroke-width="70" opacity="0.4" filter="url(#blur-xl)"/>
+    <use href="#o" fill="none" stroke="#04050a" stroke-width="56" opacity="0.6" transform="translate(14 22)" filter="url(#blur-m)"/>
+    <use href="#o" fill="none" stroke="#0f5a50" stroke-width="54" transform="translate(7 11)"/>
+    <use href="#o" fill="none" stroke="#0f5a50" stroke-width="54" transform="translate(3.5 5.5)"/>
+    <use href="#o" fill="none" stroke="url(#o-edge)" stroke-width="54"/>
+    <use href="#o" fill="none" stroke="url(#o-face)" stroke-width="40"/>
+    <g mask="url(#o-mask)">
+      <rect x="220" y="210" width="210" height="150" fill="url(#gloss)" opacity="0.5"/>
+      <path d="M254 290A72 72 0 0 1 340 242" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+
+    <!-- 3. X, in front -->
+    <use href="#x" fill="none" stroke="#a99bff" stroke-width="96" stroke-linecap="round" opacity="0.42" filter="url(#blur-xl)"/>
+    <use href="#x" fill="none" stroke="#04050a" stroke-width="76" stroke-linecap="round" opacity="0.62" transform="translate(14 22)" filter="url(#blur-m)"/>
+    <use href="#x" fill="none" stroke="#2a1e86" stroke-width="74" stroke-linecap="round" transform="translate(7 11)"/>
+    <use href="#x" fill="none" stroke="#2a1e86" stroke-width="74" stroke-linecap="round" transform="translate(3.5 5.5)"/>
+    <use href="#x" fill="none" stroke="url(#x-edge)" stroke-width="74" stroke-linecap="round"/>
+    <use href="#x" fill="none" stroke="url(#x-face)" stroke-width="58" stroke-linecap="round"/>
+    <g mask="url(#x-mask)">
+      <rect x="70" y="80" width="280" height="150" fill="url(#gloss)" opacity="0.55"/>
+      <path d="M278 114L210 182" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)"/>
+      <path d="M118 100L176 158" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+  </g>
+
+  <!-- 4. Sparks -->
+  <g fill="#ffffff">
+    <path d="M408 84l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="440" cy="140" r="4" opacity="0.6"/>
+    <circle cx="74" cy="392" r="3.5" opacity="0.45"/>
+  </g>
+
+  <!-- 5. J badge: the arcade co-signs every emblem from the bottom-right. -->
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#a99bff" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

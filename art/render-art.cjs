@@ -125,33 +125,78 @@ const GAMES = [
 const ARCADE = { slug: 'arcade', title: 'JevPlay Arcade', accent: '#a99bff', tag: 'Nine games. Pick one, play JEV.', brand: 'JEVPLAY.GAMES', url: 'jevplay.games' };
 
 const svg = (slug, size, extra = '') => `<svg viewBox="0 0 100 100" width="${size}" height="${size}" ${extra}>${MOTIFS[slug]()}</svg>`;
-const mark = `<svg viewBox="0 0 64 64" width="34" height="34"><rect width="64" height="64" rx="15" fill="#171a24" stroke="#b3a0ff" stroke-opacity=".35" stroke-width="1.5"/><path d="M34 14v20.5c0 5.2-4.2 9.5-9.5 9.5S15 39.7 15 34.5" fill="none" stroke="#eef0f7" stroke-width="6" stroke-linecap="round"/><path d="M40.3 33v22M47.7 33v22M33 40.3h22M33 47.7h22" stroke="#b3a0ff" stroke-width="1.8" opacity=".55"/></svg>`;
-const shell = (inner, accent) => `<!doctype html><meta charset="utf-8"><style>
+const flatMark = `<svg viewBox="0 0 64 64" width="34" height="34"><rect width="64" height="64" rx="15" fill="#171a24" stroke="#b3a0ff" stroke-opacity=".35" stroke-width="1.5"/><path d="M34 14v20.5c0 5.2-4.2 9.5-9.5 9.5S15 39.7 15 34.5" fill="none" stroke="#eef0f7" stroke-width="6" stroke-linecap="round"/><path d="M40.3 33v22M47.7 33v22M33 40.3h22M33 47.7h22" stroke="#b3a0ff" stroke-width="1.8" opacity=".55"/></svg>`;
+// The arcade's own emblem signs every cover; the flat J is only the fallback while that file is missing.
+const arcadeEmblem = path.join(__dirname, 'emblems', 'arcade.svg');
+const mark = fs.existsSync(arcadeEmblem) ? `<img src="${pathToFileURL(arcadeEmblem).href}" width="34" height="34" style="border-radius:9px;display:block" alt="">` : flatMark;
+const shell = (inner, accent, opts = {}) => `<!doctype html><meta charset="utf-8"><style>
   @font-face{font-family:Inter;src:url("${font}") format("woff2");font-weight:100 900}
   *{box-sizing:border-box;margin:0}
-  body{width:1024px;height:576px;overflow:hidden;background:#0e1017;font-family:Inter,sans-serif;color:#eef0f7;position:relative}
+  body{width:1024px;height:576px;overflow:hidden;background:#0a0b13;font-family:Inter,sans-serif;color:#eef0f7;position:relative}
   .glow{position:absolute;inset:0;background:radial-gradient(circle at 78% 42%,${accent}33,transparent 55%),radial-gradient(circle at 12% 100%,${accent}18,transparent 45%)}
   .grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 70% 50%,#000,transparent 75%)}
-</style><body><div class="glow"></div><div class="grid"></div>${inner}</body>`;
+</style><body>${opts.plain ? '' : '<div class="glow"></div><div class="grid"></div>'}${inner}</body>`;
 
-const cover = g => shell(`
-  <div style="position:absolute;left:64px;top:64px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}${g.brand || 'JEV ARCADE'}</div>
-  <div style="position:absolute;left:64px;top:190px;width:470px">
-    <div style="font-size:${g.title.length > 11 ? 76 : 92}px;line-height:.98;font-weight:850;letter-spacing:-.03em">${g.title}</div>
-    <div style="margin-top:26px;font-size:26px;font-weight:600;color:${g.accent}">${g.tag}</div>
-    <div style="margin-top:34px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#ffffff10;border:1px solid #ffffff22;font-size:17px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:#6fdcc8"></span>Play against JEV</div>
+// ---- Illustrated Discord art: the emblem as a lit lacquer tile on an accent-lit ground ----
+const emblemFile = slug => path.join(__dirname, 'emblems', `${slug}.svg`);
+const hasEmblem = slug => fs.existsSync(emblemFile(slug));
+// The emblem as an <img> filling its box; falls back to the old flat board motif until the emblem exists.
+const emblemImg = (slug, accent) => hasEmblem(slug)
+  ? `<img src="${pathToFileURL(emblemFile(slug)).href}" style="display:block;width:100%;height:100%">`
+  : `<div style="width:100%;height:100%;background:radial-gradient(circle at 28% 20%,${accent}55,#12141f 60%,#0a0b13);display:flex;align-items:center;justify-content:center"><div style="width:78%;height:78%">${svg(slug, '100%')}</div></div>`;
+
+// The game's own board pattern, as faint white lines in the ground.
+const PATTERN = {
+  'tic-tac-toe': 'linear-gradient(#fff 3px,transparent 3px),linear-gradient(90deg,#fff 3px,transparent 3px);background-size:150px 150px',
+  'connect-four': 'radial-gradient(circle,transparent 17px,#fff 18px,#fff 20px,transparent 21px);background-size:56px 56px',
+  checkers: 'conic-gradient(#fff 25%,transparent 0 50%,#fff 0 75%,transparent 0);background-size:112px 112px',
+  'dots-and-boxes': 'radial-gradient(circle,#fff 4px,transparent 5px);background-size:64px 64px',
+  'guess-who': 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:84px 104px',
+  mastermind: 'radial-gradient(circle,#fff 7px,transparent 8px);background-size:60px 60px',
+  minesweeper: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:52px 52px',
+  sudoku: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:48px 48px',
+  2048: 'linear-gradient(#fff 8px,transparent 8px),linear-gradient(90deg,#fff 8px,transparent 8px);background-size:110px 110px',
+  arcade: 'linear-gradient(#fff 3px,transparent 3px),linear-gradient(90deg,#fff 3px,transparent 3px);background-size:170px 170px',
+};
+const GRAIN = `url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0"/></filter><rect width="240" height="240" filter="url(#n)" opacity=".07"/></svg>')}")`;
+
+// Ground: accent key light top-left, teal rim bottom-right, faint board pattern, vignette, (optional) grain.
+const ground = (g, { grain = true, pattern = .055 } = {}) => `
+  <div style="position:absolute;inset:0;background:radial-gradient(70% 95% at 18% 14%,${g.accent}59,${g.accent}1f 38%,transparent 70%),radial-gradient(55% 80% at 100% 100%,#6fdcc82e,transparent 70%),#0a0b13"></div>
+  <div style="position:absolute;inset:0;opacity:${pattern};background-image:${PATTERN[g.slug] || PATTERN.arcade};mask-image:radial-gradient(80% 90% at 70% 50%,#000,transparent 85%);-webkit-mask-image:radial-gradient(80% 90% at 70% 50%,#000,transparent 85%)"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 50%,transparent 55%,#05060ccc)"></div>
+  ${grain ? `<div class="grain" style="position:absolute;inset:0;background-image:${GRAIN}"></div>` : ''}`;
+
+// A lacquer tile: rounded, lit top edge, deep shadow, accent glow. `cls` lets the video target it.
+const tile = (g, size, style = '', cls = '', inner = '') => `<div class="${cls}" style="position:absolute;width:${size}px;height:${size}px;${style}">
+  <div class="halo" style="position:absolute;inset:-14%;border-radius:${size * .3}px;background:radial-gradient(closest-side,${g.accent}80,transparent);filter:blur(${Math.round(size * .06)}px)"></div>
+  <div style="position:relative;width:100%;height:100%;border-radius:${Math.round(size * .215)}px;overflow:hidden;box-shadow:0 ${Math.round(size * .07)}px ${Math.round(size * .16)}px #000000d0,0 ${Math.round(size * .02)}px ${Math.round(size * .04)}px #00000099,0 0 0 1.5px #ffffff26">
+    ${emblemImg(g.slug, g.accent)}
+    <div style="position:absolute;inset:0;border-radius:inherit;background:linear-gradient(155deg,#ffffff4d,#ffffff00 32%);box-shadow:inset 0 2px 0 #ffffff80,inset 2px 0 0 #ffffff33,inset -2px -3px 0 #00000055"></div>${inner}
+  </div></div>`;
+
+const cover = g => shell(`${ground(g)}
+  <div class="brand" style="position:absolute;left:64px;top:60px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}${g.brand || 'JEV ARCADE'}</div>
+  <div class="text" style="position:absolute;left:64px;top:186px;width:470px">
+    <div class="t1" style="font-size:${g.title.length <= 8 ? 92 : g.title.length <= 12 ? 70 : 60}px;white-space:nowrap;line-height:.98;font-weight:850;letter-spacing:-.03em;text-shadow:0 4px 24px #000a">${g.title}</div>
+    <div class="t2" style="margin-top:26px;font-size:26px;font-weight:600;color:${g.accent};text-shadow:0 2px 14px #0008">${g.tag}</div>
+    <div class="chip" style="margin-top:34px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff2e;box-shadow:inset 0 1px 0 #ffffff2e;font-size:17px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:#6fdcc8;box-shadow:0 0 10px #6fdcc8"></span>Play against JEV</div>
   </div>
-  <div style="position:absolute;right:56px;top:76px;width:424px;height:424px;filter:drop-shadow(0 24px 40px #00000088)">${svg(g.slug, 424)}</div>
-  <div style="position:absolute;left:64px;bottom:44px;font-size:14px;color:#78809a;letter-spacing:.06em">${g.url || g.slug + '.jevplay.games'}</div>`, g.accent);
+  <div class="sec s1" style="position:absolute;inset:0;filter:blur(6px);opacity:.62">${tile(g, 210, 'left:500px;top:20px;transform:rotate(11deg)')}</div>
+  <div class="sec s2" style="position:absolute;inset:0;filter:blur(8px);opacity:.55">${tile(g, 190, 'left:858px;top:400px;transform:rotate(-13deg)')}</div>
+  <div class="sec s3" style="position:absolute;inset:0;filter:blur(11px);opacity:.4">${tile(g, 140, 'left:600px;top:455px;transform:rotate(7deg)')}</div>
+  <div class="hero" style="position:absolute;inset:0">${tile(g, 392, 'left:566px;top:92px;transform:rotate(-5deg)', 'main', '<div class="shine" style="position:absolute;top:-20%;bottom:-20%;left:-60%;width:24%;transform:rotate(18deg);mix-blend-mode:screen;background:linear-gradient(90deg,transparent,#ffffff30 28%,#ffffffd0 50%,#ffffff30 72%,transparent);opacity:0"></div>')}</div>
+  <div class="url" style="position:absolute;left:64px;bottom:42px;font-size:14px;color:#78809a;letter-spacing:.06em">${g.url || g.slug + '.jevplay.games'}</div>`, g.accent, { plain: true });
 
 // Background: art hugging the edges, the middle left clear for the game's own UI.
-const background = g => shell(`
-  <div style="position:absolute;left:-70px;bottom:-80px;width:340px;height:340px;opacity:.5;transform:rotate(-8deg)">${svg(g.slug, 340)}</div>
-  <div style="position:absolute;right:-60px;top:-70px;width:320px;height:320px;opacity:.5;transform:rotate(9deg)">${svg(g.slug, 320)}</div>
-  <div style="position:absolute;right:120px;bottom:-40px;width:170px;height:170px;opacity:.28;transform:rotate(-14deg)">${svg(g.slug, 170)}</div>
-  <div style="position:absolute;left:150px;top:-30px;width:150px;height:150px;opacity:.28;transform:rotate(12deg)">${svg(g.slug, 150)}</div>`, g.accent);
+const background = g => shell(`${ground(g, { pattern: .04 })}
+  <div style="position:absolute;inset:0;opacity:.62;filter:blur(1.5px)">${tile(g, 340, 'left:-110px;bottom:-130px;transform:rotate(-9deg)')}</div>
+  <div style="position:absolute;inset:0;opacity:.6;filter:blur(1.5px)">${tile(g, 320, 'right:-100px;top:-120px;transform:rotate(10deg)')}</div>
+  <div style="position:absolute;inset:0;opacity:.34;filter:blur(8px)">${tile(g, 170, 'right:90px;bottom:-60px;transform:rotate(-14deg)')}</div>
+  <div style="position:absolute;inset:0;opacity:.3;filter:blur(8px)">${tile(g, 150, 'left:170px;top:-60px;transform:rotate(12deg)')}</div>
+  <div style="position:absolute;inset:0;background:radial-gradient(48% 52% at 50% 50%,#0a0b13bb,transparent)"></div>`, g.accent, { plain: true });
 
-module.exports = { ARCADE, GAMES, MOTIFS, svg, shell, cover, background, mark, font };
+module.exports = { ARCADE, GAMES, MOTIFS, svg, shell, cover, background, mark, font, tile, ground, hasEmblem };
 if (isMain) (async () => {
   const { chromium } = require(pwDir);
   const outDir = path.resolve(outArg || path.join(__dirname, 'out'));
@@ -164,10 +209,11 @@ if (isMain) (async () => {
       fs.writeFileSync(html, fn(g));
       await page.goto(pathToFileURL(html).href);
       await page.evaluate(() => document.fonts.ready);
+      await page.waitForTimeout(150);
       await page.screenshot({ path: path.join(outDir, `${g.slug}-${kind}.png`) });
       fs.unlinkSync(html);
     }
-    console.log('rendered', g.slug);
+    console.log('rendered', g.slug, hasEmblem(g.slug) ? '' : '(MOTIFS fallback)');
   }
   await browser.close();
 })();

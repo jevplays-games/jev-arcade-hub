@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Connect Four">
+  <title>Connect Four</title>
+  <defs>
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#8a621a"/>
+      <stop offset="0.42" stop-color="#3a2a0c"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <linearGradient id="b-edge" gradientUnits="userSpaceOnUse" x1="112" y1="204" x2="360" y2="432">
+      <stop offset="0" stop-color="#c9d6ff"/>
+      <stop offset="0.3" stop-color="#5f7be0"/>
+      <stop offset="1" stop-color="#1a2a78"/>
+    </linearGradient>
+    <linearGradient id="b-face" gradientUnits="userSpaceOnUse" x1="120" y1="210" x2="350" y2="430">
+      <stop offset="0" stop-color="#6d8cf2"/>
+      <stop offset="0.5" stop-color="#3652c4"/>
+      <stop offset="1" stop-color="#1d2b63"/>
+    </linearGradient>
+    <linearGradient id="g-edge" gradientUnits="userSpaceOnUse" x1="130" y1="150" x2="220" y2="250">
+      <stop offset="0" stop-color="#fff6d2"/>
+      <stop offset="0.4" stop-color="#f5c451"/>
+      <stop offset="1" stop-color="#a8700f"/>
+    </linearGradient>
+    <linearGradient id="g-face" gradientUnits="userSpaceOnUse" x1="140" y1="158" x2="215" y2="240">
+      <stop offset="0" stop-color="#ffe08a"/>
+      <stop offset="0.5" stop-color="#f5c451"/>
+      <stop offset="1" stop-color="#d89a22"/>
+    </linearGradient>
+    <linearGradient id="r-edge" gradientUnits="userSpaceOnUse" x1="262" y1="222" x2="336" y2="304">
+      <stop offset="0" stop-color="#ffe0e0"/>
+      <stop offset="0.4" stop-color="#ff6b6b"/>
+      <stop offset="1" stop-color="#9c2430"/>
+    </linearGradient>
+    <linearGradient id="r-face" gradientUnits="userSpaceOnUse" x1="270" y1="228" x2="330" y2="300">
+      <stop offset="0" stop-color="#ff9a9a"/>
+      <stop offset="0.5" stop-color="#ff6b6b"/>
+      <stop offset="1" stop-color="#d63f4c"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <!-- The frame: a rounded slab with four round wells punched through it. -->
+    <path id="frame" fill-rule="evenodd" d="M148 204H324A36 36 0 0 1 360 240V396A36 36 0 0 1 324 432H148A36 36 0 0 1 112 396V240A36 36 0 0 1 148 204ZM130 262a44 44 0 1 0 88 0a44 44 0 1 0 -88 0ZM254 262a44 44 0 1 0 88 0a44 44 0 1 0 -88 0ZM130 374a44 44 0 1 0 88 0a44 44 0 1 0 -88 0ZM254 374a44 44 0 1 0 88 0a44 44 0 1 0 -88 0Z"/>
+    <clipPath id="frame-clip"><use href="#frame" clip-rule="evenodd"/></clipPath>
+    <clipPath id="g-clip"><circle cx="174" cy="196" r="38"/></clipPath>
+    <clipPath id="r-clip"><circle cx="298" cy="262" r="32"/></clipPath>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.055" stroke-width="12" stroke-linecap="round" transform="rotate(-8 256 256)">
+    <path d="M178 -20V532M334 -20V532M-20 178H532M-20 334H532"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="translate(0 -12) rotate(-8 256 300)">
+    <!-- Frame: bloom, cast shadow, thickness, bevel, face, gloss -->
+    <use href="#frame" fill="#3652c4" opacity="0.4" filter="url(#blur-xl)"/>
+    <use href="#frame" fill="#04050a" opacity="0.65" transform="translate(14 22)" filter="url(#blur-m)"/>
+    <!-- Dark wells and the red disc seated in the upper right well -->
+    <circle cx="174" cy="262" r="44" fill="#070a1c" transform="translate(7 11)"/>
+    <circle cx="298" cy="262" r="44" fill="#070a1c" transform="translate(7 11)"/>
+    <circle cx="174" cy="374" r="44" fill="#070a1c" transform="translate(7 11)"/>
+    <circle cx="298" cy="374" r="44" fill="#070a1c" transform="translate(7 11)"/>
+    <circle cx="298" cy="262" r="42" fill="#6b1620"/>
+    <circle cx="298" cy="262" r="40" fill="url(#r-edge)"/>
+    <circle cx="298" cy="262" r="32" fill="url(#r-face)"/>
+    <g clip-path="url(#r-clip)">
+      <rect x="262" y="228" width="72" height="40" fill="url(#gloss)" opacity="0.55"/>
+      <path d="M278 252A22 22 0 0 1 296 238" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="6" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+    <use href="#frame" fill="#1a2a78" transform="translate(7 11)"/>
+    <use href="#frame" fill="#101a50" transform="translate(3.5 5.5)"/>
+    <use href="#frame" fill="url(#b-edge)"/>
+    <g clip-path="url(#frame-clip)">
+      <rect x="112" y="204" width="248" height="228" fill="url(#b-face)" transform="translate(5 5) scale(0.96 0.96)"/>
+      <rect x="112" y="204" width="248" height="90" fill="url(#gloss)" opacity="0.45"/>
+      <path d="M130 222H300" fill="none" stroke="#ffffff" stroke-opacity="0.75" stroke-width="7" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+    <!-- Hole rims: a thin lit lip on the upper-left of each well -->
+    <g fill="none" stroke="#c9d6ff" stroke-opacity="0.55" stroke-width="3" stroke-linecap="round">
+      <path d="M135 244A44 44 0 0 1 158 222"/>
+      <path d="M259 244A44 44 0 0 1 282 222"/>
+      <path d="M135 356A44 44 0 0 1 158 334"/>
+      <path d="M259 356A44 44 0 0 1 282 334"/>
+    </g>
+
+    <!-- Gold disc dropping in, in front of the frame -->
+    <circle cx="174" cy="196" r="52" fill="#f5c451" opacity="0.45" filter="url(#blur-xl)"/>
+    <circle cx="174" cy="196" r="44" fill="#04050a" opacity="0.6" transform="translate(12 20)" filter="url(#blur-m)"/>
+    <circle cx="174" cy="196" r="44" fill="#8a5a0a" transform="translate(7 11)"/>
+    <circle cx="174" cy="196" r="44" fill="#8a5a0a" transform="translate(3.5 5.5)"/>
+    <circle cx="174" cy="196" r="44" fill="url(#g-edge)"/>
+    <circle cx="174" cy="196" r="35" fill="url(#g-face)"/>
+    <g clip-path="url(#g-clip)">
+      <rect x="130" y="152" width="90" height="48" fill="url(#gloss)" opacity="0.55"/>
+      <path d="M146 188A30 30 0 0 1 170 164" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="7" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+    <!-- Motion streaks above the dropping disc -->
+    <g stroke="#ffe08a" stroke-linecap="round" stroke-width="7">
+      <path d="M150 124V100" opacity="0.5"/><path d="M174 120V80" opacity="0.65"/><path d="M198 124V100" opacity="0.5"/>
+    </g>
+  </g>
+
+  <g fill="#ffffff">
+    <path d="M420 92l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="452" cy="148" r="4" opacity="0.6"/>
+    <circle cx="70" cy="440" r="3.5" opacity="0.45"/>
+  </g>
+
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#f5c451" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

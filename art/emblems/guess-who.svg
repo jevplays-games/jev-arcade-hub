@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Guess Who">
+  <title>Guess Who</title>
+  <defs>
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#d4691a"/>
+      <stop offset="0.42" stop-color="#4a230b"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <linearGradient id="c-edge" gradientUnits="userSpaceOnUse" x1="135" y1="90" x2="320" y2="380">
+      <stop offset="0" stop-color="#fff0df"/>
+      <stop offset="0.3" stop-color="#ffbd80"/>
+      <stop offset="1" stop-color="#b4540f"/>
+    </linearGradient>
+    <linearGradient id="c-face" gradientUnits="userSpaceOnUse" x1="150" y1="100" x2="310" y2="370">
+      <stop offset="0" stop-color="#ffc48a"/>
+      <stop offset="0.5" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#d4691a"/>
+    </linearGradient>
+    <linearGradient id="back-edge" gradientUnits="userSpaceOnUse" x1="200" y1="100" x2="360" y2="380">
+      <stop offset="0" stop-color="#e48a45"/>
+      <stop offset="1" stop-color="#7a3a0a"/>
+    </linearGradient>
+    <linearGradient id="win" gradientUnits="userSpaceOnUse" x1="160" y1="115" x2="290" y2="320">
+      <stop offset="0" stop-color="#fff3e4"/>
+      <stop offset="1" stop-color="#ffcf9c"/>
+    </linearGradient>
+    <linearGradient id="sil" gradientUnits="userSpaceOnUse" x1="170" y1="150" x2="280" y2="320">
+      <stop offset="0" stop-color="#4a2308"/>
+      <stop offset="1" stop-color="#1c0d04"/>
+    </linearGradient>
+    <linearGradient id="q" gradientUnits="userSpaceOnUse" x1="200" y1="170" x2="250" y2="260">
+      <stop offset="0" stop-color="#ffd0a0"/>
+      <stop offset="0.45" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#e0670f"/>
+    </linearGradient>
+    <linearGradient id="tray" gradientUnits="userSpaceOnUse" x1="110" y1="372" x2="110" y2="414">
+      <stop offset="0" stop-color="#8a4510"/>
+      <stop offset="0.35" stop-color="#4a230b"/>
+      <stop offset="1" stop-color="#1c0d04"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <rect id="card" x="135" y="90" width="180" height="284" rx="28"/>
+    <clipPath id="win-clip"><rect x="155" y="110" width="140" height="190" rx="16"/></clipPath>
+    <mask id="card-mask"><use href="#card" fill="#fff"/></mask>
+  </defs>
+
+  <!-- 1. Ground, with a face-grid pattern -->
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.055" stroke-width="12" stroke-linecap="round" transform="rotate(-8 256 256)">
+    <path d="M96 -20V532M226 -20V532M356 -20V532M486 -20V532M-20 150H532M-20 290H532M-20 430H532"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="rotate(-8 256 256)">
+    <!-- 2. Back card, already flipped down: only its back shows -->
+    <g transform="rotate(14 330 374) translate(88 -10)">
+      <use href="#card" fill="#04050a" opacity="0.6" transform="translate(14 22)" filter="url(#blur-m)"/>
+      <use href="#card" fill="#3a1a06" transform="translate(7 11)"/>
+      <use href="#card" fill="url(#back-edge)"/>
+      <rect x="152" y="107" width="146" height="250" rx="20" fill="#7a3a0a"/>
+      <rect x="152" y="107" width="146" height="250" rx="20" fill="url(#gloss)" opacity="0.35"/>
+      <path d="M190 190L260 260M260 190L190 260" fill="none" stroke="#ffb066" stroke-opacity="0.45" stroke-width="16" stroke-linecap="round"/>
+    </g>
+
+    <!-- 3. Front card, standing in the tray -->
+    <use href="#card" fill="#fb923c" opacity="0.42" filter="url(#blur-xl)"/>
+    <use href="#card" fill="#04050a" opacity="0.62" transform="translate(14 22)" filter="url(#blur-m)"/>
+    <use href="#card" fill="#7a3a0a" transform="translate(7 11)"/>
+    <use href="#card" fill="#7a3a0a" transform="translate(3.5 5.5)"/>
+    <use href="#card" fill="url(#c-edge)"/>
+    <rect x="145" y="100" width="160" height="264" rx="20" fill="url(#c-face)"/>
+    <!-- portrait window -->
+    <rect x="153" y="108" width="144" height="194" rx="17" fill="#7a3a0a" opacity="0.55"/>
+    <rect x="155" y="110" width="140" height="190" rx="16" fill="url(#win)"/>
+    <g clip-path="url(#win-clip)">
+      <path d="M150 310Q150 258 225 250Q300 258 300 310Z" fill="url(#sil)"/>
+      <circle cx="225" cy="198" r="52" fill="url(#sil)"/>
+      <path d="M205 186C205 160 245 160 245 186C245 202 225 204 225 220" fill="none" stroke="url(#q)" stroke-width="13" stroke-linecap="round"/>
+      <circle cx="225" cy="240" r="8" fill="#fb923c"/>
+      <path d="M175 150L215 128" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="7" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+    <!-- name plate -->
+    <rect x="160" y="316" width="130" height="34" rx="14" fill="#7a3a0a"/>
+    <rect x="160" y="314" width="130" height="34" rx="14" fill="#4a230b"/>
+    <rect x="178" y="327" width="94" height="9" rx="4.5" fill="#fb923c" opacity="0.85"/>
+    <g mask="url(#card-mask)">
+      <rect x="120" y="85" width="210" height="130" fill="url(#gloss)" opacity="0.45"/>
+      <path d="M150 128V96A16 16 0 0 1 166 96H198" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="9" stroke-linecap="round" filter="url(#blur-s)" transform="translate(-4 0)"/>
+    </g>
+
+    <!-- 4. Tray lip in front of the card -->
+    <rect x="106" y="360" width="238" height="52" rx="20" fill="#04050a" opacity="0.6" transform="translate(10 14)" filter="url(#blur-m)"/>
+    <rect x="106" y="364" width="238" height="52" rx="20" fill="#1c0d04"/>
+    <rect x="106" y="360" width="238" height="52" rx="20" fill="url(#tray)"/>
+    <path d="M122 368H328" fill="none" stroke="#ffb066" stroke-opacity="0.75" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- 5. Sparks -->
+  <g fill="#ffffff">
+    <path d="M84 100l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="68" cy="170" r="4" opacity="0.6"/>
+    <circle cx="450" cy="150" r="3.5" opacity="0.45"/>
+  </g>
+
+  <!-- 6. J badge -->
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#fb923c" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

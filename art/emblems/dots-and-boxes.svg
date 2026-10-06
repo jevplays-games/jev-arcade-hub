@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Dots and Boxes">
+  <title>Dots and Boxes</title>
+  <defs>
+    <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
+      <stop offset="0" stop-color="#14a08f"/>
+      <stop offset="0.42" stop-color="#0b4a47"/>
+      <stop offset="1" stop-color="#0a0b13"/>
+    </radialGradient>
+    <radialGradient id="rim" cx="0.9" cy="0.95" r="0.6">
+      <stop offset="0" stop-color="#6fdcc8" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#6fdcc8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="0.6" stop-color="#05060c" stop-opacity="0"/>
+      <stop offset="1" stop-color="#05060c" stop-opacity="0.6"/>
+    </radialGradient>
+    <linearGradient id="t-edge" gradientUnits="userSpaceOnUse" x1="140" y1="110" x2="340" y2="330">
+      <stop offset="0" stop-color="#e6fffb"/>
+      <stop offset="0.35" stop-color="#7beadb"/>
+      <stop offset="1" stop-color="#128578"/>
+    </linearGradient>
+    <linearGradient id="t-face" gradientUnits="userSpaceOnUse" x1="140" y1="120" x2="340" y2="320">
+      <stop offset="0" stop-color="#9af3e6"/>
+      <stop offset="0.5" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#14a08f"/>
+    </linearGradient>
+    <linearGradient id="p-edge" gradientUnits="userSpaceOnUse" x1="320" y1="120" x2="360" y2="320">
+      <stop offset="0" stop-color="#ffe3f1"/>
+      <stop offset="0.4" stop-color="#f9a0cf"/>
+      <stop offset="1" stop-color="#a02d72"/>
+    </linearGradient>
+    <linearGradient id="p-face" gradientUnits="userSpaceOnUse" x1="320" y1="120" x2="360" y2="320">
+      <stop offset="0" stop-color="#fbb4d9"/>
+      <stop offset="0.5" stop-color="#f472b6"/>
+      <stop offset="1" stop-color="#c8428c"/>
+    </linearGradient>
+    <linearGradient id="glass" gradientUnits="userSpaceOnUse" x1="140" y1="120" x2="340" y2="320">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.34"/>
+      <stop offset="0.5" stop-color="#bdf6ee" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#f472b6" stop-opacity="0.22"/>
+    </linearGradient>
+    <radialGradient id="pearl" cx="0.34" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#eef0f7"/>
+      <stop offset="1" stop-color="#9aa0bd"/>
+    </radialGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur-xl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="blur-m" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="11"/></filter>
+    <filter id="blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.07 0"/>
+    </filter>
+    <path id="teal" d="M340 120H140V320H340"/>
+    <path id="pink" d="M340 120V320"/>
+    <mask id="t-mask"><use href="#teal" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/></mask>
+    <mask id="p-mask"><use href="#pink" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/></mask>
+    <g id="dot">
+      <circle r="31" fill="#04050a" opacity="0.55" transform="translate(5 8)" filter="url(#blur-s)"/>
+      <circle r="28" fill="#6b7092" transform="translate(3 5)"/>
+      <circle r="27" fill="url(#pearl)"/>
+      <ellipse cx="-9" cy="-11" rx="10" ry="6" fill="#ffffff" opacity="0.85" transform="rotate(-35 -9 -11)"/>
+    </g>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#rim)"/>
+  <g fill="#ffffff" fill-opacity="0.07" transform="rotate(-8 256 256)">
+    <circle cx="96" cy="96" r="7"/><circle cx="256" cy="96" r="7"/><circle cx="416" cy="96" r="7"/>
+    <circle cx="96" cy="256" r="7"/><circle cx="256" cy="256" r="7"/><circle cx="416" cy="256" r="7"/>
+    <circle cx="96" cy="416" r="7"/><circle cx="256" cy="416" r="7"/><circle cx="416" cy="416" r="7"/>
+  </g>
+  <rect width="512" height="512" filter="url(#grain)"/>
+  <rect width="512" height="512" fill="url(#vignette)"/>
+
+  <g transform="rotate(-8 256 256)">
+    <!-- Glass box -->
+    <rect x="140" y="120" width="200" height="200" fill="#2dd4bf" opacity="0.3" filter="url(#blur-xl)"/>
+    <rect x="140" y="120" width="200" height="200" fill="url(#glass)"/>
+    <path d="M160 140L260 140L160 240Z" fill="#ffffff" opacity="0.14"/>
+
+    <!-- Teal rails: top, left, bottom -->
+    <use href="#teal" fill="none" stroke="#2dd4bf" stroke-width="58" stroke-linecap="round" stroke-linejoin="round" opacity="0.4" filter="url(#blur-xl)"/>
+    <use href="#teal" fill="none" stroke="#04050a" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" transform="translate(12 20)" filter="url(#blur-m)"/>
+    <use href="#teal" fill="none" stroke="#0b5a50" stroke-width="38" stroke-linecap="round" stroke-linejoin="round" transform="translate(6 10)"/>
+    <use href="#teal" fill="none" stroke="#0b5a50" stroke-width="38" stroke-linecap="round" stroke-linejoin="round" transform="translate(3 5)"/>
+    <use href="#teal" fill="none" stroke="url(#t-edge)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+    <use href="#teal" fill="none" stroke="url(#t-face)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+    <g mask="url(#t-mask)">
+      <rect x="110" y="100" width="260" height="100" fill="url(#gloss)" opacity="0.5"/>
+      <path d="M160 112H300M132 160V280" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="7" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+
+    <!-- Pink fourth side, closing the box -->
+    <use href="#pink" fill="none" stroke="#f472b6" stroke-width="58" stroke-linecap="round" opacity="0.45" filter="url(#blur-xl)"/>
+    <use href="#pink" fill="none" stroke="#04050a" stroke-width="40" stroke-linecap="round" opacity="0.6" transform="translate(12 20)" filter="url(#blur-m)"/>
+    <use href="#pink" fill="none" stroke="#6e1a4c" stroke-width="38" stroke-linecap="round" transform="translate(6 10)"/>
+    <use href="#pink" fill="none" stroke="#6e1a4c" stroke-width="38" stroke-linecap="round" transform="translate(3 5)"/>
+    <use href="#pink" fill="none" stroke="url(#p-edge)" stroke-width="38" stroke-linecap="round"/>
+    <use href="#pink" fill="none" stroke="url(#p-face)" stroke-width="28" stroke-linecap="round"/>
+    <g mask="url(#p-mask)">
+      <rect x="310" y="100" width="60" height="100" fill="url(#gloss)" opacity="0.5"/>
+      <path d="M332 150V260" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="7" stroke-linecap="round" filter="url(#blur-s)"/>
+    </g>
+
+    <!-- Pearl dots -->
+    <use href="#dot" x="140" y="120"/>
+    <use href="#dot" x="340" y="120"/>
+    <use href="#dot" x="340" y="320"/>
+    <use href="#dot" x="140" y="320"/>
+  </g>
+
+  <g fill="#ffffff">
+    <path d="M426 78l5 15 15 5-15 5-5 15-5-15-15-5 15-5z" opacity="0.9"/>
+    <circle cx="456" cy="132" r="4" opacity="0.6"/>
+    <circle cx="70" cy="410" r="3.5" opacity="0.45"/>
+  </g>
+
+  <g transform="translate(398 398)">
+    <circle r="50" fill="#0a0b13"/>
+    <circle r="41" fill="#161927"/>
+    <circle r="41" fill="none" stroke="#2dd4bf" stroke-opacity="0.7" stroke-width="3"/>
+    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
+  </g>
+</svg>

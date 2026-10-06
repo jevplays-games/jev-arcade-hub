@@ -2,22 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>JevPlay Arcade</title>
   <meta name="description" content="Pick a game and play against JEV.">
+  <meta property="og:title" content="JevPlay Arcade">
+  <meta property="og:description" content="Nine games. Pick one and play against JEV.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jevplay.games/">
+  <meta property="og:image" content="https://jevplay.games/brand/arcade-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="JevPlay Arcade — nine game boards and the JEVPlay mark.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jevplay.games/brand/arcade-og.png">
+  <meta name="twitter:image:alt" content="JevPlay Arcade — nine game boards and the JEVPlay mark.">
+  <link rel="icon" href="/brand/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="/brand/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
   <link rel="preload" href="/brand/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/brand/brand.css">
   <link rel="stylesheet" href="/hub.css">
   <script type="module" src="/hub.js"></script>
 </head>
 <body class="hub">
-  <header class="hub-head">
-    <img src="/brand/mark.svg" alt="" width="36" height="36">
-    <div>
+  <header class="hub-hero">
+    <div class="visually-hidden">
       <h1>JevPlay Arcade</h1>
       <p>Nine games. Pick one and play against JEV.</p>
     </div>
+    <picture>
+      <source media="(max-width: 600px)" srcset="/brand/arcade-og.png">
+      <img src="/brand/arcade-hero.png" width="1600" height="900" fetchpriority="high" alt="JevPlay Arcade. Nine games. Pick one and play against JEV. A grid of Tic-Tac-Toe, Connect Four, Checkers, Dots and Boxes, Guess Who, Mastermind, Minesweeper, Sudoku and 2048 boards.">
+    </picture>
   </header>
 
   <main>
