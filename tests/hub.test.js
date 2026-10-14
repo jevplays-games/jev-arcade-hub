@@ -1,7 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { loadGames, resolveUrl, envKey } from '../lib/catalog.js';
+import { existsSync, mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { loadGames, resolveUrl, envKey, buildCatalog } from '../lib/catalog.js';
 import { createHub } from '../server.js';
 
 async function withHub(opts, fn) {
@@ -16,33 +19,77 @@ async function withHub(opts, fn) {
   }
 }
 
-test('catalog lists nine unique games', () => {
+const RENAMES = {
+  'tic-tac-typed': ['Tic-Tac-Typed', 'tic-tac-toe'],
+  'choice-four': ['Choice Four', 'connect-four'],
+  typecheckers: ['Typecheckers', 'checkers'],
+  'box-score': ['Box Score', 'dots-and-boxes'],
+  'noul-who': ['Noul Who', 'guess-who'],
+  typecrack: ['Typecrack', 'mastermind'],
+  safesweep: ['SafeSweep', 'minesweeper'],
+  typedoku: ['Typedoku', 'sudoku'],
+  'slide-score': ['Slide Score', '2048'],
+};
+
+test('catalog lists the nine renamed games', () => {
   const games = loadGames();
   assert.equal(games.length, 9);
-  assert.equal(new Set(games.map((g) => g.slug)).size, 9);
+  assert.deepEqual(games.map((g) => g.slug).sort(), Object.keys(RENAMES).sort());
   for (const g of games) {
+    const [name, legacy] = RENAMES[g.slug];
+    assert.equal(g.name, name);
+    assert.equal(g.legacySlug, legacy);
     assert.equal(g.art, `/brand/games/${g.slug}.png`);
-    assert.match(g.accent, /^#[0-9a-f]{6}$/);
+    assert.ok(existsSync(new URL(`../public${g.art}`, import.meta.url)), `${g.art} exists`);
+    assert.doesNotMatch(g.tagline, /\bJEV\b/, 'Jev, not JEV, in prose');
   }
 });
 
 test('urls default to <slug>.jevplay.games and honour overrides', () => {
-  assert.equal(resolveUrl('checkers', {}), 'https://checkers.jevplay.games');
-  assert.equal(resolveUrl('checkers', { HUB_BASE_DOMAIN: 'example.com' }), 'https://checkers.example.com');
-  assert.equal(envKey('tic-tac-toe'), 'GAME_URL_TIC_TAC_TOE');
-  assert.equal(resolveUrl('tic-tac-toe', { GAME_URL_TIC_TAC_TOE: 'http://localhost:8787/x' }), 'http://localhost:8787');
+  assert.equal(resolveUrl('typecheckers', {}), 'https://typecheckers.jevplay.games');
+  assert.equal(resolveUrl('typecheckers', { HUB_BASE_DOMAIN: 'example.com' }), 'https://typecheckers.example.com');
+  assert.equal(envKey('tic-tac-typed'), 'GAME_URL_TIC_TAC_TYPED');
+  assert.equal(resolveUrl('tic-tac-typed', { GAME_URL_TIC_TAC_TYPED: 'http://localhost:8787/x' }), 'http://localhost:8787');
   assert.throws(() => resolveUrl('a', { GAME_URL_A: 'javascript:alert(1)' }));
+});
+
+test('before cutover a card points at the host the game answers on today', () => {
+  const game = { slug: 'noul-who', legacySlug: 'guess-who' };
+  // Default: the legacy host, so shipping the hub first never breaks a card.
+  assert.equal(resolveUrl(game, {}), 'https://guess-who.jevplay.games');
+  assert.equal(resolveUrl(game, { HUB_BASE_DOMAIN: 'example.com' }), 'https://guess-who.example.com');
+  // An override under the old key (already set on the host) still applies.
+  assert.equal(resolveUrl(game, { GAME_URL_GUESS_WHO: 'http://localhost:9000' }), 'http://localhost:9000');
+  // The new key wins over the old one and flips the game to its new host without a release.
+  assert.equal(resolveUrl(game, { GAME_URL_GUESS_WHO: 'http://localhost:9000', GAME_URL_NOUL_WHO: 'https://noul-who.jevplay.games' }), 'https://noul-who.jevplay.games');
+  // Cutover: once legacySlug is removed from the row, the new subdomain is the default and old keys are ignored.
+  assert.equal(resolveUrl({ slug: 'noul-who' }, { GAME_URL_GUESS_WHO: 'http://localhost:9000' }), 'https://noul-who.jevplay.games');
+  // Every shipped row is still pre-cutover.
+  for (const g of buildCatalog(loadGames(), {})) assert.equal(g.url, `https://${g.legacySlug}.jevplay.games`);
+});
+
+test('rejects a legacySlug that collides with another slug', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'hub-'));
+  const file = path.join(dir, 'games.json');
+  writeFileSync(file, JSON.stringify([{ slug: 'a', legacySlug: 'b', name: 'A', tagline: 't' }, { slug: 'b', name: 'B', tagline: 't' }]));
+  assert.throws(() => loadGames(file), /duplicate slug: b/);
+  writeFileSync(file, JSON.stringify([{ slug: 'a', legacySlug: 'a', name: 'A', tagline: 't' }]));
+  assert.throws(() => loadGames(file), /invalid legacySlug/);
 });
 
 test('serves the launcher, catalog and health check', async () => {
   await withHub({ env: {} }, async (base) => {
     const page = await fetch(`${base}/`);
     assert.equal(page.status, 200);
-    assert.match(await page.text(), /JevPlay Arcade/);
-    assert.equal((await (await fetch(`${base}/api/games`)).json()).games.length, 9);
+    const html = await page.text();
+    assert.match(html, /<h1>jevplay\.games<\/h1>/);
+    assert.match(html, /<title>jevplay\.games<\/title>/);
+    assert.doesNotMatch(html, /JevPlay Arcade|JEV Arcade|\bJEV\b/);
     const listed = (await (await fetch(`${base}/api/games`)).json()).games;
+    assert.equal(listed.length, 9);
+    assert.deepEqual(Object.fromEntries(listed.map((g) => [g.slug, g.name])), Object.fromEntries(Object.entries(RENAMES).map(([s, [n]]) => [s, n])));
     assert.ok(listed.every((g) => /^\d{17,20}$/.test(g.discordAppId)), 'every game carries its Discord app id');
-    assert.ok(listed.every((g) => g.art && g.accent), 'every game carries card art and an accent');
+    assert.ok(listed.every((g) => g.art), 'every game carries card art');
     const art = await fetch(`${base}${listed[0].art}`);
     assert.equal(art.status, 200);
     assert.equal(art.headers.get('content-type'), 'image/png');
@@ -65,7 +112,7 @@ test('rejects traversal and non-GET methods', async () => {
     for (const p of ['/..%2fserver.js', '/%2e%2e/package.json', '/brand/../../package.json']) {
       const res = await fetch(`${base}${p}`);
       assert.ok([403, 404].includes(res.status), `${p} -> ${res.status}`);
-      assert.doesNotMatch(await res.text(), /"name": "jev-arcade-hub"/);
+      assert.doesNotMatch(await res.text(), /"name": "jevplay-games"/);
     }
     assert.equal((await fetch(`${base}/api/games`, { method: 'POST' })).status, 405);
   });
@@ -73,18 +120,21 @@ test('rejects traversal and non-GET methods', async () => {
 
 test('status probes each game and treats 403 as reachable, 5xx and errors as down', async () => {
   const fetchImpl = async (url) => {
-    if (url.includes('checkers')) return new Response(null, { status: 403 });
-    if (url.includes('sudoku')) return new Response(null, { status: 502 });
-    if (url.includes('mastermind')) throw new Error('boom');
+    const { hostname } = new URL(url);
+    if (hostname === 'typecheckers.jevplay.games') return new Response(null, { status: 403 });
+    if (hostname === 'typedoku.jevplay.games') return new Response(null, { status: 502 });
+    if (hostname === 'typecrack.jevplay.games') throw new Error('boom');
     return new Response(null, { status: 200 });
   };
-  await withHub({ env: {}, fetchImpl }, async (base) => {
+  // Point three games at their new hosts, as GAME_URL_<SLUG> does at cutover; the rest probe their legacy hosts.
+  const env = { GAME_URL_TYPECHECKERS: 'https://typecheckers.jevplay.games', GAME_URL_TYPEDOKU: 'https://typedoku.jevplay.games', GAME_URL_TYPECRACK: 'https://typecrack.jevplay.games' };
+  await withHub({ env, fetchImpl }, async (base) => {
     const { games } = await (await fetch(`${base}/api/status`)).json();
     const by = Object.fromEntries(games.map((g) => [g.slug, g.up]));
-    assert.equal(by.checkers, true);
-    assert.equal(by.sudoku, false);
-    assert.equal(by.mastermind, false);
-    assert.equal(by['tic-tac-toe'], true);
+    assert.equal(by.typecheckers, true);
+    assert.equal(by.typedoku, false);
+    assert.equal(by.typecrack, false);
+    assert.equal(by['tic-tac-typed'], true);
   });
 });
 
@@ -101,5 +151,36 @@ test('is frameable by Discord only when opened as an Activity, and exposes its c
     assert.ok(css.headers.get('content-security-policy').includes("frame-ancestors 'none'"));
     const config = await (await fetch(base + '/api/activity/config')).json();
     assert.equal(config.clientId, '1554746719227613214');
+  });
+});
+
+test('serves the Noul Who social card at its new path and keeps the old one', async () => {
+  await withHub({ env: {} }, async (base) => {
+    for (const p of ['/brand/og/noul-who.png', '/brand/og/guess-who.png']) {
+      const res = await fetch(`${base}${p}`);
+      assert.equal(res.status, 200, p);
+      assert.equal(res.headers.get('content-type'), 'image/png');
+    }
+  });
+});
+
+test('brand.css is self-contained: pink/ink palette and self-hosted fonts with their licences', async () => {
+  const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
+  for (const hex of ['#F386A1', '#1E1E1E', '#E551BA', '#DEDEDE', '#FEFEFE']) assert.ok(css.includes(hex), hex);
+  assert.doesNotMatch(css, /JEV Arcade|JEV ARCADE|color-scheme:dark/);
+  // D8 chart tokens, and the semantic tokens that must hold 3:1 as marks on grey/paper panels.
+  assert.match(css, /--chart-jev:#7A4E0B; --chart-human:#155A80;/);
+  assert.match(css, /--jev:var\(--chart-jev\)/);
+  assert.match(css, /--warn:var\(--chart-jev\); --danger:#A8237F;/);
+  // Every url() is a same-origin /brand/ font: no remote fonts (CSP default-src 'self') and no data: URIs.
+  const urls = [...css.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1]);
+  assert.deepEqual(urls.sort(), ['/brand/inter-var.woff2', '/brand/vt323.woff2']);
+  await withHub({ env: {} }, async (base) => {
+    for (const [p, type] of [['/brand/vt323.woff2', 'font/woff2'], ['/brand/inter-var.woff2', 'font/woff2'], ['/brand/OFL-VT323.txt', 'text/plain; charset=utf-8'], ['/brand/OFL.txt', 'text/plain; charset=utf-8']]) {
+      const res = await fetch(`${base}${p}`);
+      assert.equal(res.status, 200, p);
+      assert.equal(res.headers.get('content-type'), type, p);
+    }
+    assert.match(await (await fetch(`${base}/brand/OFL-VT323.txt`)).text(), /VT323 Project Authors[\s\S]*SIL Open Font License, Version 1\.1/);
   });
 });

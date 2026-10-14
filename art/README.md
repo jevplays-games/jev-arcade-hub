@@ -1,6 +1,11 @@
-# JevPlay Arcade art
+# jevplay.games art
 
-One pipeline renders every raster the arcade ships: Discord application icons, Activity
+> [!NOTE]
+> The "Lacquer and Glow" direction described below is retired. jev-arcade-hub#9 redraws every emblem, cover,
+> icon and card in the pink/ink pixel-window style (`public/brand/brand.css`) and rewrites this guide. Until then the
+> files below are the old art, renamed to the new game slugs.
+
+One pipeline renders every raster jevplay.games ships: Discord application icons, Activity
 cover, background and preview video, the hub's hero, social cards and card art, and each
 game's page-meta icons. The art itself is hand-built SVG in `art/emblems/` and in each
 game's `public/art/`. Everything below the art direction is how to run it.
@@ -13,11 +18,11 @@ does not follow the rules below it will not sit next to the others.
 
 **Light.** One key light, top-left, slightly above. Highlights sit on top and left edges;
 shadows and thickness fall down and to the right. A second, weak rim light comes from the
-bottom-right in JEV teal (`#6fdcc8`). Nothing is lit from below or from the right.
+bottom-right in Jev teal (`#6fdcc8`). Nothing is lit from below or from the right.
 
 **Form.** Subjects are solid, rounded and thick, like moulded lacquer or enamel: round
 caps, generous corner radii, no hairlines, no outlines. A form is built from these layers,
-bottom to top (see `emblems/tic-tac-toe.svg`, which is the reference):
+bottom to top (see `emblems/tic-tac-typed.svg`, which is the reference):
 
 1. **Bloom**: a blurred copy in the accent, about 40% opacity, behind the subject.
 2. **Cast shadow**: a dark blurred copy, offset down-right by about (3%, 4%).
@@ -46,7 +51,7 @@ deep shade (never to grey or black). At most two hues in the subject, plus white
 
 **Sparks.** One four-point star and one or two dots, white, in the emptiest corner zone.
 
-**The J co-sign.** The arcade signs every game emblem with a J badge at the bottom-right,
+**The J co-sign.** The hub signs every game emblem with a J badge at the bottom-right,
 drawn exactly as in the reference: a `#0a0b13` cut-out circle (r 50 at 398,398 in the 512
 box), a `#161927` disc (r 41) with a 3px ring in the game's accent at 70%, and the J stroke
 in `#eef0f7`. It reads as a status badge on an avatar, which is native to Discord, and it
@@ -59,20 +64,20 @@ exactly this check; look at it.
 
 ### Subjects and identity
 
-Canonical accents are the `GAMES` table in `render-art.cjs`. A game uses its trio
+Canonical accents are the `ACCENT` map in `render-art.cjs` (names and taglines come from `games.json`). A game uses its trio
 everywhere: emblem, Discord art, hub card, `game.css`.
 
 | Game | `--accent` | `--accent-deep` | `--accent-ink` | `--accent-text` | Emblem subject |
 | --- | --- | --- | --- | --- | --- |
-| tic-tac-toe | `#a99bff` | `#6f5fd6` | `#120c2a` | (accent) | Violet X crossing a teal O |
-| connect-four | `#f5c451` | `#c8922a` | `#271c06` | (accent) | Gold disc dropping into a blue frame, a red disc seated beside it |
-| checkers | `#e5484d` | `#b02a31` | `#1f0608` | `#f2767a` | A red king: two stacked pucks with a gold crown, on a board corner |
-| dots-and-boxes | `#2dd4bf` | `#14a08f` | `#04211d` | (accent) | Four pearl dots, three teal rails and a pink fourth closing a glass box |
-| guess-who | `#fb923c` | `#d4691a` | `#2a1203` | (accent) | A standing flip card: a silhouette head with an orange question mark |
-| mastermind | `#a855f7` | `#7e30d1` | `#14052a` | `#c084fc` | Four glossy code pegs in a purple tray, one hooded by a keyhole |
-| minesweeper | `#4ade80` | `#22a85a` | `#052912` | (accent) | A spiked mine on a green tile with a red flag planted in it |
-| sudoku | `#60a5fa` | `#2f74d0` | `#061a33` | (accent) | A 3x3 block of blue tiles, the centre one lifted and lit with a 9 |
-| 2048 | `#edc22e` | `#c0961a` | `#2a2003` | (accent) | A gold 2048 tile with two smaller tiles sliding in behind it |
+| tic-tac-typed | `#a99bff` | `#6f5fd6` | `#120c2a` | (accent) | Violet X crossing a teal O |
+| choice-four | `#f5c451` | `#c8922a` | `#271c06` | (accent) | Gold disc dropping into a blue frame, a red disc seated beside it |
+| typecheckers | `#e5484d` | `#b02a31` | `#1f0608` | `#f2767a` | A red king: two stacked pucks with a gold crown, on a board corner |
+| box-score | `#2dd4bf` | `#14a08f` | `#04211d` | (accent) | Four pearl dots, three teal rails and a pink fourth closing a glass box |
+| noul-who | `#fb923c` | `#d4691a` | `#2a1203` | (accent) | A standing flip card: a silhouette head with an orange question mark |
+| typecrack | `#a855f7` | `#7e30d1` | `#14052a` | `#c084fc` | Four glossy code pegs in a purple tray, one hooded by a keyhole |
+| safesweep | `#4ade80` | `#22a85a` | `#052912` | (accent) | A spiked mine on a green tile with a red flag planted in it |
+| typedoku | `#60a5fa` | `#2f74d0` | `#061a33` | (accent) | A 3x3 block of blue tiles, the centre one lifted and lit with a 9 |
+| slide-score | `#edc22e` | `#c0961a` | `#2a2003` | (accent) | A gold 2048 tile with two smaller tiles sliding in behind it |
 | arcade (hub) | `#a99bff` | `#6f5fd6` | `#120c2a` | (accent) | The J in white lacquer over nine gems, one per game accent |
 
 `--accent-text` is the accent used as text on the dark shell; red and purple are lightened
@@ -84,7 +89,7 @@ The same rules, at lower cost, because this art ships to phones:
 
 - **Pieces** are SVG files in `public/art/`, painted as CSS `background-image` on elements
   the page already sizes (no layout shift, sharp at 1x to 3x). Edge, face, thickness and a
-  gloss streak; gradients only, **no filters**. `jev-tic-tac-toe/public/art/x.svg` is the
+  gloss streak; gradients only, **no filters**. `public/art/x.svg` in Tic-Tac-Typed is the
   reference.
 - **Boards** sit in a `.jv-tray`; empty cells are wells (`--well`). Both come from
   `brand.css`, which also carries the lighting tokens (`--light`, `--lip`, `--raise`),
@@ -96,7 +101,7 @@ The same rules, at lower cost, because this art ships to phones:
   a win glows, a result rises. `prefers-reduced-motion` ends all of it.
 - Inside SVG files use presentation attributes only: no `<style>`, no `style=""`. The apps
   send `style-src 'self'` and it applies to SVG documents too.
-- No `data:` URIs (minesweeper's `img-src` has none), nothing that depends on hover, and a
+- No `data:` URIs (SafeSweep's `img-src` has none), nothing that depends on hover, and a
   non-colour cue wherever colour carries meaning.
 
 ## Emblems, icons and page meta
@@ -115,9 +120,10 @@ node art/render-icons.cjs <playwright-dir> <chromium-exe> [--out dir] [--install
   the hub's card art `public/brand/games/<slug>.png`. These are palette-quantised with
   ffmpeg because they ship with the game. Regenerate each repo's integrity manifest
   after installing.
-- guess-who is the exception (`LEAN` in the script): its `npm run check` caps everything it
+- noul-who is the exception (`LEAN` in the script): its `npm run check` caps everything it
   serves at 150,000 gzip bytes and a PNG does not compress, so its social card is written to
-  the hub (`public/brand/og/guess-who.png`, referenced by absolute URL from its `og:image`)
+  the hub (`public/brand/og/noul-who.png`, referenced by absolute URL from its `og:image`;
+  the pre-rename path `og/guess-who.png` stays served so cached social cards keep working)
   and its touch icon uses a 40-colour palette. The hub's own card is `arcade-og.png`.
 
 ## Review screenshots
@@ -150,7 +156,7 @@ node art/render-art.cjs   <playwright-dir> <chromium-exe> art/out
 node art/render-video.cjs <playwright-dir> <chromium-exe> art/out [slug...]
 ```
 
-Edit `GAMES` in `render-art.cjs` to change a title, tagline or accent colour.
+Edit `games.json` to change a title or tagline, and `ACCENT` in `render-art.cjs` for an accent colour.
 Do not include `art/` in the GoDaddy zip; the hub does not serve it.
 
 ## Web landing artwork

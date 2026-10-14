@@ -34,18 +34,19 @@ function card(game) {
   dot.dataset.state = status;
   const art = el('img', { className: 'hub-art', src: game.art ?? `/brand/games/${game.slug}.png`, alt: '', width: 160, height: 160, loading: 'lazy', decoding: 'async' });
   const tags = el('ul', { className: 'hub-chips' }, ...(game.tags ?? []).map((t) => el('li', {}, t)));
+  // A pixel window: the ink title bar is the card's heading, the grey body holds art, tagline, tags and status.
+  const title = el('h2', { className: 'jv-titlebar' }, el('span', {}, game.name));
   const link = el('a', { className: 'hub-card', href: game.url, rel: 'noopener' },
-    el('span', { className: 'hub-art-wrap' }, art),
-    el('div', { className: 'hub-body' },
-      el('h2', {}, game.name),
-      el('p', {}, game.tagline),
-      tags,
-      el('div', { className: 'hub-foot-row' },
-        el('span', { className: 'hub-status' }, dot, STATUS[status]),
-        el('span', { className: 'play' }, 'Play →'))));
+    title,
+    el('div', { className: 'hub-win' },
+      el('span', { className: 'hub-art-wrap' }, art),
+      el('div', { className: 'hub-body' },
+        el('p', {}, game.tagline),
+        tags,
+        el('div', { className: 'hub-foot-row' },
+          el('span', { className: 'hub-status' }, dot, STATUS[status]),
+          el('span', { className: 'play' }, 'Play →')))));
   link.dataset.game = game.slug;
-  // CSP forbids style attributes in markup; the CSSOM is allowed.
-  if (/^#[0-9a-f]{6}$/i.test(game.accent ?? '')) link.style.setProperty('--accent', game.accent);
   link.setAttribute('aria-label', `Play ${game.name}`);
   link.addEventListener('click', openOutside(game.url));
   const kids = [link];

@@ -9,7 +9,7 @@ const emblemUrl = slug => {
   const file = path.join(emblemDir, `${slug}.svg`);
   return fs.existsSync(file) ? pathToFileURL(file).href : null;
 };
-const tagline = 'Nine games. Pick one and play against JEV.';
+const tagline = 'Nine games. Pick one. Play Jev.';
 
 function landing(width, height, icon = false) {
   const og = width === 1200;
@@ -27,8 +27,8 @@ function landing(width, height, icon = false) {
   const content = icon
     ? `<div class="icon">${arcade ? `<img src="${arcade}" alt="">` : mark}</div>` : `
     <div class="brand">${logo}<span>${ARCADE.brand}</span></div>
-    <div class="copy"><h1>JevPlay<br>Arcade</h1><p>${tagline}</p>
-      <div class="chip"><i></i>Play against JEV</div></div>
+    <div class="copy"><h1>jevplay<br>.games</h1><p>${tagline}</p>
+      <div class="chip"><i></i>Play Jev</div></div>
     <div class="mosaic">${mosaic}</div><footer>${ARCADE.url}</footer>`;
   return shell(`<style>
     body{width:${width}px;height:${height}px}
