@@ -482,4 +482,7 @@ p{margin:0}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* That rule gives every element a transition on all properties, so the menu sheet's contents would fade their
+     inherited visibility in from hidden and refuse focus at the moment the sheet opens: nothing inside it transitions. */
+  .jv-sheet *{transition:none!important}
 }

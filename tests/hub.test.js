@@ -232,6 +232,8 @@ test('shared header files: sheet takes focus, header never hides or clips focus,
   // The open sheet is visible at once, or focus() into it is rejected while visibility is still transitioning:
   // visibility is not in the opening transition, so reduced motion (every duration .01ms) cannot delay it either.
   assert.match(css, /\.jv-sheet\.is-open\{transform:translateY\(0\);visibility:visible;transition:transform \.18s steps\(4,end\)\}/);
+  // Under reduced motion the global .01ms rule would make the sheet's contents transition their inherited visibility.
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{[^@]*\.jv-sheet \*\{transition:none!important\}/);
   // Targets in main stop clear of the sticky header through scroll-margin-top. No html{scroll-padding-top}: it counts
   // the header's own controls as hidden, so focus landing in the header (Shift+Tab, closing the menu) jumps the page.
   const rules = css.replace(/\/\*[\s\S]*?\*\//g, '');
