@@ -4,7 +4,7 @@ Team: jevplay.games. Hub domain: `https://jevplay.games`.
 
 Every app uses the same Terms of Service URL (`https://jevplay.games/terms`) and Privacy Policy URL
 (`https://jevplay.games/privacy`), served by this hub. Each app has its own icon, cover art, background and preview
-video, all rendered from `art/emblems/<slug>.svg` by the scripts in `art/` (the hub's icon is the hub emblem, `art/out/hub-icon-1024.png`;
+video, rendered by the scripts in `art/` from the emblems `art/emblems/<slug>.svg` and each game's approved drawing (`art/src/game-icons/<slug>.svg`) (the hub's icon is the hub emblem, `art/out/hub-icon-1024.png`;
 `public/brand/icon-1024.png` is a copy of it). Uploads are manual: follow
 `art/UPLOAD-CHECKLIST.md`.
 

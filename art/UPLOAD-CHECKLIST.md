@@ -23,7 +23,7 @@ files to `art/out/`. Every upload is a manual step in the Discord Developer Port
 
 2. Open `art/out/icons-sheet.png`. Every emblem must be recognisable at 40 px in a circle and distinct from the other nine.
 3. Check the files: covers and backgrounds are 1024x576 PNG, previews are 640x360 H.264 MP4 and each under 0.5 MB
-   (`ls -l art/out/*-preview.mp4`; the last render was 143-188 KB), icons are 1024x1024 PNG.
+   (`ls -l art/out/*-preview.mp4`; the last render was 107-121 KB), icons are 1024x1024 PNG.
 4. Open at least the cover and video of the app you are about to upload, not just the icon.
 
 ## What each field takes

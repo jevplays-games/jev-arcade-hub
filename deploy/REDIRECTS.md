@@ -78,7 +78,8 @@ For one game (`<old>` → `<new>`):
    its DNS record**. With no record, the hostname stops resolving and the step-4 rule never fires. So, in the same
    change, with no gap between:
    1. Remove the old custom domain **by dropping `{ "pattern": "<old>.jevplay.games", "custom_domain": true }` from
-      the game repo's `wrangler.*` and deploying**. Removing it only in the dashboard (Workers & Pages > the worker >
+      the game repo's `wrangler.*` and deploying** (Typecrack's `wrangler.toml` writes it
+      `{ pattern = "mastermind.jevplay.games", custom_domain = true }`). Removing it only in the dashboard (Workers & Pages > the worker >
       Settings > Domains) is not enough: the next `wrangler deploy` re-attaches it from the config, which either fails
       against the placeholder or replaces it, and the old host serves the game again. If you remove it in the
       dashboard for speed, commit the `wrangler.*` change in the same change.
@@ -106,8 +107,8 @@ For one game (`<old>` → `<new>`):
 
 ## Hub assets that keep their old path
 
-- `public/brand/og/guess-who.png` keeps being served next to `og/noul-who.png` (same image for now; #9 regenerates
-  it) so cached social cards and the pre-rename Noul Who page's `og:image` do not 404. Drop it once
+- `public/brand/og/guess-who.png` keeps being served next to `og/noul-who.png` (a byte copy of the Noul Who card,
+  jev-guess-who `dist-hub/noul-who.png`) so cached social cards and the pre-rename Noul Who page's `og:image` do not 404. Drop it once
   `noul-who.jevplay.games` is live with `og:image` = `https://jevplay.games/brand/og/noul-who.png` and the old page
   has been redirecting for a while.
 
