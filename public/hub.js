@@ -103,6 +103,9 @@ async function loadStatus() {
 }
 
 search.addEventListener('input', render);
+// On phones the tag strip scrolls under an arrow tab. Browsers leave a half-visible chip where it is when it takes
+// focus, so finish the scroll; hub.css's scroll padding stops it clear of the arrow.
+tagsEl.addEventListener('focusin', (event) => event.target.scrollIntoView({ block: 'nearest', inline: 'nearest' }));
 
 if (inActivity) {
   document.getElementById('activity-note').hidden = false;

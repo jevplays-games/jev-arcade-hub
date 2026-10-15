@@ -189,6 +189,16 @@ test('serves the Noul Who social card at its new path and keeps the old one', as
   });
 });
 
+test('keeps serving the pre-rebrand hub card URL as a copy of the new card', async () => {
+  const card = readFileSync(new URL('../public/brand/og.png', import.meta.url));
+  await withHub({ env: {} }, async (base) => {
+    const res = await fetch(`${base}/brand/arcade-og.png`);
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get('content-type'), 'image/png');
+    assert.ok(Buffer.from(await res.arrayBuffer()).equals(card), 'arcade-og.png is byte-identical to og.png');
+  });
+});
+
 test('brand.css is self-contained: pink/ink palette and self-hosted fonts with their licences', async () => {
   const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
   for (const hex of ['#F386A1', '#1E1E1E', '#E551BA', '#DEDEDE', '#FEFEFE']) assert.ok(css.includes(hex), hex);
@@ -210,4 +220,77 @@ test('brand.css is self-contained: pink/ink palette and self-hosted fonts with t
     }
     assert.match(await (await fetch(`${base}/brand/OFL-VT323.txt`)).text(), /VT323 Project Authors[\s\S]*SIL Open Font License, Version 1\.1/);
   });
+});
+
+test('serves hub social art and descriptive Open Graph metadata', async () => {
+  await withHub({ env: {} }, async (base) => {
+    for (const asset of ['/brand/og.png', '/brand/icon-1024.png']) {
+      const response = await fetch(`${base}${asset}`);
+      assert.equal(response.status, 200, asset);
+      assert.equal(response.headers.get('content-type'), 'image/png', asset);
+    }
+    const html = await (await fetch(base)).text();
+    assert.match(html, /<meta property="og:image" content="https:\/\/jevplay\.games\/brand\/og\.png">/);
+    const alt = html.match(/<meta property="og:image:alt" content="([^"]*)">/)?.[1];
+    assert.ok(alt?.trim(), 'og:image:alt is non-empty');
+    assert.doesNotMatch(alt, /emblems beside the Jev mark/i);
+  });
+});
+
+test('shared header files: sheet takes focus, header never hides or clips focus, brand link goes to the hub', async () => {
+  const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
+  // The open sheet is visible at once, or focus() into it is rejected while visibility is still transitioning:
+  // visibility is not in the opening transition, so reduced motion (every duration .01ms) cannot delay it either.
+  assert.match(css, /\.jv-sheet\.is-open\{transform:translateY\(0\);visibility:visible;transition:transform \.18s steps\(4,end\)\}/);
+  // Under reduced motion the global .01ms rule would make the sheet's contents transition their inherited visibility.
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)\{[^@]*\.jv-sheet \*\{transition:none!important\}/);
+  // Targets in main stop clear of the sticky header through scroll-margin-top. No html{scroll-padding-top}: it counts
+  // the header's own controls as hidden, so focus landing in the header (Shift+Tab, closing the menu) jumps the page.
+  const rules = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(rules, /scroll-padding/);
+  assert.match(rules, /\.jv-main,\.jv-main \[id\],\.jv-main :is\(h1,h2,h3,a\[href\],button,input,select,textarea,summary,\[tabindex\]\)\{scroll-margin-top:calc\(var\(--header-h\) \+ var\(--sa-t\) \+ var\(--s2\)\)\}/);
+  assert.doesNotMatch(rules, /jv-header[^{}]*\{[^}]*scroll-margin/, 'never on header controls');
+  // The scrolling header strip leaves room for the focus ring; the negative margin and the wider cap cancel it in layout.
+  assert.match(css, /#jv-controls\{max-width:calc\(min\(50vw,46rem\) \+ 2 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\);overflow-x:auto;scrollbar-width:none;padding:calc\(var\(--focus-w\) \+ var\(--focus-offset\)\);margin:calc\(-1 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\)\}/);
+  const js = readFileSync(new URL('../public/brand/brand.js', import.meta.url), 'utf8');
+  assert.match(js, /export const HUB_URL = 'https:\/\/jevplay\.games\/';/);
+  assert.match(js, /window\.top === window\.self\) brand\.setAttribute\('href', HUB_URL\)/, 'outside a Discord frame only');
+  assert.match(js, /else \{ sheet\.setAttribute\('tabindex', '-1'\); sheet\.focus\(\); \}/, 'an empty sheet still takes focus');
+  // Closing returns focus to the menu button without scrolling (Safari leaves focus elsewhere on tap).
+  assert.match(js, /const target = button && button\.getClientRects\(\)\.length > 0 \? button : lastFocus;\n  target\?\.focus\(\{ preventScroll: true \}\);/);
+  // Keyboard focus already in view but under the sticky header is nudged clear; header, sheet and pointer focus never scroll.
+  assert.match(js, /document\.addEventListener\('focusin', \(event\) => \{\n  const el = event\.target;\n  if \(!stickyHeader \|\| !\(el instanceof Element\) \|\| !el\.matches\(':focus-visible'\)\) return;\n  if \(el\.closest\('\.jv-header,#jv-sheet,\.jv-skip,dialog'\)\) return;/);
+});
+
+test('header status chip wraps below 600px instead of clipping mid-letter', () => {
+  const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
+  assert.match(css, /@media\(max-width:599\.98px\)\{\n  \.jv-status\{white-space:normal;line-height:1\.05;padding-block:4px;max-width:none;min-width:min-content\}\n\}/);
+  assert.match(css, /@media\(max-width:359\.98px\)\{\.jv-status\{font-size:var\(--fs-sm\);letter-spacing:0\}\}/);
+  // The base rule and the >=600px rule are unchanged (pixel-identical header at 600/900/1440).
+  assert.match(css, /flex:0 1 auto;min-width:0;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;/);
+});
+
+test('landing keyboard focus: a tag chip scrolls clear of the arrow tab, a card keeps its whole focus ring', () => {
+  const css = readFileSync(new URL('../public/hub.css', import.meta.url), 'utf8');
+  const js = readFileSync(new URL('../public/hub.js', import.meta.url), 'utf8');
+  // The phone strip's end scroll padding is the gutter plus the 28px arrow tab.
+  assert.match(css, /\.hub-tags\{[^}]*scroll-padding-inline:var\(--gutter\) calc\(var\(--gutter\) \+ 28px\)/);
+  assert.match(css, /\.hub-tags::after\{[^}]*width:28px/);
+  // Browsers leave a half-visible chip in place on focus; hub.js finishes the scroll (honouring that padding).
+  assert.match(js, /tagsEl\.addEventListener\('focusin', \(event\) => event\.target\.scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)\)/);
+  // The hub has no sticky header, so html-level scroll padding cannot make it jump (unlike the games: brand.css).
+  assert.match(css, /^html\{scroll-padding-block:var\(--s3\)\}$/m);
+  assert.doesNotMatch(css, /position:sticky;top/, 'no sticky header on the hub');
+  // With no tags (the game list failed to load) the strip shows no orphan arrow tab.
+  assert.match(css, /\.hub-tags:empty::after\{content:none\}/);
+});
+
+test('landing cards never push the PLAY pill past their edge (short landscape frames)', () => {
+  const css = readFileSync(new URL('../public/hub.css', import.meta.url), 'utf8');
+  // A card under ~285px cannot hold status and PLAY side by side: short frames take as many 18rem columns as fit
+  // (three forced columns overflowed the page at 640x360 to 800x450), and the footer wraps instead of overflowing.
+  assert.match(css, /@media \(max-height:500px\) and \(min-width:600px\)\{\.hub-grid\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,18rem\),1fr\)\)\}\}/);
+  assert.doesNotMatch(css, /max-height:500px\) and \(min-width:600px\)\{\.hub-grid\{grid-template-columns:repeat\(3/);
+  assert.match(css, /\.hub-foot-row\{display:flex;flex-wrap:wrap;/);
+  assert.match(css, /\.hub-card \.play\{margin-left:auto;/);
 });

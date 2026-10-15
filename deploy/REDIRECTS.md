@@ -39,9 +39,9 @@ broken card. Resolution order (`lib/catalog.js`):
 4. `https://<slug>.<HUB_BASE_DOMAIN>`
 
 Why the default is the old host and not an env var: an env var that is forgotten breaks a card; a default that is
-left in place too long still works: the old host keeps serving the game (step 5) and later 301s to the new one
-(step 6). That holds only if steps 5 and 6 are followed: the old custom domain stays until `legacySlug` is gone, and
-its removal is paired with a placeholder record. Pointing a card at a new host that is not live yet is always broken.
+left in place too long still works: the old host keeps serving the game (step 4) and later 301s to the new one
+(steps 5 and 6). That holds only if steps 4 to 6 are followed: the old custom domain stays until `legacySlug` is gone
+and the old host has drained, and its removal is paired with a placeholder record. Pointing a card at a new host that is not live yet is always broken.
 
 ## Per-game cutover, in this order
 
@@ -53,13 +53,23 @@ For one game (`<old>` → `<new>`):
 2. **Discord.** In the Developer Portal for that app: rename the app, set the Activity URL mapping `/` →
    `<new>.jevplay.games`, the Interactions Endpoint URL → `https://<new>.jevplay.games/api/discord/interactions`
    and the OAuth2 redirect → `https://<new>.jevplay.games/api/auth/discord/callback`. These are `POST` and redirect
-   targets: a 301 re-issues a `POST` as `GET`, so they must move **before** step 6.
+   targets: a 301 re-issues a `POST` as `GET`, so they must move **before** step 5.
 3. **Hub.** Point the card at the new host: set `GAME_URL_<NEW>=https://<new>.jevplay.games` in GoDaddy
    (Settings > Environment variables, then Publish), or delete `legacySlug` from the row in `games.json` and release
-   the hub. Either way, delete `legacySlug` from the row and release the hub before step 6, then remove the env var
+   the hub. Either way, delete `legacySlug` from the row and release the hub before step 4, then remove the env var
    and any `GAME_URL_<OLD>` override still set on GoDaddy.
-4. **Redirect rule.** Create the rule now. It may take effect immediately, in front of the still-live custom domain
-   (not verified); that is safe because steps 1–3 are done, so it only 301s to a live host. Use **one** of:
+4. **Drain the old host: keep it serving, with no redirect yet.** Session cookies are host-only and browser storage
+   is per origin, so a 301 cannot carry a player's session across: a guest in the middle of a match on
+   `<old>.jevplay.games` who is redirected arrives on the new host without it, and the match is stranded on the old
+   host until it expires (24 h in Slide Score; check each game's match and session lifetimes). After steps 2 and 3
+   nothing new is sent to the old host, so keep its Worker custom domain serving the game, with **no** redirect rule,
+   until **either** the game's longest match expiry has passed since the step-3 release **or** in-progress matches on
+   the old host have drained (the Worker's analytics or logs show no more game traffic with
+   `Host: <old>.jevplay.games`). Cards and Discord links that still use the old host keep working meanwhile. Players
+   still start fresh on the new origin: guest sessions, local practice history and settings kept in the browser stay
+   with the old one, and nothing in this runbook can move them.
+5. **Redirect rule, only after the drain.** It may take effect immediately, in front of the still-live custom domain
+   (not verified), so from here on every old-host request is redirected; steps 1–4 make that safe. Use **one** of:
    - **Single Redirect** (Rules > Redirect Rules), one rule per old host, status **301**, **Preserve query string** on:
 
      ```
@@ -70,15 +80,13 @@ For one game (`<old>` → `<new>`):
    - **Bulk Redirects**, one list for all nine hosts, each entry `<old>.jevplay.games` → `https://<new>.jevplay.games`,
      status **301**, with **Subpath matching**, **Preserve path suffix** and **Preserve query string** all on.
      Without Subpath matching and Preserve path suffix, only the bare `/` redirects and every deep link 404s.
-5. **Keep the old custom domain for now.** Until `legacySlug` is gone from that row in the released `games.json` and
-   step 2 is done, the old host keeps serving the game directly from its Worker custom domain. Cards and Discord
-   links that still use it keep working. Do not remove it earlier.
 6. **Hand the old host to the redirect, in one change.** Removing the old route (`<old>.jevplay.games` with
    `custom_domain: true` in the game's `wrangler.*`, or Workers & Pages > the worker > Settings > Domains) **deletes
-   its DNS record**. With no record, the hostname stops resolving and the step-4 rule never fires. So, in the same
+   its DNS record**. With no record, the hostname stops resolving and the step-5 rule never fires. So, in the same
    change, with no gap between:
    1. Remove the old custom domain **by dropping `{ "pattern": "<old>.jevplay.games", "custom_domain": true }` from
-      the game repo's `wrangler.*` and deploying**. Removing it only in the dashboard (Workers & Pages > the worker >
+      the game repo's `wrangler.*` and deploying** (Typecrack's `wrangler.toml` writes it
+      `{ pattern = "mastermind.jevplay.games", custom_domain = true }`). Removing it only in the dashboard (Workers & Pages > the worker >
       Settings > Domains) is not enough: the next `wrangler deploy` re-attaches it from the config, which either fails
       against the placeholder or replaces it, and the old host serves the game again. If you remove it in the
       dashboard for speed, commit the `wrangler.*` change in the same change.
@@ -98,16 +106,17 @@ For one game (`<old>` → `<new>`):
       If it does not return 301 to the new host, put the old custom domain back (the placeholder record must be
       deleted first, because the custom domain needs the hostname free) and investigate before trying again.
 
-   **Chosen: placeholder record, after the old custom domain has outlived `legacySlug`.** Why: while the custom
-   domain exists, the old host serves the game, not a redirect, so it must stay until nothing points at it (step 5).
+   **Chosen: placeholder record, after the old custom domain has outlived `legacySlug` and the drain.** Why: while
+   the custom domain exists, the old host serves the game, not a redirect, so it must stay until nothing points at it
+   and its in-progress matches are done (step 4).
    After that, the only way for the old host to 301 is to give it a DNS record that no Worker owns. A proxied
    `AAAA 100::` record does that without running anything. Not verified: whether a Redirect Rule would also fire in
    front of a live custom domain. The runbook does not rely on it.
 
 ## Hub assets that keep their old path
 
-- `public/brand/og/guess-who.png` keeps being served next to `og/noul-who.png` (same image for now; #9 regenerates
-  it) so cached social cards and the pre-rename Noul Who page's `og:image` do not 404. Drop it once
+- `public/brand/og/guess-who.png` keeps being served next to `og/noul-who.png` (a byte copy of the Noul Who card,
+  jev-guess-who `dist-hub/noul-who.png`) so cached social cards and the pre-rename Noul Who page's `og:image` do not 404. Drop it once
   `noul-who.jevplay.games` is live with `og:image` = `https://jevplay.games/brand/og/noul-who.png` and the old page
   has been redirecting for a while.
 
@@ -118,3 +127,5 @@ For one game (`<old>` → `<new>`):
   Cloudflare's documented redirect-only-hostname pattern but has not been run here.
 - That the Cloudflare plan allows nine redirect rules (Bulk Redirects needs one list and one rule for all nine).
 - That Discord accepts a new Interactions Endpoint URL on the same app without other changes.
+- Each game's longest match and session lifetime for the step-4 drain. Only Slide Score's 24 h match expiry was
+  reported; the guest session cookies seen in the code last from 1 to 7 days.

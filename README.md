@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.jpg" alt="Pixel-art robot Jev standing in a hall of glowing game cabinets, choosing a game" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="The jevplay.games hub on a pink retro desktop with nine game chips, a launcher window, and Jev the pixel robot." width="100%"></p>
 
 <h1 align="center">jevplay.games</h1>
 
@@ -59,8 +59,9 @@ flowchart LR
 - `games.json` is the one source of names, slugs, taglines and card art, for the launcher and the art scripts.
 - `/api/games` returns the catalog with each game's resolved URL. `/api/status` probes each game's origin
   server-side (cached 60 s); any response under 500, including a 403 `origin_rejected`, counts as online.
-- `public/brand/brand.css` is the shared pink/ink stylesheet, byte-identical in all ten repos, with Inter and VT323
-  self-hosted (SIL OFL 1.1, `public/brand/OFL.txt`, `public/brand/OFL-VT323.txt`). Change it here and copy it out.
+- `public/brand/brand.css` is the shared pink/ink stylesheet, with Inter and VT323 self-hosted (SIL OFL 1.1,
+  `public/brand/OFL.txt`, `public/brand/OFL-VT323.txt`). This repo owns it: change it here, then copy it to the nine
+  games byte for byte and check the hash (`deploy/BRAND-RESYNC.md`).
 
 ## Config
 

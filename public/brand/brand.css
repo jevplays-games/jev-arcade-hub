@@ -119,6 +119,10 @@
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+/* The sticky header must not cover what focus, a skip link or a script scrolls into view in main: those targets
+   stop 8px below it. Set on the targets, never as html{scroll-padding-top}: that also counts the header's own
+   controls as hidden, so the page jumps whenever focus lands in the header (Shift+Tab into it, closing the menu). */
+.jv-main,.jv-main [id],.jv-main :is(h1,h2,h3,a[href],button,input,select,textarea,summary,[tabindex]){scroll-margin-top:calc(var(--header-h) + var(--sa-t) + var(--s2))}
 body{
   margin:0; font-family:var(--font); font-size:var(--fs-md); line-height:var(--lh);
   color:var(--text); background:var(--bg); font-synthesis:none;
@@ -272,7 +276,10 @@ p{margin:0}
   display:flex;flex-direction:column;gap:var(--s2);
   max-height:80dvh;overflow:auto;
 }
-.jv-sheet.is-open{transform:translateY(0);visibility:visible}
+/* Visible at once on open, so brand.js can move focus into it (a hidden element cannot take focus): visibility is
+   not transitioned on the way in, even when reduced motion shortens every duration; hiding still waits for the
+   slide-out. */
+.jv-sheet.is-open{transform:translateY(0);visibility:visible;transition:transform .18s steps(4,end)}
 .jv-scrim{position:fixed;inset:0;z-index:55;background:rgba(30,30,30,.55);opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s}
 .jv-scrim.is-open{opacity:1;visibility:visible}
 .jv-sheet-item{
@@ -352,6 +359,15 @@ p{margin:0}
 @media(min-width:1920px){:root{--shell:1680px}}
 @media(min-width:2400px){:root{--shell:1920px}}
 
+/* Below 600px the status chip wraps to a second line instead of clipping mid-letter: its text
+   (often provenance, e.g. "LOCAL OPPONENT / NOT JEV") must never be cut. It keeps the flex row
+   (dot, gaps), drops the 40vw cap, and never shrinks below its longest word, so the game title
+   gives way first (down to its 3.5rem floor). Under 360px the chip's type steps down so the longest
+   game status still fits in two lines of the 56px header. */
+@media(max-width:599.98px){
+  .jv-status{white-space:normal;line-height:1.05;padding-block:4px;max-width:none;min-width:min-content}
+}
+@media(max-width:359.98px){.jv-status{font-size:var(--fs-sm);letter-spacing:0}}
 /* ---------- Breakpoints: 600 / 900 / 1280, shared by all nine ---------- */
 @media(min-width:600px){
   .jv-header{padding-inline:var(--s4);gap:var(--s3)}
@@ -381,7 +397,10 @@ p{margin:0}
   /* A long tab strip scrolls rather than wrapping the header onto two rows. Typecrack (five tabs
      plus brand, title and status chip) is the worst case: 50vw leaves the title whole across
      900-1100, and 46rem clears its 730px need outright on wide screens. */
-  #jv-controls{max-width:min(50vw,46rem);overflow-x:auto;scrollbar-width:none}
+  /* The padding is room for the focus ring (--focus-w + --focus-offset): the strip scrolls, so it
+     clips, and a ring drawn outside a tab would be cut off. The matching negative margin and the wider cap
+     cancel it in layout, so every tab sits exactly where it did and the header does not grow. */
+  #jv-controls{max-width:calc(min(50vw,46rem) + 2 * (var(--focus-w) + var(--focus-offset)));overflow-x:auto;scrollbar-width:none;padding:calc(var(--focus-w) + var(--focus-offset));margin:calc(-1 * (var(--focus-w) + var(--focus-offset)))}
   #jv-controls::-webkit-scrollbar{display:none}
   .jv-main{padding:var(--s5) var(--s5) calc(var(--s7) + var(--sa-b))}
 }
@@ -463,4 +482,7 @@ p{margin:0}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  /* That rule gives every element a transition on all properties, so the menu sheet's contents would fade their
+     inherited visibility in from hidden and refuse focus at the moment the sheet opens: nothing inside it transitions. */
+  .jv-sheet *{transition:none!important}
 }

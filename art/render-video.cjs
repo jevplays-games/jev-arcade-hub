@@ -1,71 +1,137 @@
-// Records the 10 second, 640x360 Activity preview video for each game (Discord: mp4, <= 0.5 MB).
-// usage: node art/render-video.cjs <playwright-module-dir> <chromium-executable> [outDir] [slug...]
-// Needs ffmpeg on PATH. The scene is the cover artwork, animated with CSS only. With no slug it renders all ten
-// (nine games plus the hub); name slugs to render only those.
-const fs = require('fs');
-const path = require('path');
-const { execFileSync } = require('child_process');
-const { pathToFileURL } = require('url');
-const { ARCADE, GAMES, cover } = require('./render-art.cjs');
-const [pwDir, exe, outArg, ...only] = process.argv.slice(2);
-if (!pwDir || !exe) { console.error('usage: node art/render-video.cjs <playwright-dir> <chromium-exe> [outDir] [slug...]'); process.exit(1); }
-const { chromium } = require(pwDir);
-const outDir = path.resolve(outArg || path.join(__dirname, 'out'));
-fs.mkdirSync(outDir, { recursive: true });
-const CRF = process.env.VIDEO_CRF || '24';
+// Offline 10-second, 640x360 Activity previews. Importing this module never launches tools.
+// usage: node art/render-video.cjs <playwright-dir> <chromium-exe> [outDir] [slug...]
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+const { pathToFileURL } = require('node:url');
+const { BRAND, GAMES } = require('./brand.cjs');
+const { cover } = require('./render-art.cjs');
+const MAX_BYTES = 500000;
+const escape = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
-// The cover page, scaled to 640x360, animated through the cover's own class names: the tile rises in and settles,
-// title, tagline and chip follow, the glow breathes and a shine crosses the emblem twice. Grain is dropped from
-// the page (it costs bitrate); the emblem keeps its own.
-const scene = g => {
-  const html = cover(g);
+function scene(g) {
+  // Keep the cover's layout and exact approved mascot, including its original viewBox.
+  const robot = fs.readFileSync(path.join(__dirname, 'src/jev-robot.svg'), 'utf8').trim();
+  let html = cover(g).replace(/<img src="[^"]*\/jev-robot\.svg" alt="">/g, () => robot);
+  // SVG dots replace the cover's radial-gradient; opacity never introduces extra palette hexes.
+  const dots = id => `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1" fill="#1E1E1E"/></pattern></defs><rect width="100%" height="100%" fill="url(#${id})" opacity=".4"/></svg>`;
+  html = html.replace(/background:radial-gradient\([^;]+;/g, '')
+    .replace('<body>', `<body><div class="dot-grid">${dots('grid-dots')}</div>`)
+    .replace('<div class="blob blob-top"></div>', `<div class="blob blob-top">${dots('top-dots')}</div>`)
+    .replace('<div class="blob blob-bottom"></div>', `<div class="blob blob-bottom">${dots('bottom-dots')}</div>`);
+  const chars = Array.from(g.tagline);
+  const lastWord = g.tagline.search(/\S+\s*$/);
+  let offset = 0;
+  const typed = chars.map((char, i) => {
+    const start = offset;
+    offset += char.length;
+    return `${start === lastWord ? '<span class="tagline-last">' : ''}<span class="letter" style="animation-delay:${(2.4 + 2.6 * (i + 1) / chars.length).toFixed(4)}s">${escape(char)}</span>`;
+  }).join('') + '</span><span class="cursor" aria-hidden="true"></span>';
+  html = html.replace(/<div class="tagline">[\s\S]*?<\/div>/, () => `<div class="tagline"><span class="typing-space" aria-hidden="true">${escape(g.tagline)}</span><span class="typing">${typed}</span></div>`);
   const style = `<style>
-    html,body{width:640px;height:360px;overflow:hidden;background:#0a0b13}
+    html{width:640px;height:360px;overflow:hidden;background:#F386A1}
     body{transform:scale(.625);transform-origin:0 0;width:1024px;height:576px}
-    .grain{display:none}
-    @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-    @keyframes tileIn{0%{opacity:0;transform:translateY(90px) scale(.86)}60%{opacity:1;transform:translateY(-8px) scale(1.015)}100%{opacity:1;transform:none}}
-    @keyframes fadein{from{opacity:0}to{opacity:1}}
-    @keyframes breathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
-    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-    @keyframes shine{0%{left:-60%;opacity:1}35%,100%{left:130%;opacity:1}}
-    @keyframes fadeto{from{opacity:0}to{opacity:1}}
-    .brand{animation:fadein .6s .1s both}
-    .t1{animation:rise .7s .5s both cubic-bezier(.2,.8,.2,1)}
-    .t2{animation:rise .7s 1s both cubic-bezier(.2,.8,.2,1)}
-    .chip{animation:rise .7s 1.5s both cubic-bezier(.2,.8,.2,1)}
-    .url{animation:fadein .8s 2s both}
-    .hero{animation:tileIn 1.3s .3s both cubic-bezier(.2,.8,.25,1)}
-    .main .halo{animation:breathe 3.2s 1.6s infinite ease-in-out}
-    .main>div:last-child{animation:bob 4s 1.6s infinite ease-in-out}
-    .s1{animation:fadein 1.2s .9s both}
-    .s2{animation:fadein 1.2s 1.2s both}
-    .s3{animation:fadein 1.2s 1.5s both}
-    .shine{animation:shine 4s 3.4s 2 ease-in-out both}
-    body::after{content:"";position:absolute;inset:0;background:#0a0b13;opacity:0;pointer-events:none;animation:fadeto .5s 9.5s forwards}
+    .dot-grid{position:absolute;inset:32px;pointer-events:none}
+    .blob{background:none}
+    .body>.robot{width:100%;height:100%}
+    .window{box-shadow:6px 6px 0 #1E1E1E}
+    @keyframes appear{from{visibility:hidden}to{visibility:visible}}
+    @keyframes type-letter{from{font-size:0;visibility:hidden}to{font-size:26px;visibility:visible}}
+    @keyframes cursor-blink{0%{background:#FEFEFE}50%{background:#1E1E1E}}
+    @keyframes underline{from{border-bottom-color:transparent}to{border-bottom-color:#E551BA}}
+    @keyframes highlight{0%,33.333%,66.666%{border-bottom-color:#E551BA}16.666%,50%,83.333%,100%{border-bottom-color:#1E1E1E}}
+    .win-main{animation:appear 0s .4s steps(1) both}
+    .win-jev{animation:appear 0s 1.2s steps(1) both}
+    .tag,.title{animation:appear 0s 1.8s steps(1) both}
+    .dot-grid{animation:appear 0s .4s steps(1) both}
+    .tagline{position:relative;white-space:nowrap;animation:appear 0s 2.4s steps(1) both}
+    .typing-space{visibility:hidden}
+    .typing{position:absolute;top:8px;left:12px;width:max-content}
+    .letter{animation:type-letter 0s steps(1) both}
+    .cursor{position:absolute;left:100%;top:0;width:13px;height:26px;animation:cursor-blink 1s 2.4s steps(1) infinite}
+    .tagline-last{border-bottom-color:transparent;animation:underline 0s 5s steps(1) both,highlight .9s 8.5s steps(1) forwards}
+    .url{animation:appear 0s 5.4s steps(1) both}
+    ${GAMES.map((_, i) => `.win-hub .mosaic>img:nth-child(${i + 1}){animation:appear 0s ${(.6 + i / 8).toFixed(3)}s steps(1) both}`).join('\n')}
+    /* Start the entire CSS timeline together after local fonts and images have loaded. */
+    body:not(.playing),body:not(.playing) *,body:not(.playing) *::before,body:not(.playing) *::after{animation-play-state:paused!important}
   </style>`;
   return html.replace('</style>', '</style>' + style);
-};
+}
 
-(async () => {
-  const browser = await chromium.launch({ executablePath: exe });
-  for (const g of [...GAMES, ARCADE].filter(x => !only.length || only.includes(x.slug))) {
-    const tmp = path.join(outDir, `.rec-${g.slug}`);
-    fs.rmSync(tmp, { recursive: true, force: true });
-    fs.mkdirSync(tmp, { recursive: true });
-    const htmlFile = path.join(tmp, 'scene.html');
-    fs.writeFileSync(htmlFile, scene(g));
-    const ctx = await browser.newContext({ viewport: { width: 640, height: 360 }, recordVideo: { dir: tmp, size: { width: 640, height: 360 } } });
-    const page = await ctx.newPage();
-    await page.goto(pathToFileURL(htmlFile).href);
-    await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(11900);
-    await ctx.close();
-    const webm = fs.readdirSync(tmp).find(f => f.endsWith('.webm'));
-    const mp4 = path.join(outDir, `${g.slug}-preview.mp4`);
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '0.45', '-i', path.join(tmp, webm), '-t', '10', '-vf', 'fps=24,scale=640:360', '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', CRF, '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4], { shell: true });
-    fs.rmSync(tmp, { recursive: true, force: true });
-    console.log(g.slug, Math.round(fs.statSync(mp4).size / 1024) + ' KB');
+function cleanOutputs(outDir) {
+  const keep = new Set([...GAMES, BRAND].map(g => `${g.slug}-preview.mp4`));
+  for (const entry of fs.readdirSync(outDir, { withFileTypes: true })) {
+    if (entry.isFile() && entry.name.endsWith('.mp4') && !keep.has(entry.name)) {
+      fs.unlinkSync(path.join(outDir, entry.name));
+    }
   }
-  await browser.close();
-})();
+}
+
+function encode(webm, mp4, start, initialCRF, run = execFileSync) {
+  for (let crf = initialCRF; ; crf = Math.min(51, crf + 2)) {
+    run('ffmpeg', ['-y', '-loglevel', 'error', '-ss', String(start), '-i', webm, '-t', '10', '-vf', 'fps=24,scale=640:360', '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf), '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+    const bytes = fs.statSync(mp4).size;
+    console.log(`${path.basename(mp4)}: ${bytes} bytes (${(bytes / 1000).toFixed(1)} KB), CRF ${crf}`);
+    if (bytes <= MAX_BYTES) return;
+    if (crf === 51) {
+      fs.rmSync(mp4, { force: true });
+      throw new Error(`${path.basename(mp4)} exceeds ${MAX_BYTES} bytes even at CRF 51`);
+    }
+  }
+}
+
+async function main() {
+  const [pwDir, exe, outArg, ...only] = process.argv.slice(2);
+  if (!pwDir || !exe) throw new Error('usage: node art/render-video.cjs <playwright-dir> <chromium-exe> [outDir] [slug...]');
+  const crf = Number(process.env.VIDEO_CRF || '24');
+  if (!Number.isInteger(crf) || crf < 0 || crf > 51) throw new Error('VIDEO_CRF must be an integer from 0 to 51');
+  const catalog = [...GAMES, BRAND];
+  for (const slug of only) if (!catalog.some(g => g.slug === slug)) throw new Error(`Unknown slug: ${slug}`);
+  const outDir = path.resolve(outArg || path.join(__dirname, 'out'));
+  fs.mkdirSync(outDir, { recursive: true });
+  cleanOutputs(outDir);
+  const { chromium } = require(path.resolve(pwDir));
+  const browser = await chromium.launch({ executablePath: exe });
+  try {
+    for (const g of catalog.filter(g => !only.length || only.includes(g.slug))) {
+      const tmp = path.join(outDir, `.rec-${g.slug}`);
+      fs.rmSync(tmp, { recursive: true, force: true });
+      fs.mkdirSync(tmp, { recursive: true });
+      try {
+        const htmlFile = path.join(tmp, 'scene.html');
+        fs.writeFileSync(htmlFile, scene(g));
+        // Prime fonts, decoded images and painting before creating a recorder.
+        // Each recording still gets a fresh page with its timeline paused at zero.
+        const ready = async page => {
+          await page.goto(pathToFileURL(htmlFile).href);
+          await page.evaluate(async () => {
+            await Promise.all([document.fonts.ready, ...Array.from(document.images, img => img.decode())]);
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          });
+        };
+        const warmup = await browser.newContext({ viewport: { width: 640, height: 360 } });
+        try { await ready(await warmup.newPage()); }
+        finally { await warmup.close(); }
+        const ctx = await browser.newContext({ viewport: { width: 640, height: 360 }, recordVideo: { dir: tmp, size: { width: 640, height: 360 } } });
+        let start;
+        try {
+          const page = await ctx.newPage();
+          const captureStarted = performance.now();
+          await ready(page);
+          // Let the recorder receive settled, paused frames before the trim point.
+          await page.waitForTimeout(250);
+          // Keep the recorded lead-in out of the export. The timeline stays paused
+          // through navigation and asset loading; only the ten-second scene is kept.
+          start = (performance.now() - captureStarted) / 1000;
+          await page.evaluate(() => document.body.classList.add('playing'));
+          await page.waitForTimeout(11900);
+        } finally { await ctx.close(); }
+        const webm = fs.readdirSync(tmp).find(f => f.endsWith('.webm'));
+        if (!webm) throw new Error(`No recording for ${g.slug}`);
+        encode(path.join(tmp, webm), path.join(outDir, `${g.slug}-preview.mp4`), start, crf);
+      } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+    }
+  } finally { await browser.close(); }
+}
+module.exports = { scene, cleanOutputs, encode, MAX_BYTES };
+if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });

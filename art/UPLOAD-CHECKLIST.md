@@ -9,15 +9,21 @@ files to `art/out/`. Every upload is a manual step in the Discord Developer Port
 1. Regenerate everything from the emblems (all ten `art/emblems/<slug>.svg` must exist):
 
    ```sh
-   node art/render-icons.cjs <playwright-dir> <chromium-exe>             # out/<slug>-icon-1024.png, -og.png, icons-sheet.png
+   node art/render-icons.cjs <playwright-dir> <chromium-exe>             # out/<slug>-icon-1024.png, icons-sheet.png
    node art/render-art.cjs   <playwright-dir> <chromium-exe> art/out     # out/<slug>-cover.png, -background.png
    node art/render-video.cjs <playwright-dir> <chromium-exe> art/out     # out/<slug>-preview.mp4 (ten, hub included)
    ```
 
-   The renderer prints `(MOTIFS fallback)` next to any slug whose emblem file is missing; there should be none.
+   `npm test` fails if any of the ten emblems is missing; `node art/verify-game-art.cjs` checks the copied game art.
+   Render the hub landing assets into `public/brand/` after the icons:
+
+   ```sh
+   node art/render-landing.cjs <playwright-dir> <chromium-exe>
+   ```
+
 2. Open `art/out/icons-sheet.png`. Every emblem must be recognisable at 40 px in a circle and distinct from the other nine.
 3. Check the files: covers and backgrounds are 1024x576 PNG, previews are 640x360 H.264 MP4 and each under 0.5 MB
-   (`ls -l art/out/*-preview.mp4`; the last render was 143-188 KB), icons are 1024x1024 PNG.
+   (`ls -l art/out/*-preview.mp4`; the last render was 107-121 KB), icons are 1024x1024 PNG.
 4. Open at least the cover and video of the app you are about to upload, not just the icon.
 
 ## What each field takes
@@ -43,7 +49,7 @@ After each upload, **Save Changes**, then (Discord caches images, so a hard refr
   The app's tile shows the cover art, the entry is titled correctly, and the preview video plays and loops.
 - **Bot profile**: open the bot's profile card (member list or a slash-command reply). The avatar shows the new icon.
 - **Small, circle-cropped**: look at the icon at about 40 px and 24 px in a circle (member list, message avatar, the
-  command picker). The emblem's subject is still readable, and the J badge shrinks to a dot rather than clutter.
+  command picker). The emblem's subject is still readable.
 - **Inside the Activity**: launch it once; the background should sit behind the game UI with the middle clear.
   (Only Tic-Tac-Typed, formerly Tic-Tac-Toe, is verified as launching inside Discord; see `DISCORD.md`.)
 
@@ -52,12 +58,12 @@ After each upload, **Save Changes**, then (Discord caches images, so a hard refr
 For each app tick every box, then sign off the verification line. Application IDs are from `DISCORD.md`; they do not
 change with the renames. Also set each app's display name to the new name in the heading (General Information > Name).
 
-### jevplay.games (hub) - ID 1554746719227613214 - slug `arcade`
+### jevplay.games (hub) - ID 1554746719227613214 - slug `hub`
 
-- [ ] General Information > App Icon: `art/out/arcade-icon-1024.png` (the hub emblem: the J over nine gems)
-- [ ] Activities > Art Assets > Cover Art: `art/out/arcade-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/arcade-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/arcade-preview.mp4`
+- [ ] General Information > App Icon: `art/out/hub-icon-1024.png` (the hub emblem; also `public/brand/icon-1024.png`)
+- [ ] Activities > Art Assets > Cover Art: `art/out/hub-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/hub-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/hub-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
 ### Tic-Tac-Typed - ID 1552421200100065280 - slug `tic-tac-typed`
