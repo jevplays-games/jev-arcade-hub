@@ -60,6 +60,25 @@ document.addEventListener('keydown', (event) => {
   else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
 });
 
+/* ---- Keyboard focus below the sticky header ------------------------------
+   brand.css gives everything focusable in .jv-main a scroll-margin-top, which covers every focus the browser
+   scrolls to. A control already inside the viewport but under the header is not scrolled at all, so keyboard
+   focus could rest behind the header (WCAG 2.2 SC 2.4.11). Nudge the page just far enough. Pointer focus, the
+   header, the sheet, the skip link, dialogs and fixed or sticky layers never move it. */
+const stickyHeader = document.querySelector('.jv-header');
+document.addEventListener('focusin', (event) => {
+  const el = event.target;
+  if (!stickyHeader || !(el instanceof Element) || !el.matches(':focus-visible')) return;
+  if (el.closest('.jv-header,#jv-sheet,.jv-skip,dialog')) return;
+  for (let node = el; node && node !== document.body; node = node.parentElement) {
+    const position = getComputedStyle(node).position;
+    if (position === 'fixed' || position === 'sticky') return;
+  }
+  const clear = stickyHeader.getBoundingClientRect().bottom + 8;
+  const box = el.getBoundingClientRect();
+  if (box.height > 0 && box.top < clear && box.bottom > 0) window.scrollBy(0, box.top - clear);
+});
+
 /* ---- Desktop relocation -------------------------------------------------
    #jv-controls holds the nav tabs and account controls. It is authored inside
    #jv-sheet; above 900px it MOVES into the header, before the menu button.

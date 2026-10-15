@@ -246,6 +246,8 @@ test('shared header files: sheet takes focus, header never hides or clips focus,
   assert.match(js, /else \{ sheet\.setAttribute\('tabindex', '-1'\); sheet\.focus\(\); \}/, 'an empty sheet still takes focus');
   // Closing returns focus to the menu button without scrolling (Safari leaves focus elsewhere on tap).
   assert.match(js, /const target = button && button\.getClientRects\(\)\.length > 0 \? button : lastFocus;\n  target\?\.focus\(\{ preventScroll: true \}\);/);
+  // Keyboard focus already in view but under the sticky header is nudged clear; header, sheet and pointer focus never scroll.
+  assert.match(js, /document\.addEventListener\('focusin', \(event\) => \{\n  const el = event\.target;\n  if \(!stickyHeader \|\| !\(el instanceof Element\) \|\| !el\.matches\(':focus-visible'\)\) return;\n  if \(el\.closest\('\.jv-header,#jv-sheet,\.jv-skip,dialog'\)\) return;/);
 });
 
 test('header status chip wraps below 600px instead of clipping mid-letter', () => {
