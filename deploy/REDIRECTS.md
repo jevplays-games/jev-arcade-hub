@@ -58,7 +58,8 @@ For one game (`<old>` → `<new>`):
    (Settings > Environment variables, then Publish), or delete `legacySlug` from the row in `games.json` and release
    the hub. Either way, delete `legacySlug` from the row and release the hub before step 6, then remove the env var
    and any `GAME_URL_<OLD>` override still set on GoDaddy.
-4. **Redirect rule.** Create the rule now; it only takes effect once step 6 hands the hostname over. Use **one** of:
+4. **Redirect rule.** Create the rule now. It may take effect immediately, in front of the still-live custom domain
+   (not verified); that is safe because steps 1–3 are done, so it only 301s to a live host. Use **one** of:
    - **Single Redirect** (Rules > Redirect Rules), one rule per old host, status **301**, **Preserve query string** on:
 
      ```
@@ -76,10 +77,16 @@ For one game (`<old>` → `<new>`):
    `custom_domain: true` in the game's `wrangler.*`, or Workers & Pages > the worker > Settings > Domains) **deletes
    its DNS record**. With no record, the hostname stops resolving and the step-4 rule never fires. So, in the same
    change, with no gap between:
-   1. Remove the old custom domain (deploy the game with the old route dropped, or remove it in the dashboard).
+   1. Remove the old custom domain **by dropping `{ "pattern": "<old>.jevplay.games", "custom_domain": true }` from
+      the game repo's `wrangler.*` and deploying**. Removing it only in the dashboard (Workers & Pages > the worker >
+      Settings > Domains) is not enough: the next `wrangler deploy` re-attaches it from the config, which either fails
+      against the placeholder or replaces it, and the old host serves the game again. If you remove it in the
+      dashboard for speed, commit the `wrangler.*` change in the same change.
    2. Immediately add a **proxied** (orange cloud) placeholder record for the old host: `AAAA <old> 100::`.
       `100::` is the discard prefix; nothing is ever served from it, it only gives Cloudflare a proxied hostname for
       the redirect rule to run on.
+      Do steps 1 and 2 at low traffic. A resolver that looked the host up in the gap may cache NXDOMAIN briefly;
+      that clears within the zone's SOA negative TTL, and by then no card or Discord link points at the old host.
    3. Re-run the check:
 
       ```sh

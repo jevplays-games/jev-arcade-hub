@@ -97,7 +97,7 @@ The games are deployed separately and each is attached to its own subdomain. The
 | `public/` | Landing page, terms, privacy, `hub.css`, `hub.js` |
 | `public/brand/` | Shared `brand.css`, fonts and their licences, icons, card art, hosted social cards |
 | `art/` | Art pipeline (emblems, Discord art, icons); not shipped |
-| `deploy/` | Rename cutover runbook, Train compose for SafeSweep and Typedoku |
+| `deploy/` | Rename cutover runbook, brand.css re-sync procedure (`BRAND-RESYNC.md`), Train compose for SafeSweep and Typedoku |
 | `tests/` | `node --test` suite |
 
 ## Contributing
