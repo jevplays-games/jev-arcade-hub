@@ -4,14 +4,14 @@
     "noul-who": {
       "repo": "jev-guess-who",
       "branch": "rebrand/jev-guess-who-15",
-      "commit": "e4918ead798928acaf72ea8ddd7236ddd93c2e2c",
+      "commit": "cd819a733e282e6b80a13225c5153f947778d77f",
       "icon": {
         "from": "public/brand/icon.svg",
         "sha256": "2a112461716a61efd73c8da248883ca80a413d941eb90dec4a8dd8e0d38b21fb"
       },
       "og": {
         "from": "dist-hub/noul-who.png",
-        "sha256": "29472a9cdf6de485a8af839f71adbcc7edad321acab1b399736f6f1afa02cf36"
+        "sha256": "29c7683791ae3f7e1857c6120f7417dc870224471bab8b51549794a843a166dd"
       },
       "ogAlt": "Noul Who on a pink halftone desktop with a 4-by-3 grid of game portraits, six crossed out and Lumi outlined in pink, a NOUL window asking \u201cis it Lumi?\u201d, a friendly Jev robot, and jevplay.games."
     },

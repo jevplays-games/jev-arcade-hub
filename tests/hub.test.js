@@ -226,3 +226,17 @@ test('serves hub social art and descriptive Open Graph metadata', async () => {
     assert.doesNotMatch(alt, /emblems beside the Jev mark/i);
   });
 });
+
+test('shared header files: sheet takes focus, header never hides or clips focus, brand link goes to the hub', async () => {
+  const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
+  // The open sheet is visible at once, or focus() into it is rejected while visibility is still transitioning.
+  assert.match(css, /\.jv-sheet\.is-open\{[^}]*visibility:visible;transition:transform \.18s steps\(4,end\),visibility 0s\}/);
+  // A control scrolled into view by focus clears the sticky header.
+  assert.match(css, /html\{[^}]*scroll-padding-top:calc\(var\(--header-h\) \+ var\(--sa-t\) \+ var\(--s4\)\)/);
+  // The scrolling header strip leaves room for the focus ring without growing the header.
+  assert.match(css, /#jv-controls\{[^}]*overflow-x:auto;[^}]*padding:calc\(var\(--focus-w\) \+ var\(--focus-offset\)\);margin-block:calc\(-1 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\)\}/);
+  const js = readFileSync(new URL('../public/brand/brand.js', import.meta.url), 'utf8');
+  assert.match(js, /export const HUB_URL = 'https:\/\/jevplay\.games\/';/);
+  assert.match(js, /window\.top === window\.self\) brand\.setAttribute\('href', HUB_URL\)/, 'outside a Discord frame only');
+  assert.match(js, /else \{ sheet\.setAttribute\('tabindex', '-1'\); sheet\.focus\(\); \}/, 'an empty sheet still takes focus');
+});
