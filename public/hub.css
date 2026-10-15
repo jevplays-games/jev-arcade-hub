@@ -68,7 +68,9 @@ html{scroll-padding-bottom:var(--s3)}
 .hub-grid{list-style:none;margin:0;padding:0 3px 3px 0;display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
 @media (min-width:600px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (min-width:1000px){.hub-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
-@media (max-height:500px) and (min-width:600px){.hub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Short frames (landscape phones): as many columns as fit an 18rem card. A card narrower than about 285px cannot hold
+   its status and PLAY pill side by side, and three forced columns pushed the pill past the edge below ~960px. */
+@media (max-height:500px) and (min-width:600px){.hub-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr))}}
 .hub-item{display:flex;flex-direction:column;gap:6px;min-width:0}
 .hub-item .hub-card{flex:1}
 .hub-add{align-self:flex-start;display:inline-flex;align-items:center;min-height:var(--tap);padding:0 4px;color:var(--ink);font-size:var(--fs-sm);text-decoration:underline;text-underline-offset:3px}
@@ -102,9 +104,10 @@ html{scroll-padding-bottom:var(--s3)}
 .hub-card p{margin:0;color:var(--ink);font-size:clamp(.9375rem,.8rem + .3vw,1.125rem);line-height:1.4;font-weight:600}
 .hub-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .hub-chips li{padding:0 6px;background:var(--paper);border:1px solid var(--ink);color:var(--ink);font-family:var(--font-pixel);font-size:var(--fs-md);line-height:1.35}
-.hub-foot-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:4px;font-family:var(--font-pixel);font-size:var(--fs-md);text-transform:uppercase;letter-spacing:.04em;color:var(--ink)}
+/* Wraps rather than overflows: in a narrow card the PLAY pill drops below the status, still at the right. */
+.hub-foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:4px;font-family:var(--font-pixel);font-size:var(--fs-md);text-transform:uppercase;letter-spacing:.04em;color:var(--ink)}
 .hub-status{display:inline-flex;align-items:center}
-.hub-card .play{padding:2px 10px;background:var(--pink);border:1px solid var(--ink);color:var(--ink);font-family:var(--font-pixel);font-size:var(--fs-lg);white-space:nowrap}
+.hub-card .play{margin-left:auto;padding:2px 10px;background:var(--pink);border:1px solid var(--ink);color:var(--ink);font-family:var(--font-pixel);font-size:var(--fs-lg);white-space:nowrap}
 
 /* Short frames (landscape phones, Discord picture-in-picture): a compact hero so the first row of cards shows. */
 @media (max-height:500px){

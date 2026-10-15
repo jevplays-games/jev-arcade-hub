@@ -259,3 +259,13 @@ test('landing keyboard focus: a tag chip scrolls clear of the arrow tab, a card 
   assert.match(js, /tagsEl\.addEventListener\('focusin', \(event\) => event\.target\.scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)\)/);
   assert.match(css, /html\{scroll-padding-bottom:var\(--s3\)\}/);
 });
+
+test('landing cards never push the PLAY pill past their edge (short landscape frames)', () => {
+  const css = readFileSync(new URL('../public/hub.css', import.meta.url), 'utf8');
+  // A card under ~285px cannot hold status and PLAY side by side: short frames take as many 18rem columns as fit
+  // (three forced columns overflowed the page at 640x360 to 800x450), and the footer wraps instead of overflowing.
+  assert.match(css, /@media \(max-height:500px\) and \(min-width:600px\)\{\.hub-grid\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,18rem\),1fr\)\)\}\}/);
+  assert.doesNotMatch(css, /max-height:500px\) and \(min-width:600px\)\{\.hub-grid\{grid-template-columns:repeat\(3/);
+  assert.match(css, /\.hub-foot-row\{display:flex;flex-wrap:wrap;/);
+  assert.match(css, /\.hub-card \.play\{margin-left:auto;/);
+});
