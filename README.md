@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.jpg" alt="Pixel-art robot Jev standing in a hall of glowing game cabinets, choosing a game" width="100%"></p>
+<p align="center"><img src="assets/banner.png" alt="The jevplay.games hub on a pink retro desktop with nine game chips, a launcher window, and Jev the pixel robot." width="100%"></p>
 
 <h1 align="center">jevplay.games</h1>
 

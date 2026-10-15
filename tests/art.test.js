@@ -95,3 +95,18 @@ test('cover and background templates still accept catalog metadata', () => {
     assert.ok(renderer.cover(game).replace(/<[^>]*>/g, '').includes(game.tagline));
   }
 });
+
+for (const template of ['banner.html', 'social.html']) {
+  test(`${template} uses current hub names and the canonical Jev source`, () => {
+    const html = fs.readFileSync(new URL(`../assets/src/${template}`, import.meta.url), 'utf8');
+    assert.doesNotMatch(html, /jevplays|arcade/i);
+    // Word boundaries allow the current catalog name Typecheckers.
+    assert.doesNotMatch(html, /\b(?:Guess[ -]Who|Connect[ -]Four|Mastermind|Minesweeper|Sudoku|Tic-Tac-Toe|Checkers|Dots(?: and |-)Boxes|2048)\b/i);
+    assert.match(html, /src="\.\.\/\.\.\/art\/src\/jev-robot\.svg"/);
+    for (const { slug, name } of games) {
+      assert.ok(html.includes(`+${slug}`), `${slug} chip missing`);
+      assert.ok(html.includes(`>${name}</span>`), `${name} launcher row missing`);
+      assert.ok(html.includes(`../../art/src/game-icons/${slug}.svg`));
+    }
+  });
+}
