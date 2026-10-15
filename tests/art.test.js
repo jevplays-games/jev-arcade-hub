@@ -11,6 +11,11 @@ import renderer from '../art/render-art.cjs';
 const root = fileURLToPath(new URL('../art/', import.meta.url));
 const games = JSON.parse(fs.readFileSync(new URL('../games.json', import.meta.url), 'utf8'));
 const slugs = [...games.map(g => g.slug), 'hub'];
+const palette = new Set(['#F386A1', '#1E1E1E', '#E551BA', '#DEDEDE', '#FEFEFE', '#1F78A8', '#E8A33D']);
+
+test('emblem directory contains exactly the catalog and hub SVGs', () => {
+  assert.deepEqual(fs.readdirSync(path.join(root, 'emblems')).sort(), slugs.map(slug => `${slug}.svg`).sort());
+});
 
 test('art metadata follows the catalog', () => {
   assert.deepEqual(brand.GAMES, games.map(({ slug, name, tagline }) => ({ slug, name, tagline })));
@@ -18,8 +23,32 @@ test('art metadata follows the catalog', () => {
 });
 
 for (const slug of slugs) {
-  test(`${slug} emblem exists`, () => {
-    assert.ok(fs.existsSync(path.join(root, 'emblems', `${slug}.svg`)));
+  test(`${slug} emblem follows the portable SVG contract`, () => {
+    const svg = fs.readFileSync(path.join(root, 'emblems', `${slug}.svg`), 'utf8');
+    const name = slug === 'hub' ? 'jevplay.games' : games.find(game => game.slug === slug).name;
+    const opening = svg.match(/^<svg\b[^>]*>/)?.[0];
+    assert.ok(opening);
+    assert.match(opening, /\bviewBox="0 0 512 512"/);
+    assert.match(opening, /\bwidth="512"/);
+    assert.match(opening, /\bheight="512"/);
+    assert.equal(svg.match(/<title>([^<]*)<\/title>/)?.[1], name);
+    assert.ok(opening.includes(`aria-label="${name}"`));
+    assert.doesNotMatch(svg, /<\s*(?:style|filter|text|image)\b|\s(?:style|class|filter)\s*=|data:/i);
+    for (const hex of svg.match(/#[0-9a-f]+\b/gi) ?? []) {
+      assert.ok(palette.has(hex), `${slug} uses non-palette color ${hex}`);
+    }
+    assert.ok(Buffer.byteLength(svg) < 12 * 1024);
+  });
+}
+
+for (const { slug } of games) {
+  test(`${slug} emblem preserves the approved drawing verbatim`, () => {
+    const source = fs.readFileSync(path.join(root, 'src', 'game-icons', `${slug}.svg`), 'utf8');
+    const shapes = source.match(/<svg\b[^>]*>([\s\S]*)<\/svg>/)[1]
+      .replace(/<!--[\s\S]*?-->|<title\b[^>]*>[\s\S]*?<\/title>/g, '')
+      .replace(/[ \t]+$/gm, '');
+    const emblem = fs.readFileSync(path.join(root, 'emblems', `${slug}.svg`), 'utf8');
+    assert.ok(emblem.includes(`<svg x="106" y="106" width="300" height="300" viewBox="0 0 64 64" shape-rendering="crispEdges">${shapes}</svg>`));
   });
 }
 
