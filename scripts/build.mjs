@@ -11,6 +11,8 @@ const required = [
   'public/brand/vt323.woff2', 'public/brand/OFL-VT323.txt',
   // Noul Who's og:image is served from here; the old path stays so cached social cards do not 404.
   'public/brand/og/noul-who.png', 'public/brand/og/guess-who.png',
+  // The hub card's pre-rebrand URL keeps serving (a copy of og.png) so link previews already posted keep their image.
+  'public/brand/og.png', 'public/brand/arcade-og.png',
   ...catalog.filter((g) => g.art).map((g) => `public${g.art}`),
 ];
 const missing = required.filter((f) => !existsSync(new URL(`../${f}`, import.meta.url)));

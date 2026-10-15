@@ -189,6 +189,16 @@ test('serves the Noul Who social card at its new path and keeps the old one', as
   });
 });
 
+test('keeps serving the pre-rebrand hub card URL as a copy of the new card', async () => {
+  const card = readFileSync(new URL('../public/brand/og.png', import.meta.url));
+  await withHub({ env: {} }, async (base) => {
+    const res = await fetch(`${base}/brand/arcade-og.png`);
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get('content-type'), 'image/png');
+    assert.ok(Buffer.from(await res.arrayBuffer()).equals(card), 'arcade-og.png is byte-identical to og.png');
+  });
+});
+
 test('brand.css is self-contained: pink/ink palette and self-hosted fonts with their licences', async () => {
   const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
   for (const hex of ['#F386A1', '#1E1E1E', '#E551BA', '#DEDEDE', '#FEFEFE']) assert.ok(css.includes(hex), hex);
