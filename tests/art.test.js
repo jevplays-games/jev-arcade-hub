@@ -7,6 +7,7 @@ import { createHash } from 'node:crypto';
 import brand from '../art/brand.cjs';
 import verifier from '../art/verify-game-art.cjs';
 import renderer from '../art/render-art.cjs';
+import syncer from '../art/sync-emblems.cjs';
 
 const root = fileURLToPath(new URL('../art/', import.meta.url));
 const games = JSON.parse(fs.readFileSync(new URL('../games.json', import.meta.url), 'utf8'));
@@ -41,6 +42,14 @@ for (const slug of slugs) {
   });
 }
 
+test('sync-emblems reports every emblem in step with its game icon', () => {
+  for (const { slug } of games) {
+    const emblem = fs.readFileSync(path.join(root, 'emblems', `${slug}.svg`), 'utf8');
+    const icon = fs.readFileSync(path.join(root, 'src', 'game-icons', `${slug}.svg`), 'utf8');
+    assert.equal(syncer.syncEmblem(emblem, icon), emblem, slug);
+  }
+});
+
 for (const { slug } of games) {
   test(`${slug} emblem preserves the approved drawing verbatim`, () => {
     const source = fs.readFileSync(path.join(root, 'src', 'game-icons', `${slug}.svg`), 'utf8');
@@ -60,6 +69,12 @@ for (const { slug } of games) {
 
 test('approved game art matches pinned hashes', () => {
   assert.deepEqual(verifier.verifyGameArt(), []);
+});
+
+test('every art/out file belongs to a catalog slug or the hub', () => {
+  const kinds = ['icon-1024.png', 'cover.png', 'background.png', 'og.png', 'preview.mp4'];
+  const expected = [...slugs.flatMap(slug => kinds.map(kind => `${slug}-${kind}`)), 'icons-sheet.png'].sort();
+  assert.deepEqual(fs.readdirSync(path.join(root, 'out')).filter(name => !name.startsWith('.')).sort(), expected);
 });
 
 test('Jev robot matches the approved source', () => {

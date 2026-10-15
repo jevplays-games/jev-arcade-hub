@@ -44,14 +44,14 @@
     "box-score": {
       "repo": "jev-dots-and-boxes",
       "branch": "rebrand/jev-dots-and-boxes-14",
-      "commit": "553266c9369e7c0d9108af2955105fb5e21815a1",
+      "commit": "d93123976e69ece0dd58ad352c479f7552e1ba9e",
       "icon": {
         "from": "public/brand/icon.svg",
         "sha256": "d5e3adfbfd40ab1b0c3bf79b7d74afa0f5871dc1c10a155ff95d8397d1dc0862"
       },
       "og": {
         "from": "public/brand/og.png",
-        "sha256": "1b21c2d6f633297508cf1cfc33fbcaebd2f221a94ac60052e0476ea225c0372c"
+        "sha256": "2767039d35418829f111e5b26bc66925868fd08562dfaac28bd0fe75938fae63"
       }
     },
     "safesweep": {
@@ -83,36 +83,36 @@
     "tic-tac-typed": {
       "repo": "jev-tic-tac-toe",
       "branch": "rebrand/jev-tic-tac-toe-16",
-      "commit": "97d3b6a4b22c714edd06b817c87b3d9c2510d0fb",
+      "commit": "aab42bca035a98b7e92f0c0a294bbbb8d00a9899",
       "icon": {
         "from": "public/brand/icon.svg",
-        "sha256": "9cb571b05c55edce9c99c11f55446b980c73487acf6354dde41f7df89c9c6c2b"
+        "sha256": "377bb73106cc52a0c646db3c42d1f769c43b2a8ac7dd4a6eab3773a8328f53ea"
       },
       "og": {
         "from": "public/brand/og.png",
-        "sha256": "94bb14cb212e2a91301dfa0aac0fcad00855e6f047b933bb4533def0cf2e9fa8"
+        "sha256": "56b0b5606989137f79b04d80fcdcba67f87504ae7153213b520f0705aa2cb2ea"
       }
     },
     "typecheckers": {
       "repo": "jev-checkers-analytics",
       "branch": "rebrand/jev-checkers-analytics-12",
-      "commit": "44a1d41880871ea99217114e4d8e04d89f622ed0",
+      "commit": "c04e025c6090944872e2a1efeb9e051739c94c48",
       "icon": {
         "from": "public/brand/icon.svg",
         "sha256": "d1734acead981b12b8062518b2669ad99fece8d4514a1908774f8d2157b8bebf"
       },
       "og": {
         "from": "public/brand/og.png",
-        "sha256": "a54c0323fbf0ededc3af8b87ec8664b0823c606506780c3bb1053f5d14ea6dc1"
+        "sha256": "b06cae5ba5a21742df317cadcbb0e7a67e887bdbfcda53bf5fe0b80ac2301c15"
       }
     },
     "slide-score": {
       "repo": "jev-2048-arcade",
       "branch": "rebrand/jev-2048-arcade-11",
-      "commit": "f25bbb41e664797b244e141a8cca403e8f918967",
+      "commit": "37ea87c48172598f39e941f57827a5de9e7aac1a",
       "icon": {
         "from": "public/brand/icon.svg",
-        "sha256": "e3d4e2ce9d729ddce95dbbf70ce871ad55f2bd391e3c4f125df09dffc198d65c"
+        "sha256": "2b8b923fec90a3490da9c999dffa86f452952b21bb4fcef055db08b821eba031"
       },
       "og": {
         "from": "public/brand/og.png",

@@ -37,14 +37,18 @@ pins its sha256.
 | `emblems/<slug>.svg` | The ten 512px emblems: the game's drawing on a pink halftone ground inside the 46% circle Discord crops to; `hub.svg` is Jev in a JEVPLAY.GAMES window. Presentation attributes only. |
 | `brand.cjs` | `BRAND` and the game list, read from `games.json` (names, slugs, taglines). The hub's art slug is `hub`. |
 
-If a game re-renders its icon or card, copy the new file in, update its entry in `game-art-sources.json`
-and re-render. Do not redraw a game's art here.
+If a game re-renders its icon or card, copy the new file in from that game's art branch, update its entry in
+`game-art-sources.json` (commit and sha256), run `node art/sync-emblems.cjs` so the emblem embeds the new drawing,
+and re-render everything below (the drawing also appears in the hub cover, hero, OG card, banner and social
+preview). Do not redraw a game's art here. `npm test` fails while an emblem and its icon disagree.
 
 ## Rendering
 
-Every script takes a Playwright module directory and a Chromium executable:
+Every script takes a Playwright module directory (the `playwright-core` package itself, e.g.
+`<project>/node_modules/playwright-core`; every script accepts that form) and a Chromium executable:
 
 ```sh
+node art/sync-emblems.cjs                                     # emblems re-embed the copied game drawings (--check only reports)
 node art/render-icons.cjs   <playwright-dir> <chromium-exe>   # out/<slug>-icon-1024.png, out/icons-sheet.png, public/brand/games/<slug>.png
 node art/render-art.cjs     <playwright-dir> <chromium-exe>   # out/<slug>-cover.png, out/<slug>-background.png (1024x576)
 node art/render-video.cjs   <playwright-dir> <chromium-exe>   # out/<slug>-preview.mp4 (640x360, 10 s, <= 0.5 MB; needs ffmpeg)
@@ -52,6 +56,9 @@ node art/render-landing.cjs <playwright-dir> <chromium-exe>   # public/brand/{he
 node assets/src/render.cjs  <playwright-dir> <chromium-exe>   # assets/banner.png (2560x840), assets/social-preview.png (1280x640)
 node art/verify-game-art.cjs                                  # copied game art still matches its recorded hash
 ```
+
+The renders are deterministic: re-running a script leaves unchanged art byte-identical, so `git status` shows
+exactly what a change touched.
 
 Run `render-icons.cjs` before `render-landing.cjs`: `public/brand/icon-1024.png` is a copy of
 `out/hub-icon-1024.png`. The 32 and 180px icons are point-sampled from a 16x render and snapped to
