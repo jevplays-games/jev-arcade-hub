@@ -14,7 +14,7 @@ files to `art/out/`. Every upload is a manual step in the Discord Developer Port
    node art/render-video.cjs <playwright-dir> <chromium-exe> art/out     # out/<slug>-preview.mp4 (ten, hub included)
    ```
 
-   The renderer prints `(MOTIFS fallback)` next to any slug whose emblem file is missing; there should be none.
+   `npm test` fails if any of the ten emblems is missing; `node art/verify-game-art.cjs` checks the copied game art.
    Render the hub landing assets into `public/brand/` after the icons:
 
    ```sh
