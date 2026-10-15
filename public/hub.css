@@ -55,6 +55,8 @@ html{scroll-padding-bottom:var(--s3)}
   .hub-tags::-webkit-scrollbar{display:none}
   .hub-tags::after{content:"\2192" / "";position:sticky;right:calc(var(--gutter) * -1);flex:none;display:grid;place-items:center;width:28px;min-height:var(--tap);margin-left:-8px;background:var(--ink);color:var(--pink);font-family:var(--font-pixel);font-size:var(--fs-lg);pointer-events:none}
   .hub-tags button{flex:none}
+  /* No tags (the game list failed to load): no arrow tab pointing at nothing. */
+  .hub-tags:empty::after{content:none}
   /* Where scroll-driven animations exist, the arrow fades out over the last stretch of the strip. */
   @supports (animation-timeline:scroll()){
     .hub-tags::after{animation:hub-tags-cue linear both;animation-timeline:scroll(nearest inline);animation-range:85% 100%}

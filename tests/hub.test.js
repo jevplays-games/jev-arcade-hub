@@ -258,6 +258,8 @@ test('landing keyboard focus: a tag chip scrolls clear of the arrow tab, a card 
   // Browsers leave a half-visible chip in place on focus; hub.js finishes the scroll (honouring that padding).
   assert.match(js, /tagsEl\.addEventListener\('focusin', \(event\) => event\.target\.scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)\)/);
   assert.match(css, /html\{scroll-padding-bottom:var\(--s3\)\}/);
+  // With no tags (the game list failed to load) the strip shows no orphan arrow tab.
+  assert.match(css, /\.hub-tags:empty::after\{content:none\}/);
 });
 
 test('landing cards never push the PLAY pill past their edge (short landscape frames)', () => {
