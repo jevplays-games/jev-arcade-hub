@@ -15,6 +15,12 @@ files to `art/out/`. Every upload is a manual step in the Discord Developer Port
    ```
 
    The renderer prints `(MOTIFS fallback)` next to any slug whose emblem file is missing; there should be none.
+   Render the hub landing assets into `public/brand/` after the icons:
+
+   ```sh
+   node art/render-landing.cjs <playwright-dir> <chromium-exe>
+   ```
+
 2. Open `art/out/icons-sheet.png`. Every emblem must be recognisable at 40 px in a circle and distinct from the other nine.
 3. Check the files: covers and backgrounds are 1024x576 PNG, previews are 640x360 H.264 MP4 and each under 0.5 MB
    (`ls -l art/out/*-preview.mp4`; the last render was 143-188 KB), icons are 1024x1024 PNG.
@@ -54,7 +60,7 @@ change with the renames. Also set each app's display name to the new name in the
 
 ### jevplay.games (hub) - ID 1554746719227613214 - slug `hub`
 
-- [ ] General Information > App Icon: `art/out/hub-icon-1024.png` (the hub emblem: the J over nine gems)
+- [ ] General Information > App Icon: `art/out/hub-icon-1024.png` (the hub emblem; also `public/brand/icon-1024.png`)
 - [ ] Activities > Art Assets > Cover Art: `art/out/hub-cover.png`
 - [ ] Activities > Art Assets > Background: `art/out/hub-background.png`
 - [ ] Activities > Art Assets > Video Preview: `art/out/hub-preview.mp4`

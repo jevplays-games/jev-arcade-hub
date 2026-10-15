@@ -211,3 +211,18 @@ test('brand.css is self-contained: pink/ink palette and self-hosted fonts with t
     assert.match(await (await fetch(`${base}/brand/OFL-VT323.txt`)).text(), /VT323 Project Authors[\s\S]*SIL Open Font License, Version 1\.1/);
   });
 });
+
+test('serves hub social art and descriptive Open Graph metadata', async () => {
+  await withHub({ env: {} }, async (base) => {
+    for (const asset of ['/brand/og.png', '/brand/icon-1024.png']) {
+      const response = await fetch(`${base}${asset}`);
+      assert.equal(response.status, 200, asset);
+      assert.equal(response.headers.get('content-type'), 'image/png', asset);
+    }
+    const html = await (await fetch(base)).text();
+    assert.match(html, /<meta property="og:image" content="https:\/\/jevplay\.games\/brand\/og\.png">/);
+    const alt = html.match(/<meta property="og:image:alt" content="([^"]*)">/)?.[1];
+    assert.ok(alt?.trim(), 'og:image:alt is non-empty');
+    assert.doesNotMatch(alt, /emblems beside the Jev mark/i);
+  });
+});

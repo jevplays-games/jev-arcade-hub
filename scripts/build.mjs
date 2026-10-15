@@ -6,7 +6,8 @@ import { loadGames, buildCatalog, resolveUrl } from '../lib/catalog.js';
 const catalog = buildCatalog(loadGames());
 const required = [
   'public/index.html', 'public/hub.css', 'public/hub.js', 'public/terms.html', 'public/privacy.html',
-  'public/brand/discord-icon-1024.png', 'public/brand/brand.css', 'public/brand/inter-var.woff2', 'public/brand/OFL.txt',
+  'public/brand/icon-1024.png', 'public/brand/og.png', 'public/brand/hero.png',
+  'public/brand/icon.svg', 'public/brand/favicon-32.png', 'public/brand/apple-touch-icon.png', 'public/brand/brand.css', 'public/brand/inter-var.woff2', 'public/brand/OFL.txt',
   'public/brand/vt323.woff2', 'public/brand/OFL-VT323.txt',
   // Noul Who's og:image is served from here; the old path stays so cached social cards do not 404.
   'public/brand/og/noul-who.png', 'public/brand/og/guess-who.png',
