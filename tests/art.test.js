@@ -92,6 +92,6 @@ test('cover and background templates still accept catalog metadata', () => {
       assert.ok(!html.includes('undefined'), game.slug);
     }
     assert.ok(renderer.cover(game).includes(game.name));
-    assert.ok(renderer.cover(game).includes(game.tagline));
+    assert.ok(renderer.cover(game).replace(/<[^>]*>/g, '').includes(game.tagline));
   }
 });
