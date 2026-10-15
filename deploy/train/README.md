@@ -4,9 +4,9 @@ SafeSweep (repo jev-minesweeper until its rename) and Typedoku (jev-sudoku-analy
 They run as containers on Train and are exposed through a free Cloudflare Tunnel.
 
 - Tunnel `jevplay-games` routes `minesweeper.jevplay.games` and `sudoku.jevplay.games` (pre-rename hosts)
-  to the containers over the private `games` network. Nothing is published on host ports. At cutover add
-  `safesweep.jevplay.games` and `typedoku.jevplay.games` to the same tunnel before the old hosts are redirected
-  (`deploy/REDIRECTS.md`).
+  to the containers over the private `games` network. Nothing is published on host ports. Only if option 2 below
+  (keep Train) is chosen: at cutover add `safesweep.jevplay.games` and `typedoku.jevplay.games` to the same tunnel
+  before the old hosts are redirected (`deploy/REDIRECTS.md`).
 - The compose service, directory and volume names below (`minesweeper`, `sudoku`, `*-data`) are deliberately
   unchanged: renaming a volume would orphan the SQLite data. Rename them only with a data migration.
 - Production env per game: `NODE_ENV=production`, `HOST=0.0.0.0`, `PORT=3000`,

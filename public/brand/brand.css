@@ -50,9 +50,9 @@
 
   /* Fixed semantics across all nine. Fills, strips and chart series only, never text:
      text that carries one of these meanings is ink with a non-colour cue (word, icon, shape). */
-  --human:var(--blue); --jev:var(--chart-jev);
+  --human:var(--blue); --jev:var(--amber);
   /* --danger is a dark magenta: plain magenta is 2.5:1 on grey; this is 4.9:1 on grey, 6.5:1 on paper. */
-  --ok:var(--blue); --warn:var(--chart-jev); --danger:#A8237F;
+  --ok:var(--blue); --warn:var(--amber); --danger:#A8237F;
 
   /* Type. Inter 700 for titles, Inter for running text, VT323 for UI and pixel text. */
   --font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -323,7 +323,7 @@ p{margin:0}
 }
 /* Identity strip along the top of a surface: the shared --human/--jev pair. */
 .jv-panel.is-human{border-top:4px solid var(--human)}
-.jv-panel.is-jev{border-top:4px solid var(--jev)}
+.jv-panel.is-jev{border-top:4px solid var(--chart-jev)}
 
 /* The quiet inline button. */
 .jv-link-btn{

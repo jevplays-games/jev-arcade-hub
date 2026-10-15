@@ -44,11 +44,19 @@
 .hub-tags{display:flex;flex-wrap:wrap;gap:8px}
 .hub-tags button{min-height:var(--tap);min-width:var(--tap);padding:0 14px;background:var(--grey);color:var(--ink);border:1px solid var(--ink);border-radius:0;font-family:var(--font-pixel);font-size:var(--fs-lg);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;box-shadow:var(--bevel),var(--drop-sm)}
 @media (max-width:600px){
-  /* One scrollable strip instead of three wrapped rows, so the first card stays near the top. */
+  /* One scrollable strip instead of three wrapped rows, so the first card stays near the top. Phone scrollbars are
+     overlays that never show, and the style has no fades, so the scroll cue is an ink arrow tab stuck to the right
+     edge (pink on ink, 6.9:1). Being sticky, it comes to rest after the last chip, so no chip stays covered. */
   .hub-tags{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(var(--gutter) * -1);padding:0 var(--gutter) 4px;scroll-padding-inline:var(--gutter);scrollbar-width:none}
   .hub-tags::-webkit-scrollbar{display:none}
+  .hub-tags::after{content:"\2192" / "";position:sticky;right:calc(var(--gutter) * -1);flex:none;display:grid;place-items:center;width:28px;min-height:var(--tap);margin-left:-8px;background:var(--ink);color:var(--pink);font-family:var(--font-pixel);font-size:var(--fs-lg);pointer-events:none}
   .hub-tags button{flex:none}
+  /* Where scroll-driven animations exist, the arrow fades out over the last stretch of the strip. */
+  @supports (animation-timeline:scroll()){
+    .hub-tags::after{animation:hub-tags-cue linear both;animation-timeline:scroll(nearest inline);animation-range:85% 100%}
+  }
 }
+@keyframes hub-tags-cue{to{opacity:0}}
 .hub-tags button:active{transform:translate(2px,2px);box-shadow:var(--bevel)}
 .hub-tags button[aria-pressed="true"]{background:var(--ink);color:var(--pink);box-shadow:var(--drop-sm)}
 

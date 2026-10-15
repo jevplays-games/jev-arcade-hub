@@ -50,7 +50,32 @@ test('urls default to <slug>.jevplay.games and honour overrides', () => {
   assert.equal(resolveUrl('typecheckers', { HUB_BASE_DOMAIN: 'example.com' }), 'https://typecheckers.example.com');
   assert.equal(envKey('tic-tac-typed'), 'GAME_URL_TIC_TAC_TYPED');
   assert.equal(resolveUrl('tic-tac-typed', { GAME_URL_TIC_TAC_TYPED: 'http://localhost:8787/x' }), 'http://localhost:8787');
-  assert.throws(() => resolveUrl('a', { GAME_URL_A: 'javascript:alert(1)' }));
+});
+
+test('a malformed GAME_URL_* override is skipped with a warning, not fatal', async () => {
+  const warnings = [];
+  const warn = (m) => warnings.push(m);
+  const game = { slug: 'noul-who', legacySlug: 'guess-who' };
+  // Bad new key: falls through to a good old key.
+  assert.equal(resolveUrl(game, { GAME_URL_NOUL_WHO: 'javascript:alert(1)', GAME_URL_GUESS_WHO: 'http://localhost:9000' }, warn), 'http://localhost:9000');
+  // Both bad: falls back to the legacy host.
+  assert.equal(resolveUrl(game, { GAME_URL_NOUL_WHO: 'not a url', GAME_URL_GUESS_WHO: 'ftp://x.example' }, warn), 'https://guess-who.jevplay.games');
+  assert.equal(resolveUrl('a', { GAME_URL_A: 'javascript:alert(1)' }, warn), 'https://a.jevplay.games');
+  assert.equal(warnings.length, 4);
+  assert.match(warnings[0], /^GAME_URL_NOUL_WHO: ignoring "javascript:alert\(1\)"/);
+  // The hub still starts and serves every card.
+  const original = console.warn;
+  console.warn = warn;
+  try {
+    await withHub({ env: { GAME_URL_TYPECRACK: '::bad::' } }, async (base) => {
+      const { games } = await (await fetch(`${base}/api/games`)).json();
+      assert.equal(games.length, 9);
+      assert.equal(games.find((g) => g.slug === 'typecrack').url, 'https://mastermind.jevplay.games');
+    });
+  } finally {
+    console.warn = original;
+  }
+  assert.match(warnings.at(-1), /^GAME_URL_TYPECRACK: ignoring/);
 });
 
 test('before cutover a card points at the host the game answers on today', () => {
@@ -170,8 +195,10 @@ test('brand.css is self-contained: pink/ink palette and self-hosted fonts with t
   assert.doesNotMatch(css, /JEV Arcade|JEV ARCADE|color-scheme:dark/);
   // D8 chart tokens, and the semantic tokens that must hold 3:1 as marks on grey/paper panels.
   assert.match(css, /--chart-jev:#7A4E0B; --chart-human:#155A80;/);
-  assert.match(css, /--jev:var\(--chart-jev\)/);
-  assert.match(css, /--warn:var\(--chart-jev\); --danger:#A8237F;/);
+  // D14: --jev/--warn stay amber (games put ink on them); only the Jev panel strip uses the dark chart amber.
+  assert.match(css, /--human:var\(--blue\); --jev:var\(--amber\);/);
+  assert.match(css, /--warn:var\(--amber\); --danger:#A8237F;/);
+  assert.match(css, /\.jv-panel\.is-jev\{border-top:4px solid var\(--chart-jev\)\}/);
   // Every url() is a same-origin /brand/ font: no remote fonts (CSP default-src 'self') and no data: URIs.
   const urls = [...css.matchAll(/url\(([^)]+)\)/g)].map((m) => m[1]);
   assert.deepEqual(urls.sort(), ['/brand/inter-var.woff2', '/brand/vt323.woff2']);
