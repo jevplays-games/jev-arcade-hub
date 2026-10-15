@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges" role="img">
+  <title>Typecheckers</title>
+  <rect width="64" height="64" fill="#1E1E1E"/>
+  <rect x="4" y="4" width="56" height="56" fill="#F386A1"/>
+  <rect x="8" y="8" width="48" height="48" fill="#DEDEDE"/>
+  <path d="M8 8H32V32H8ZM32 32H56V56H32Z" fill="#1E1E1E"/>
+  <path d="M10 14H14V18H18V14H22V18H26V14H30V26H10Z" fill="#F386A1"/>
+</svg>

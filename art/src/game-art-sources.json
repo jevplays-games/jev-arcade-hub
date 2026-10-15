@@ -1,0 +1,123 @@
+{
+  "note": "Per-game art the hub reuses unchanged from each game's approved art branch. Re-copy with the same commit if a game re-renders; never redraw here.",
+  "games": {
+    "noul-who": {
+      "repo": "jev-guess-who",
+      "branch": "rebrand/jev-guess-who-15",
+      "commit": "e4918ead798928acaf72ea8ddd7236ddd93c2e2c",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "2a112461716a61efd73c8da248883ca80a413d941eb90dec4a8dd8e0d38b21fb"
+      },
+      "og": {
+        "from": "dist-hub/noul-who.png",
+        "sha256": "29472a9cdf6de485a8af839f71adbcc7edad321acab1b399736f6f1afa02cf36"
+      },
+      "ogAlt": "Noul Who on a pink halftone desktop with a 4-by-3 grid of game portraits, six crossed out and Lumi outlined in pink, a NOUL window asking \u201cis it Lumi?\u201d, a friendly Jev robot, and jevplay.games."
+    },
+    "choice-four": {
+      "repo": "jev-connect-four",
+      "branch": "rebrand/jev-connect-four-16",
+      "commit": "9e6b1f3d39ed0af1f9b6a19a7cfaeeec3f401c76",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "378222ec7d96521880a353d34519fbfef3bb70e9d2558d8cec5836d8ab069263"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "b04a6932abd74b865b852d8d816e1f2cf3e6ace468f447504cb75a2f07e4d961"
+      }
+    },
+    "typecrack": {
+      "repo": "jev-mastermind",
+      "branch": "rebrand/jev-mastermind-14",
+      "commit": "c5852fbada523cdd1f2f04c815468304cfefca30",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "1f40342f4470a068cdb11728dee62674609b168fd5d6df393a79bb9186e2871d"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "d748402c02238b4f0987eb457d3c8bfa8e1ebc6e229eb8ca71ad7a809bb57b59"
+      }
+    },
+    "box-score": {
+      "repo": "jev-dots-and-boxes",
+      "branch": "rebrand/jev-dots-and-boxes-14",
+      "commit": "553266c9369e7c0d9108af2955105fb5e21815a1",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "d5e3adfbfd40ab1b0c3bf79b7d74afa0f5871dc1c10a155ff95d8397d1dc0862"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "1b21c2d6f633297508cf1cfc33fbcaebd2f221a94ac60052e0476ea225c0372c"
+      }
+    },
+    "safesweep": {
+      "repo": "jev-minesweeper",
+      "branch": "rebrand/jev-minesweeper-11",
+      "commit": "06ad11aaddd03264d50f5d349513ba576b8c4df3",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "8ff0aa5c221849930d16e307eda68b65c7d58f9e92d84c4292e430d20ec107e7"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "98b7d24e5976ce3312636cec65430f6199480663618a19da6793e2f54c483ead"
+      }
+    },
+    "typedoku": {
+      "repo": "jev-sudoku-analytics",
+      "branch": "rebrand/jev-sudoku-analytics-12",
+      "commit": "0ca80a022e5ae0ac54a84331603a8cac3df5794e",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "e79522c169171940ae4055b805388037b44ee5e1efe277a9993549c1fbbc3f1e"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "4a32e18da570a8baa2052b3b4226d5a27d4bf02f23faa19681069fa0a35b0ecb"
+      }
+    },
+    "tic-tac-typed": {
+      "repo": "jev-tic-tac-toe",
+      "branch": "rebrand/jev-tic-tac-toe-16",
+      "commit": "97d3b6a4b22c714edd06b817c87b3d9c2510d0fb",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "9cb571b05c55edce9c99c11f55446b980c73487acf6354dde41f7df89c9c6c2b"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "94bb14cb212e2a91301dfa0aac0fcad00855e6f047b933bb4533def0cf2e9fa8"
+      }
+    },
+    "typecheckers": {
+      "repo": "jev-checkers-analytics",
+      "branch": "rebrand/jev-checkers-analytics-12",
+      "commit": "44a1d41880871ea99217114e4d8e04d89f622ed0",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "d1734acead981b12b8062518b2669ad99fece8d4514a1908774f8d2157b8bebf"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "a54c0323fbf0ededc3af8b87ec8664b0823c606506780c3bb1053f5d14ea6dc1"
+      }
+    },
+    "slide-score": {
+      "repo": "jev-2048-arcade",
+      "branch": "rebrand/jev-2048-arcade-11",
+      "commit": "f25bbb41e664797b244e141a8cca403e8f918967",
+      "icon": {
+        "from": "public/brand/icon.svg",
+        "sha256": "e3d4e2ce9d729ddce95dbbf70ce871ad55f2bd391e3c4f125df09dffc198d65c"
+      },
+      "og": {
+        "from": "public/brand/og.png",
+        "sha256": "9a6900f633371b649986d8f579f55621dfd8ccab8cb2d3d02fb329684e7e4c03"
+      }
+    }
+  }
+}
