@@ -229,16 +229,23 @@ test('serves hub social art and descriptive Open Graph metadata', async () => {
 
 test('shared header files: sheet takes focus, header never hides or clips focus, brand link goes to the hub', async () => {
   const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
-  // The open sheet is visible at once, or focus() into it is rejected while visibility is still transitioning.
-  assert.match(css, /\.jv-sheet\.is-open\{[^}]*visibility:visible;transition:transform \.18s steps\(4,end\),visibility 0s\}/);
-  // A control scrolled into view by focus clears the sticky header.
-  assert.match(css, /html\{[^}]*scroll-padding-top:calc\(var\(--header-h\) \+ var\(--sa-t\) \+ var\(--s4\)\)/);
-  // The scrolling header strip leaves room for the focus ring without growing the header.
-  assert.match(css, /#jv-controls\{[^}]*overflow-x:auto;[^}]*padding:calc\(var\(--focus-w\) \+ var\(--focus-offset\)\);margin-block:calc\(-1 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\)\}/);
+  // The open sheet is visible at once, or focus() into it is rejected while visibility is still transitioning:
+  // visibility is not in the opening transition, so reduced motion (every duration .01ms) cannot delay it either.
+  assert.match(css, /\.jv-sheet\.is-open\{transform:translateY\(0\);visibility:visible;transition:transform \.18s steps\(4,end\)\}/);
+  // Targets in main stop clear of the sticky header through scroll-margin-top. No html{scroll-padding-top}: it counts
+  // the header's own controls as hidden, so focus landing in the header (Shift+Tab, closing the menu) jumps the page.
+  const rules = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(rules, /scroll-padding/);
+  assert.match(rules, /\.jv-main,\.jv-main \[id\],\.jv-main :is\(h1,h2,h3,a\[href\],button,input,select,textarea,summary,\[tabindex\]\)\{scroll-margin-top:calc\(var\(--header-h\) \+ var\(--sa-t\) \+ var\(--s2\)\)\}/);
+  assert.doesNotMatch(rules, /jv-header[^{}]*\{[^}]*scroll-margin/, 'never on header controls');
+  // The scrolling header strip leaves room for the focus ring; the negative margin and the wider cap cancel it in layout.
+  assert.match(css, /#jv-controls\{max-width:calc\(min\(50vw,46rem\) \+ 2 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\);overflow-x:auto;scrollbar-width:none;padding:calc\(var\(--focus-w\) \+ var\(--focus-offset\)\);margin:calc\(-1 \* \(var\(--focus-w\) \+ var\(--focus-offset\)\)\)\}/);
   const js = readFileSync(new URL('../public/brand/brand.js', import.meta.url), 'utf8');
   assert.match(js, /export const HUB_URL = 'https:\/\/jevplay\.games\/';/);
   assert.match(js, /window\.top === window\.self\) brand\.setAttribute\('href', HUB_URL\)/, 'outside a Discord frame only');
   assert.match(js, /else \{ sheet\.setAttribute\('tabindex', '-1'\); sheet\.focus\(\); \}/, 'an empty sheet still takes focus');
+  // Closing returns focus to the menu button without scrolling (Safari leaves focus elsewhere on tap).
+  assert.match(js, /const target = button && button\.getClientRects\(\)\.length > 0 \? button : lastFocus;\n  target\?\.focus\(\{ preventScroll: true \}\);/);
 });
 
 test('header status chip wraps below 600px instead of clipping mid-letter', () => {
@@ -257,7 +264,9 @@ test('landing keyboard focus: a tag chip scrolls clear of the arrow tab, a card 
   assert.match(css, /\.hub-tags::after\{[^}]*width:28px/);
   // Browsers leave a half-visible chip in place on focus; hub.js finishes the scroll (honouring that padding).
   assert.match(js, /tagsEl\.addEventListener\('focusin', \(event\) => event\.target\.scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)\)/);
-  assert.match(css, /html\{scroll-padding-bottom:var\(--s3\)\}/);
+  // The hub has no sticky header, so html-level scroll padding cannot make it jump (unlike the games: brand.css).
+  assert.match(css, /^html\{scroll-padding-block:var\(--s3\)\}$/m);
+  assert.doesNotMatch(css, /position:sticky;top/, 'no sticky header on the hub');
   // With no tags (the game list failed to load) the strip shows no orphan arrow tab.
   assert.match(css, /\.hub-tags:empty::after\{content:none\}/);
 });

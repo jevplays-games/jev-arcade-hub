@@ -19,7 +19,11 @@ export function closeSheet() {
   sheet.classList.remove('is-open');
   scrim?.classList.remove('is-open');
   button?.setAttribute('aria-expanded', 'false');
-  lastFocus?.focus();
+  /* Focus goes back to the menu button that opened the sheet, not to whatever had focus before (Safari does not
+     focus a tapped button, so that can be a control far down the page), and never scrolls: the button sits in the
+     sticky header. lastFocus covers a sheet closed because the header became wide and the button is hidden. */
+  const target = button && button.getClientRects().length > 0 ? button : lastFocus;
+  target?.focus({ preventScroll: true });
   lastFocus = null;
 }
 

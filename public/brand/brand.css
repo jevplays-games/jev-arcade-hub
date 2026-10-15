@@ -118,9 +118,11 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
-/* The sticky header must not cover a control that focus or an anchor scrolls into view: the header
-   height plus the focus ring and a little air. */
-html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--header-h) + var(--sa-t) + var(--s4))}
+html{-webkit-text-size-adjust:100%}
+/* The sticky header must not cover what focus, a skip link or a script scrolls into view in main: those targets
+   stop 8px below it. Set on the targets, never as html{scroll-padding-top}: that also counts the header's own
+   controls as hidden, so the page jumps whenever focus lands in the header (Shift+Tab into it, closing the menu). */
+.jv-main,.jv-main [id],.jv-main :is(h1,h2,h3,a[href],button,input,select,textarea,summary,[tabindex]){scroll-margin-top:calc(var(--header-h) + var(--sa-t) + var(--s2))}
 body{
   margin:0; font-family:var(--font); font-size:var(--fs-md); line-height:var(--lh);
   color:var(--text); background:var(--bg); font-synthesis:none;
@@ -274,9 +276,10 @@ p{margin:0}
   display:flex;flex-direction:column;gap:var(--s2);
   max-height:80dvh;overflow:auto;
 }
-/* Visible at once on open, so brand.js can move focus into it (a hidden element cannot take focus);
-   hiding still waits for the slide-out. */
-.jv-sheet.is-open{transform:translateY(0);visibility:visible;transition:transform .18s steps(4,end),visibility 0s}
+/* Visible at once on open, so brand.js can move focus into it (a hidden element cannot take focus): visibility is
+   not transitioned on the way in, even when reduced motion shortens every duration; hiding still waits for the
+   slide-out. */
+.jv-sheet.is-open{transform:translateY(0);visibility:visible;transition:transform .18s steps(4,end)}
 .jv-scrim{position:fixed;inset:0;z-index:55;background:rgba(30,30,30,.55);opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s}
 .jv-scrim.is-open{opacity:1;visibility:visible}
 .jv-sheet-item{
@@ -395,9 +398,9 @@ p{margin:0}
      plus brand, title and status chip) is the worst case: 50vw leaves the title whole across
      900-1100, and 46rem clears its 730px need outright on wide screens. */
   /* The padding is room for the focus ring (--focus-w + --focus-offset): the strip scrolls, so it
-     clips, and a ring drawn outside a tab would be cut off. The matching negative block margin keeps
-     the strip's layout height at 44px, so the header does not grow (it is 44px on short screens). */
-  #jv-controls{max-width:min(50vw,46rem);overflow-x:auto;scrollbar-width:none;padding:calc(var(--focus-w) + var(--focus-offset));margin-block:calc(-1 * (var(--focus-w) + var(--focus-offset)))}
+     clips, and a ring drawn outside a tab would be cut off. The matching negative margin and the wider cap
+     cancel it in layout, so every tab sits exactly where it did and the header does not grow. */
+  #jv-controls{max-width:calc(min(50vw,46rem) + 2 * (var(--focus-w) + var(--focus-offset)));overflow-x:auto;scrollbar-width:none;padding:calc(var(--focus-w) + var(--focus-offset));margin:calc(-1 * (var(--focus-w) + var(--focus-offset)))}
   #jv-controls::-webkit-scrollbar{display:none}
   .jv-main{padding:var(--s5) var(--s5) calc(var(--s7) + var(--sa-b))}
 }

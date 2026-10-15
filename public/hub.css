@@ -1,6 +1,9 @@
 /* Hub layout. Colour, type, spacing and the pixel-window kit come from /brand/brand.css. */
-/* A card that keyboard focus scrolls into view keeps its whole focus ring (3px + 3px offset) above the bottom edge. */
-html{scroll-padding-bottom:var(--s3)}
+/* Keyboard focus keeps a control's whole ring (3px + 3px offset) inside the viewport, also for a control already in view
+   but within 12px of an edge (a scroll margin on the targets only acts once the browser decides to scroll). Safe on html
+   here because the hub has no sticky header: brand.css keeps scroll padding off html for the games, whose sticky header
+   would sit inside the padded band and make the page jump whenever focus lands in it. */
+html{scroll-padding-block:var(--s3)}
 .hub{
   margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--font);
   --gutter:16px;
