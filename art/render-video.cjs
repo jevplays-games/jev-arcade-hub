@@ -1,4 +1,4 @@
-// Records the 10 second, 640x360 Activity preview video for each game (Discord: mp4, <= 0.5 MB).
+// Records the 10 second, 640x360 Activity preview video for each game and hub (Discord: mp4, <= 0.5 MB).
 // usage: node art/render-video.cjs <playwright-module-dir> <chromium-executable> [outDir] [slug...]
 // Needs ffmpeg on PATH. The scene is the cover artwork, animated with CSS only. With no slug it renders all ten
 // (nine games plus the hub); name slugs to render only those.
@@ -6,7 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { pathToFileURL } = require('url');
-const { ARCADE, GAMES, cover } = require('./render-art.cjs');
+const { BRAND, GAMES } = require('./brand.cjs');
+const { cover } = require('./render-art.cjs');
 const [pwDir, exe, outArg, ...only] = process.argv.slice(2);
 if (!pwDir || !exe) { console.error('usage: node art/render-video.cjs <playwright-dir> <chromium-exe> [outDir] [slug...]'); process.exit(1); }
 const { chromium } = require(pwDir);
@@ -15,18 +16,15 @@ fs.mkdirSync(outDir, { recursive: true });
 const CRF = process.env.VIDEO_CRF || '24';
 
 // The cover page, scaled to 640x360, animated through the cover's own class names: the tile rises in and settles,
-// title, tagline and chip follow, the glow breathes and a shine crosses the emblem twice. Grain is dropped from
-// the page (it costs bitrate); the emblem keeps its own.
+// title, tagline and chip follow, and a shine crosses the emblem twice.
 const scene = g => {
   const html = cover(g);
   const style = `<style>
     html,body{width:640px;height:360px;overflow:hidden;background:#0a0b13}
     body{transform:scale(.625);transform-origin:0 0;width:1024px;height:576px}
-    .grain{display:none}
     @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
     @keyframes tileIn{0%{opacity:0;transform:translateY(90px) scale(.86)}60%{opacity:1;transform:translateY(-8px) scale(1.015)}100%{opacity:1;transform:none}}
     @keyframes fadein{from{opacity:0}to{opacity:1}}
-    @keyframes breathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
     @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes shine{0%{left:-60%;opacity:1}35%,100%{left:130%;opacity:1}}
     @keyframes fadeto{from{opacity:0}to{opacity:1}}
@@ -36,7 +34,6 @@ const scene = g => {
     .chip{animation:rise .7s 1.5s both cubic-bezier(.2,.8,.2,1)}
     .url{animation:fadein .8s 2s both}
     .hero{animation:tileIn 1.3s .3s both cubic-bezier(.2,.8,.25,1)}
-    .main .halo{animation:breathe 3.2s 1.6s infinite ease-in-out}
     .main>div:last-child{animation:bob 4s 1.6s infinite ease-in-out}
     .s1{animation:fadein 1.2s .9s both}
     .s2{animation:fadein 1.2s 1.2s both}
@@ -49,7 +46,7 @@ const scene = g => {
 
 (async () => {
   const browser = await chromium.launch({ executablePath: exe });
-  for (const g of [...GAMES, ARCADE].filter(x => !only.length || only.includes(x.slug))) {
+  for (const g of [...GAMES, BRAND].filter(x => !only.length || only.includes(x.slug))) {
     const tmp = path.join(outDir, `.rec-${g.slug}`);
     fs.rmSync(tmp, { recursive: true, force: true });
     fs.mkdirSync(tmp, { recursive: true });

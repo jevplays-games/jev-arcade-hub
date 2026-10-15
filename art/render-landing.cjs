@@ -1,15 +1,16 @@
-// Offline landing artwork. Uses the Activity renderer's exact boards and brand.
+// Offline hub hero, social card and icon; defaults to art/out.
 // usage: node art/render-landing.cjs <playwright-dir> <chromium-exe> [outDir]
 const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { ARCADE, GAMES, MOTIFS, shell, mark } = require('./render-art.cjs');
+const { BRAND, GAMES } = require('./brand.cjs');
+const { MOTIFS, shell, svg } = require('./render-art.cjs');
 const emblemDir = path.join(__dirname, 'emblems');
 const emblemUrl = slug => {
   const file = path.join(emblemDir, `${slug}.svg`);
   return fs.existsSync(file) ? pathToFileURL(file).href : null;
 };
-const tagline = 'Nine games. Pick one. Play Jev.';
+const mark = svg(BRAND.slug, '100%');
 
 function landing(width, height, icon = false) {
   const og = width === 1200;
@@ -19,20 +20,19 @@ function landing(width, height, icon = false) {
   const mosaic = GAMES.map(g => {
     const url = emblemUrl(g.slug);
     return url
-      ? `<div class="tile emblem" style="--edge:${g.accent}"><img src="${url}" alt=""></div>`
-      : `<div class="tile" style="--edge:${g.accent}"><svg viewBox="0 0 100 100">${MOTIFS[g.slug]()}</svg></div>`;
+      ? `<div class="tile emblem" style="--edge:${g.accent || '#a99bff'}"><img src="${url}" alt=""></div>`
+      : `<div class="tile" style="--edge:${g.accent || '#a99bff'}"><svg viewBox="0 0 100 100">${MOTIFS[g.slug]()}</svg></div>`;
   }).join('');
-  const arcade = emblemUrl('arcade');
-  const logo = arcade ? `<img class="logo" src="${arcade}" alt="">` : mark;
+  const hub = emblemUrl('hub');
+  const logo = hub ? `<img class="logo" src="${hub}" alt="">` : mark;
   const content = icon
-    ? `<div class="icon">${arcade ? `<img src="${arcade}" alt="">` : mark}</div>` : `
-    <div class="brand">${logo}<span>${ARCADE.brand}</span></div>
-    <div class="copy"><h1>jevplay<br>.games</h1><p>${tagline}</p>
+    ? `<div class="icon">${hub ? `<img src="${hub}" alt="">` : mark}</div>` : `
+    <div class="brand">${logo}<span>${BRAND.tag}</span></div>
+    <div class="copy"><h1>${BRAND.name.replace('.', '<br>.')}</h1><p>${BRAND.tagline}</p>
       <div class="chip"><i></i>Play Jev</div></div>
-    <div class="mosaic">${mosaic}</div><footer>${ARCADE.url}</footer>`;
+    <div class="mosaic">${mosaic}</div><footer>${BRAND.url}</footer>`;
   return shell(`<style>
     body{width:${width}px;height:${height}px}
-    .glow{background:radial-gradient(ellipse at 82% 20%,#a99bff33,transparent 60%)}
     .grid{mask-image:radial-gradient(ellipse at 70% 45%,#000,transparent 75%)}
     .brand{position:absolute;left:${og ? 64 : 96}px;top:${og ? 48 : 80}px;display:flex;align-items:center;gap:16px;font-size:${og ? 17 : 20}px;font-weight:700;letter-spacing:.14em;color:#a3aabd}
     .brand svg,.brand .logo{width:${og ? 56 : 76}px;height:${og ? 56 : 76}px;border-radius:22%;box-shadow:0 6px 16px #00000088,0 0 18px #a99bff55}
@@ -49,8 +49,8 @@ function landing(width, height, icon = false) {
     footer{position:absolute;left:${og ? 64 : 96}px;bottom:${og ? 32 : 64}px;color:#78809a;font-size:${og ? 15 : 18}px;letter-spacing:.06em}
     .icon{position:absolute;inset:0}
     .icon img,.icon svg{display:block;width:1024px;height:1024px}
-    ${icon ? '.grid,.glow{display:none}' : ''}
-  </style>${content}`, ARCADE.accent);
+    ${icon ? '.grid{display:none}' : ''}
+  </style>${content}`, '#a99bff');
 }
 
 async function main() {
@@ -60,11 +60,11 @@ async function main() {
   const moduleDir = fs.existsSync(path.join(pwDir, 'node_modules', 'playwright-core'))
     ? path.join(pwDir, 'node_modules', 'playwright-core') : pwDir;
   const { chromium } = require(path.resolve(moduleDir));
-  const outDir = path.resolve(outArg || path.join(__dirname, '..', 'public', 'brand'));
+  const outDir = path.resolve(outArg || path.join(__dirname, 'out'));
   fs.mkdirSync(outDir, { recursive: true });
   const browser = await chromium.launch({ executablePath: exe });
   try {
-    for (const [name, width, height, icon] of [['arcade-hero', 1600, 900, false], ['arcade-og', 1200, 630, false], ['arcade-icon-1024', 1024, 1024, true]]) {
+    for (const [name, width, height, icon] of [['hub-hero', 1600, 900, false], ['hub-og', 1200, 630, false], ['hub-icon-1024', 1024, 1024, true]]) {
       const html = path.join(outDir, `.${name}.html`);
       const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
       try {
@@ -72,7 +72,7 @@ async function main() {
         await page.goto(pathToFileURL(html).href);
         await page.evaluate(() => document.fonts.ready);
         await page.screenshot({ path: path.join(outDir, `${name}.png`) });
-        if (name === 'arcade-icon-1024') fs.copyFileSync(path.join(outDir, `${name}.png`), path.join(outDir, 'discord-icon-1024.png'));
+        if (name === 'hub-icon-1024') fs.copyFileSync(path.join(outDir, `${name}.png`), path.join(outDir, 'discord-icon-1024.png'));
         console.log('rendered', name, `${width}x${height}`);
       } finally {
         await page.close();

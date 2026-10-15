@@ -121,12 +121,4 @@
     <circle cx="68" cy="170" r="4" opacity="0.6"/>
     <circle cx="450" cy="150" r="3.5" opacity="0.45"/>
   </g>
-
-  <!-- 6. J badge -->
-  <g transform="translate(398 398)">
-    <circle r="50" fill="#0a0b13"/>
-    <circle r="41" fill="#161927"/>
-    <circle r="41" fill="none" stroke="#fb923c" stroke-opacity="0.7" stroke-width="3"/>
-    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
-  </g>
 </svg>

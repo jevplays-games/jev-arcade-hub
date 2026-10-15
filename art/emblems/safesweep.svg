@@ -102,11 +102,4 @@
     <circle cx="452" cy="130" r="4" opacity="0.6"/>
     <circle cx="70" cy="402" r="3.5" opacity="0.45"/>
   </g>
-
-  <g transform="translate(398 398)">
-    <circle r="50" fill="#0a0b13"/>
-    <circle r="41" fill="#161927"/>
-    <circle r="41" fill="none" stroke="#4ade80" stroke-opacity="0.7" stroke-width="3"/>
-    <path d="M7 -22V5.5a14.5 14.5 0 0 1-29 0" fill="none" stroke="#eef0f7" stroke-width="9.5" stroke-linecap="round" transform="translate(7 1)"/>
-  </g>
 </svg>
