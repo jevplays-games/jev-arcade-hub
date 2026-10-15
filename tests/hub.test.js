@@ -248,3 +248,14 @@ test('header status chip wraps below 600px instead of clipping mid-letter', () =
   // The base rule and the >=600px rule are unchanged (pixel-identical header at 600/900/1440).
   assert.match(css, /flex:0 1 auto;min-width:0;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;/);
 });
+
+test('landing keyboard focus: a tag chip scrolls clear of the arrow tab, a card keeps its whole focus ring', () => {
+  const css = readFileSync(new URL('../public/hub.css', import.meta.url), 'utf8');
+  const js = readFileSync(new URL('../public/hub.js', import.meta.url), 'utf8');
+  // The phone strip's end scroll padding is the gutter plus the 28px arrow tab.
+  assert.match(css, /\.hub-tags\{[^}]*scroll-padding-inline:var\(--gutter\) calc\(var\(--gutter\) \+ 28px\)/);
+  assert.match(css, /\.hub-tags::after\{[^}]*width:28px/);
+  // Browsers leave a half-visible chip in place on focus; hub.js finishes the scroll (honouring that padding).
+  assert.match(js, /tagsEl\.addEventListener\('focusin', \(event\) => event\.target\.scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)\)/);
+  assert.match(css, /html\{scroll-padding-bottom:var\(--s3\)\}/);
+});
