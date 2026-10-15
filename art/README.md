@@ -31,7 +31,7 @@ pins its sha256.
 | Path | What it is |
 |---|---|
 | `src/game-icons/<slug>.svg` | Each game's approved `public/brand/icon.svg`, copied unchanged. The drawing every hub asset uses for that game. |
-| `out/<slug>-og.png` | Each game's approved social card, copied unchanged (Noul Who: its `dist-hub/noul-who.png`, also served at `public/brand/og/noul-who.png`). |
+| `out/<slug>-og.png` | Each game's approved social card, copied unchanged (Noul Who: its `dist-hub/noul-who.png`, also served at `public/brand/og/noul-who.png`). `out/hub-og.png` is the hub's own card, a copy of `public/brand/og.png`. |
 | `src/game-art-sources.json` | Repo, branch, commit and sha256 for each copied file. `node art/verify-game-art.cjs` checks them. |
 | `src/jev-robot.svg` | The canonical robot (D15). |
 | `emblems/<slug>.svg` | The ten 512px emblems: the game's drawing on a pink halftone ground inside the 46% circle Discord crops to; `hub.svg` is Jev in a JEVPLAY.GAMES window. Presentation attributes only. |
@@ -52,7 +52,7 @@ node art/sync-emblems.cjs                                     # emblems re-embed
 node art/render-icons.cjs   <playwright-dir> <chromium-exe>   # out/<slug>-icon-1024.png, out/icons-sheet.png, public/brand/games/<slug>.png
 node art/render-art.cjs     <playwright-dir> <chromium-exe>   # out/<slug>-cover.png, out/<slug>-background.png (1024x576)
 node art/render-video.cjs   <playwright-dir> <chromium-exe>   # out/<slug>-preview.mp4 (640x360, 10 s, <= 0.5 MB; needs ffmpeg)
-node art/render-landing.cjs <playwright-dir> <chromium-exe>   # public/brand/{hero,og,favicon-32,apple-touch-icon}.png, icon.svg, mark.svg
+node art/render-landing.cjs <playwright-dir> <chromium-exe>   # public/brand/{hero,og,favicon-32,apple-touch-icon}.png, icon.svg, mark.svg, out/hub-og.png
 node assets/src/render.cjs  <playwright-dir> <chromium-exe>   # assets/banner.png (2560x840), assets/social-preview.png (1280x640)
 node art/verify-game-art.cjs                                  # copied game art still matches its recorded hash
 ```
@@ -61,7 +61,7 @@ The renders are deterministic: re-running a script leaves unchanged art byte-ide
 exactly what a change touched.
 
 Run `render-icons.cjs` before `render-landing.cjs`: `public/brand/icon-1024.png` is a copy of
-`out/hub-icon-1024.png`. The 32 and 180px icons are point-sampled from a 16x render and snapped to
+`out/hub-icon-1024.png`, and `out/hub-og.png` is a copy of `public/brand/og.png` (a test pins both copies). The 32 and 180px icons are point-sampled from a 16x render and snapped to
 `icon.svg`'s own hexes, so they are pixel-exact.
 
 ## Checks before uploading

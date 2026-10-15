@@ -71,6 +71,14 @@ test('approved game art matches pinned hashes', () => {
   assert.deepEqual(verifier.verifyGameArt(), []);
 });
 
+test('the hub card and icon in art/out are the current hub art, not retired art', () => {
+  // art/out/hub-og.png was once a renamed copy of the retired "JevPlay Arcade" card; render-landing.cjs now copies og.png.
+  const sha = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+  const brandFile = name => fileURLToPath(new URL(`../public/brand/${name}`, import.meta.url));
+  assert.equal(sha(path.join(root, 'out', 'hub-og.png')), sha(brandFile('og.png')));
+  assert.equal(sha(path.join(root, 'out', 'hub-icon-1024.png')), sha(brandFile('icon-1024.png')));
+});
+
 test('every art/out file belongs to a catalog slug or the hub', () => {
   const kinds = ['icon-1024.png', 'cover.png', 'background.png', 'og.png', 'preview.mp4'];
   const expected = [...slugs.flatMap(slug => kinds.map(kind => `${slug}-${kind}`)), 'icons-sheet.png'].sort();

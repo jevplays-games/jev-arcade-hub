@@ -114,6 +114,8 @@ async function main() {
       } finally { await page.close(); fs.rmSync(html, { force: true }); }
     }
   } finally { await browser.close(); }
+  // The hub's Discord kit keeps its social card beside the games' (art/out/<slug>-og.png): the same bytes as og.png.
+  if (outDir === brandDir) fs.copyFileSync(path.join(outDir, 'og.png'), path.join(__dirname, 'out/hub-og.png'));
 }
 module.exports = { landing, iconSvg, writeStaticAssets };
 if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
