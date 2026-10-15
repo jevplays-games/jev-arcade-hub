@@ -356,6 +356,15 @@ p{margin:0}
 @media(min-width:1920px){:root{--shell:1680px}}
 @media(min-width:2400px){:root{--shell:1920px}}
 
+/* Below 600px the status chip wraps to a second line instead of clipping mid-letter: its text
+   (often provenance, e.g. "LOCAL OPPONENT / NOT JEV") must never be cut. It keeps the flex row
+   (dot, gaps), drops the 40vw cap, and never shrinks below its longest word, so the game title
+   gives way first (down to its 3.5rem floor). Under 360px the chip's type steps down so the longest
+   game status still fits in two lines of the 56px header. */
+@media(max-width:599.98px){
+  .jv-status{white-space:normal;line-height:1.05;padding-block:4px;max-width:none;min-width:min-content}
+}
+@media(max-width:359.98px){.jv-status{font-size:var(--fs-sm);letter-spacing:0}}
 /* ---------- Breakpoints: 600 / 900 / 1280, shared by all nine ---------- */
 @media(min-width:600px){
   .jv-header{padding-inline:var(--s4);gap:var(--s3)}

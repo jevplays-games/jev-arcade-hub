@@ -240,3 +240,11 @@ test('shared header files: sheet takes focus, header never hides or clips focus,
   assert.match(js, /window\.top === window\.self\) brand\.setAttribute\('href', HUB_URL\)/, 'outside a Discord frame only');
   assert.match(js, /else \{ sheet\.setAttribute\('tabindex', '-1'\); sheet\.focus\(\); \}/, 'an empty sheet still takes focus');
 });
+
+test('header status chip wraps below 600px instead of clipping mid-letter', () => {
+  const css = readFileSync(new URL('../public/brand/brand.css', import.meta.url), 'utf8');
+  assert.match(css, /@media\(max-width:599\.98px\)\{\n  \.jv-status\{white-space:normal;line-height:1\.05;padding-block:4px;max-width:none;min-width:min-content\}\n\}/);
+  assert.match(css, /@media\(max-width:359\.98px\)\{\.jv-status\{font-size:var\(--fs-sm\);letter-spacing:0\}\}/);
+  // The base rule and the >=600px rule are unchanged (pixel-identical header at 600/900/1440).
+  assert.match(css, /flex:0 1 auto;min-width:0;max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;/);
+});

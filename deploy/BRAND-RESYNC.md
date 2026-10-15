@@ -5,10 +5,10 @@ Two files are shared by the hub and the nine games and are owned here: `public/b
 
 | File | Games have now | Hub file to copy |
 |---|---|---|
-| `public/brand/brand.css` | `55744adb…` (frozen snapshot) | `6e42bc8aeb4cd44d6e2dbe15f62690d7704dfb4c939bc9f17371d4bafb0d63da` |
+| `public/brand/brand.css` | `55744adb…` (frozen snapshot) | `95b20a25fdfe9dec6314ece3145e6673ece3e024d8cb6c49c937f3b9d27ce071` |
 | `public/brand/brand.js` | `34a9382d…` | `773b0a765b1c35a812de489a04a85f4967862df1f03790d8291bbfc1781d9e04` |
 
-`brand.css` is the snapshot plus the D8 chart tokens, D14, and the header focus fixes below. `brand.js` is the
+`brand.css` is the snapshot plus the D8 chart tokens, D14, the header focus fixes and the status-chip fix below. `brand.js` is the
 games' file plus the focus and brand-link fixes below. **No game markup changes are needed**: in particular,
 do not hard-code `https://jevplay.games/` into a game's `.jv-brand` link, because inside a Discord Activity
 the link must stay on the game's own root (brand.js only rewrites it outside a frame).
@@ -24,6 +24,13 @@ the link must stay on the game's own root (brand.js only rewrites it outside a f
 - **Header focus rings are not clipped:** from 900px `#jv-controls` scrolls horizontally, so it clipped the
   rings of the tabs and account buttons inside it. It now has ring-sized padding with a matching negative
   block margin, so the header height does not change (brand.css).
+- **The header status chip no longer clips mid-letter below 600px** (Choice Four verifier, D2). The chip had
+  `overflow:hidden;text-overflow:ellipsis` on a `display:flex` box, where the ellipsis does nothing, and a
+  40vw cap, so "WAITING FOR SERVE", "BROWSER PRAC" and the like were cut off. A new block below 600px lets it
+  wrap to two lines, drops the cap and stops it shrinking below its longest word; under 360px its type steps
+  down to `--fs-sm`. Tested with every game's real header and the longest chip strings at 320, 359, 360, 375,
+  390, 414 and 599 px: 0 clipped and 0 truncated (before: 46 of 84 clipped at 320/390/599). The header is
+  pixel-identical at 600, 900 and 1440 (brand.css).
 - **"jevplay.games home" goes to the hub:** brand.js sets `.jv-brand` to `https://jevplay.games/` when the
   page is not framed; in a Discord Activity it stays on the game's root (brand.js).
 
