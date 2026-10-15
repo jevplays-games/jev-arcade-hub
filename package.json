@@ -1,7 +1,8 @@
 {
-  "name": "jev-arcade-hub",
+  "name": "jevplay-games",
   "version": "1.0.0",
-  "description": "Front door for the JEV Arcade: a launcher that links to each game's own subdomain.",
+  "description": "Front door for jevplay.games: a launcher that links to each game's own subdomain.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "main": "server.js",

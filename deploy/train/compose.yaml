@@ -1,17 +1,18 @@
-# Runs Minesweeper and Sudoku on Train behind a Cloudflare Tunnel.
+# Runs SafeSweep and Typedoku on Train behind a Cloudflare Tunnel.
+# Service, directory and volume names keep their pre-rename values on purpose (renaming a volume orphans its data).
 # Lives at ~/jevplay-games on the server. Secrets are NOT stored here:
 #   minesweeper.env, sudoku.env  (mode 600, built from each game's .env)
 #   cloudflared/                 (cert.pem, <tunnel-id>.json, config.yml; mode 600)
 name: jevplay-games
 services:
   minesweeper:
-    build: ./minesweeper          # copy of jev-minesweeper (Dockerfile in that repo)
+    build: ./minesweeper          # copy of jev-minesweeper; no Dockerfile on its main since 2026-09-30, see README
     env_file: minesweeper.env
     volumes: [minesweeper-data:/app/data]
     networks: [games]
     restart: unless-stopped
   sudoku:
-    build: ./sudoku               # copy of jev-sudoku-analytics; its own compose Caddy is not used
+    build: ./sudoku               # copy of jev-sudoku-analytics (same: no Dockerfile); its own compose Caddy is not used
     env_file: sudoku.env
     volumes: [sudoku-data:/app/data]
     networks: [games]

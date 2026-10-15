@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Dots and Boxes">
-  <title>Dots and Boxes</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Box Score">
+  <title>Box Score</title>
   <defs>
     <radialGradient id="ground" cx="0.28" cy="0.2" r="1">
       <stop offset="0" stop-color="#14a08f"/>

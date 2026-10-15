@@ -2,7 +2,7 @@
 
 Ten Discord applications, four assets each. **Nothing here is uploaded by the pipeline**: the scripts only write
 files to `art/out/`. Every upload is a manual step in the Discord Developer Portal
-(`https://discord.com/developers/applications/<Application ID>`), signed in to the JevPlay.Games team.
+(`https://discord.com/developers/applications/<Application ID>`), signed in to the jevplay.games team.
 
 ## Pre-flight
 
@@ -45,88 +45,89 @@ After each upload, **Save Changes**, then (Discord caches images, so a hard refr
 - **Small, circle-cropped**: look at the icon at about 40 px and 24 px in a circle (member list, message avatar, the
   command picker). The emblem's subject is still readable, and the J badge shrinks to a dot rather than clutter.
 - **Inside the Activity**: launch it once; the background should sit behind the game UI with the middle clear.
-  (Only Tic-Tac-Toe is verified as launching inside Discord; see `DISCORD.md`.)
+  (Only Tic-Tac-Typed, formerly Tic-Tac-Toe, is verified as launching inside Discord; see `DISCORD.md`.)
 
 ## Apps
 
-For each app tick every box, then sign off the verification line. Application IDs are from `DISCORD.md`.
+For each app tick every box, then sign off the verification line. Application IDs are from `DISCORD.md`; they do not
+change with the renames. Also set each app's display name to the new name in the heading (General Information > Name).
 
-### JevPlay Arcade (hub) - ID 1554746719227613214 - slug `arcade`
+### jevplay.games (hub) - ID 1554746719227613214 - slug `arcade`
 
-- [ ] General Information > App Icon: `art/out/arcade-icon-1024.png` (the arcade emblem: the J over nine gems)
+- [ ] General Information > App Icon: `art/out/arcade-icon-1024.png` (the hub emblem: the J over nine gems)
 - [ ] Activities > Art Assets > Cover Art: `art/out/arcade-cover.png`
 - [ ] Activities > Art Assets > Background: `art/out/arcade-background.png`
 - [ ] Activities > Art Assets > Video Preview: `art/out/arcade-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Tic-Tac-Toe - ID 1552421200100065280 - slug `tic-tac-toe`
+### Tic-Tac-Typed - ID 1552421200100065280 - slug `tic-tac-typed`
 
-- [ ] General Information > App Icon: `art/out/tic-tac-toe-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/tic-tac-toe-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/tic-tac-toe-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/tic-tac-toe-preview.mp4`
+- [ ] General Information > App Icon: `art/out/tic-tac-typed-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/tic-tac-typed-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/tic-tac-typed-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/tic-tac-typed-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Connect 4 - ID 1552421867057315940 - slug `connect-four`
+### Choice Four - ID 1552421867057315940 - slug `choice-four`
 
-- [ ] General Information > App Icon: `art/out/connect-four-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/connect-four-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/connect-four-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/connect-four-preview.mp4`
+- [ ] General Information > App Icon: `art/out/choice-four-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/choice-four-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/choice-four-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/choice-four-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Checkers - ID 1552421947541950514 - slug `checkers`
+### Typecheckers - ID 1552421947541950514 - slug `typecheckers`
 
-- [ ] General Information > App Icon: `art/out/checkers-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/checkers-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/checkers-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/checkers-preview.mp4`
+- [ ] General Information > App Icon: `art/out/typecheckers-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/typecheckers-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/typecheckers-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/typecheckers-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Dots & Boxes - ID 1552421783792128140 - slug `dots-and-boxes`
+### Box Score - ID 1552421783792128140 - slug `box-score`
 
-- [ ] General Information > App Icon: `art/out/dots-and-boxes-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/dots-and-boxes-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/dots-and-boxes-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/dots-and-boxes-preview.mp4`
+- [ ] General Information > App Icon: `art/out/box-score-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/box-score-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/box-score-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/box-score-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Guess Who - ID 1552421506703687741 - slug `guess-who`
+### Noul Who - ID 1552421506703687741 - slug `noul-who`
 
-- [ ] General Information > App Icon: `art/out/guess-who-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/guess-who-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/guess-who-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/guess-who-preview.mp4`
+- [ ] General Information > App Icon: `art/out/noul-who-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/noul-who-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/noul-who-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/noul-who-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Mastermind - ID 1552421410775765052 - slug `mastermind`
+### Typecrack - ID 1552421410775765052 - slug `typecrack`
 
-- [ ] General Information > App Icon: `art/out/mastermind-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/mastermind-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/mastermind-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/mastermind-preview.mp4`
+- [ ] General Information > App Icon: `art/out/typecrack-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/typecrack-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/typecrack-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/typecrack-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Minesweeper - ID 1552421309139521628 - slug `minesweeper`
+### SafeSweep - ID 1552421309139521628 - slug `safesweep`
 
-- [ ] General Information > App Icon: `art/out/minesweeper-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/minesweeper-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/minesweeper-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/minesweeper-preview.mp4`
+- [ ] General Information > App Icon: `art/out/safesweep-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/safesweep-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/safesweep-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/safesweep-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### Sudoku - ID 1552422232234397726 - slug `sudoku`
+### Typedoku - ID 1552422232234397726 - slug `typedoku`
 
-- [ ] General Information > App Icon: `art/out/sudoku-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/sudoku-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/sudoku-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/sudoku-preview.mp4`
+- [ ] General Information > App Icon: `art/out/typedoku-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/typedoku-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/typedoku-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/typedoku-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop
 
-### 2048 - ID 1552422046762278912 - slug `2048`
+### Slide Score - ID 1552422046762278912 - slug `slide-score`
 
-- [ ] General Information > App Icon: `art/out/2048-icon-1024.png`
-- [ ] Activities > Art Assets > Cover Art: `art/out/2048-cover.png`
-- [ ] Activities > Art Assets > Background: `art/out/2048-background.png`
-- [ ] Activities > Art Assets > Video Preview: `art/out/2048-preview.mp4`
+- [ ] General Information > App Icon: `art/out/slide-score-icon-1024.png`
+- [ ] Activities > Art Assets > Cover Art: `art/out/slide-score-cover.png`
+- [ ] Activities > Art Assets > Background: `art/out/slide-score-background.png`
+- [ ] Activities > Art Assets > Video Preview: `art/out/slide-score-preview.mp4`
 - [ ] Verified: launcher tile, bot profile, Activities shelf, 40 px circle crop

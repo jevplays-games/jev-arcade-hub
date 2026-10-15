@@ -12,11 +12,11 @@ const font = pathToFileURL(path.join(__dirname, '..', 'public', 'brand', 'inter-
 const cell = (x, y, s, fill, r = 3, extra = '') => `<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="${r}" fill="${fill}" ${extra}/>`;
 
 const MOTIFS = {
-  'tic-tac-toe': (a = '#a99bff', b = '#6fdcc8') => `
+  'tic-tac-typed': (a = '#a99bff', b = '#6fdcc8') => `
     <g stroke="#3a3f57" stroke-width="3" stroke-linecap="round"><path d="M38 12V88M62 12V88M12 38H88M12 62H88"/></g>
     <g stroke="${a}" stroke-width="5" stroke-linecap="round"><path d="M18 18l14 14M32 18L18 32"/><path d="M42 42l14 14M56 42L42 56"/><path d="M66 66l14 14M80 66L66 80"/></g>
     <g stroke="${b}" stroke-width="5" fill="none"><circle cx="50" cy="25" r="8"/><circle cx="25" cy="50" r="8"/><circle cx="75" cy="50" r="8"/></g>`,
-  'connect-four': () => {
+  'choice-four': () => {
     const rows = ['.......', '.......', '...Y...', '..RY...', '.RYR...', 'RYRY.Y.'];
     let s = '<rect x="4" y="10" width="92" height="80" rx="8" fill="#1d2b63"/>';
     rows.forEach((row, r) => [...row].forEach((c, i) => {
@@ -25,7 +25,7 @@ const MOTIFS = {
     }));
     return s;
   },
-  checkers: () => {
+  typecheckers: () => {
     let s = '';
     for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) s += cell(6 + c * 11, 6 + r * 11, 11, (r + c) % 2 ? '#5a3a2a' : '#e8d9b5', 0);
     const put = (r, c, col) => s += `<circle cx="${11.5 + c * 11}" cy="${11.5 + r * 11}" r="4.2" fill="${col}" stroke="#00000055" stroke-width=".6"/><circle cx="${11.5 + c * 11}" cy="${11.5 + r * 11}" r="2.4" fill="none" stroke="#ffffff33" stroke-width=".6"/>`;
@@ -33,7 +33,7 @@ const MOTIFS = {
     [[5, 0], [6, 1], [5, 4], [4, 3]].forEach(([r, c]) => put(r, c, '#e5484d'));
     return s;
   },
-  'dots-and-boxes': (a = '#2dd4bf', b = '#f472b6') => {
+  'box-score': (a = '#2dd4bf', b = '#f472b6') => {
     let s = '';
     const p = i => 14 + i * 24;
     s += `<rect x="${p(0)}" y="${p(0)}" width="24" height="24" fill="${a}" opacity=".35"/><rect x="${p(1)}" y="${p(0)}" width="24" height="24" fill="${b}" opacity=".35"/><rect x="${p(1)}" y="${p(1)}" width="24" height="24" fill="${a}" opacity=".35"/>`;
@@ -42,7 +42,7 @@ const MOTIFS = {
     for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) s += `<circle cx="${p(c)}" cy="${p(r)}" r="3" fill="#eef0f7"/>`;
     return s;
   },
-  'guess-who': () => {
+  'noul-who': () => {
     const tones = ['#f6c9a8', '#e0a98a', '#c98b6b', '#f3d9c1'], hair = ['#4b3621', '#222', '#c9772b', '#8a8a8a', '#e6c04d'];
     let s = '';
     for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) {
@@ -55,7 +55,7 @@ const MOTIFS = {
     }
     return s;
   },
-  mastermind: () => {
+  typecrack: () => {
     const cols = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#a855f7', '#f97316'];
     const rows = [[0, 3, 2, 4], [1, 1, 5, 3], [4, 2, 2, 0], [3, 5, 1, 4]], fb = [[2, 1], [1, 2], [3, 0], [4, 0]];
     let s = '';
@@ -68,7 +68,7 @@ const MOTIFS = {
     });
     return s;
   },
-  minesweeper: () => {
+  safesweep: () => {
     const g = ['1 1 . . .', '2 X 2 1 .', 'F 3 X 1 .', '1 1 1 1 .'], colr = { 1: '#60a5fa', 2: '#4ade80', 3: '#f87171' };
     let s = '';
     g.forEach((row, r) => row.split(' ').forEach((t, c) => {
@@ -80,14 +80,14 @@ const MOTIFS = {
     }));
     return s;
   },
-  sudoku: () => {
+  typedoku: () => {
     const digits = ['5 3 . . 7 . . . .', '6 . . 1 9 5 . . .', '. 9 8 . . . . 6 .', '8 . . . 6 . . . 3', '4 . . 8 . 3 . . 1', '. . . . 2 . . . 6', '. 6 . . . . 2 8 .', '. . . 4 1 9 . . 5', '. . . . 8 . . 7 9'];
     let s = '<rect x="4" y="4" width="92" height="92" rx="4" fill="#1a1e2b"/>';
     for (let i = 0; i <= 9; i++) { const w = i % 3 === 0 ? 1.1 : .35; s += `<path d="M${5 + i * 10} 5V95M5 ${5 + i * 10}H95" stroke="${i % 3 === 0 ? '#60a5fa' : '#3a4058'}" stroke-width="${w}"/>`; }
     digits.forEach((row, r) => row.split(' ').forEach((d, c) => { if (d !== '.') s += `<text x="${10 + c * 10}" y="${13 + r * 10}" font-size="7.4" font-weight="700" text-anchor="middle" fill="${(r * 9 + c) % 4 ? '#eef0f7' : '#60a5fa'}">${d}</text>`; }));
     return s;
   },
-  2048: () => {
+  'slide-score': () => {
     const T = { 2: ['#eee4da', '#776e65'], 4: ['#ede0c8', '#776e65'], 8: ['#f2b179', '#fff'], 16: ['#f59563', '#fff'], 32: ['#f67c5f', '#fff'], 64: ['#f65e3b', '#fff'], 128: ['#edcf72', '#fff'], 256: ['#edcc61', '#fff'], 512: ['#edc850', '#fff'], 1024: ['#edc53f', '#fff'], 2048: ['#edc22e', '#fff'] };
     const g = [[2, 4, 8, 16], [4, 8, 16, 32], [16, 32, 64, 128], [512, 256, 1024, 2048]];
     let s = '<rect x="4" y="4" width="92" height="92" rx="6" fill="#3a3530"/>';
@@ -101,7 +101,7 @@ const MOTIFS = {
 
 // The hub: a 3x3 mosaic of the nine game boards, each motif scaled into its own tile.
 MOTIFS.arcade = () => {
-  const order = ['tic-tac-toe', 'connect-four', 'checkers', 'dots-and-boxes', 'guess-who', 'mastermind', 'minesweeper', 'sudoku', '2048'];
+  const order = ['tic-tac-typed', 'choice-four', 'typecheckers', 'box-score', 'noul-who', 'typecrack', 'safesweep', 'typedoku', 'slide-score'];
   let s = '';
   order.forEach((slug, i) => {
     const x = 2 + (i % 3) * 32.7, y = 2 + Math.floor(i / 3) * 32.7;
@@ -110,19 +110,15 @@ MOTIFS.arcade = () => {
   return s;
 };
 
-const GAMES = [
-  { slug: 'tic-tac-toe', title: 'Tic-Tac-Toe', accent: '#a99bff', tag: 'Three in a row against JEV' },
-  { slug: 'connect-four', title: 'Connect Four', accent: '#f5c451', tag: 'Drop discs, line up four' },
-  { slug: 'checkers', title: 'Checkers', accent: '#e5484d', tag: 'Jump, king, outmaneuver JEV' },
-  { slug: 'dots-and-boxes', title: 'Dots & Boxes', accent: '#2dd4bf', tag: 'Close squares, claim boxes' },
-  { slug: 'guess-who', title: 'Guess Who', accent: '#fb923c', tag: 'Narrow it down before JEV does' },
-  { slug: 'mastermind', title: 'Mastermind', accent: '#a855f7', tag: 'Crack the secret code' },
-  { slug: 'minesweeper', title: 'Minesweeper', accent: '#4ade80', tag: 'Clear the field, dodge the mines' },
-  { slug: 'sudoku', title: 'Sudoku', accent: '#60a5fa', tag: 'Fill the grid, one digit each' },
-  { slug: '2048', title: '2048', accent: '#edc22e', tag: 'Slide, merge, reach 2048' },
-];
+// Names and taglines come from games.json, the one source the hub and the art share. Accents are art-only data
+// (the Lacquer palette, retired with the pink/ink redraw in #9); the hub itself no longer paints with them.
+const ACCENT = {
+  'tic-tac-typed': '#a99bff', 'choice-four': '#f5c451', typecheckers: '#e5484d', 'box-score': '#2dd4bf', 'noul-who': '#fb923c',
+  typecrack: '#a855f7', safesweep: '#4ade80', typedoku: '#60a5fa', 'slide-score': '#edc22e',
+};
+const GAMES = require('../games.json').map(g => ({ slug: g.slug, title: g.name, accent: ACCENT[g.slug] || '#a99bff', tag: g.tagline.replace(/\.$/, '') }));
 // Not one of the nine: the hub app's own Activity artwork. Rendered by name (`arcade`), kept out of GAMES so the per-game loops are unchanged.
-const ARCADE = { slug: 'arcade', title: 'JevPlay Arcade', accent: '#a99bff', tag: 'Nine games. Pick one, play JEV.', brand: 'JEVPLAY.GAMES', url: 'jevplay.games' };
+const ARCADE = { slug: 'arcade', title: 'jevplay.games', accent: '#a99bff', tag: 'Nine games. Pick one. Play Jev.', brand: 'JEVPLAY.GAMES', url: 'jevplay.games' };
 
 const svg = (slug, size, extra = '') => `<svg viewBox="0 0 100 100" width="${size}" height="${size}" ${extra}>${MOTIFS[slug]()}</svg>`;
 const flatMark = `<svg viewBox="0 0 64 64" width="34" height="34"><rect width="64" height="64" rx="15" fill="#171a24" stroke="#b3a0ff" stroke-opacity=".35" stroke-width="1.5"/><path d="M34 14v20.5c0 5.2-4.2 9.5-9.5 9.5S15 39.7 15 34.5" fill="none" stroke="#eef0f7" stroke-width="6" stroke-linecap="round"/><path d="M40.3 33v22M47.7 33v22M33 40.3h22M33 47.7h22" stroke="#b3a0ff" stroke-width="1.8" opacity=".55"/></svg>`;
@@ -147,15 +143,15 @@ const emblemImg = (slug, accent) => hasEmblem(slug)
 
 // The game's own board pattern, as faint white lines in the ground.
 const PATTERN = {
-  'tic-tac-toe': 'linear-gradient(#fff 3px,transparent 3px),linear-gradient(90deg,#fff 3px,transparent 3px);background-size:150px 150px',
-  'connect-four': 'radial-gradient(circle,transparent 17px,#fff 18px,#fff 20px,transparent 21px);background-size:56px 56px',
-  checkers: 'conic-gradient(#fff 25%,transparent 0 50%,#fff 0 75%,transparent 0);background-size:112px 112px',
-  'dots-and-boxes': 'radial-gradient(circle,#fff 4px,transparent 5px);background-size:64px 64px',
-  'guess-who': 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:84px 104px',
-  mastermind: 'radial-gradient(circle,#fff 7px,transparent 8px);background-size:60px 60px',
-  minesweeper: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:52px 52px',
-  sudoku: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:48px 48px',
-  2048: 'linear-gradient(#fff 8px,transparent 8px),linear-gradient(90deg,#fff 8px,transparent 8px);background-size:110px 110px',
+  'tic-tac-typed': 'linear-gradient(#fff 3px,transparent 3px),linear-gradient(90deg,#fff 3px,transparent 3px);background-size:150px 150px',
+  'choice-four': 'radial-gradient(circle,transparent 17px,#fff 18px,#fff 20px,transparent 21px);background-size:56px 56px',
+  typecheckers: 'conic-gradient(#fff 25%,transparent 0 50%,#fff 0 75%,transparent 0);background-size:112px 112px',
+  'box-score': 'radial-gradient(circle,#fff 4px,transparent 5px);background-size:64px 64px',
+  'noul-who': 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:84px 104px',
+  typecrack: 'radial-gradient(circle,#fff 7px,transparent 8px);background-size:60px 60px',
+  safesweep: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:52px 52px',
+  typedoku: 'linear-gradient(#fff 2px,transparent 2px),linear-gradient(90deg,#fff 2px,transparent 2px);background-size:48px 48px',
+  'slide-score': 'linear-gradient(#fff 8px,transparent 8px),linear-gradient(90deg,#fff 8px,transparent 8px);background-size:110px 110px',
   arcade: 'linear-gradient(#fff 3px,transparent 3px),linear-gradient(90deg,#fff 3px,transparent 3px);background-size:170px 170px',
 };
 const GRAIN = `url("data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0"/></filter><rect width="240" height="240" filter="url(#n)" opacity=".07"/></svg>')}")`;
@@ -176,11 +172,11 @@ const tile = (g, size, style = '', cls = '', inner = '') => `<div class="${cls}"
   </div></div>`;
 
 const cover = g => shell(`${ground(g)}
-  <div class="brand" style="position:absolute;left:64px;top:60px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}${g.brand || 'JEV ARCADE'}</div>
+  <div class="brand" style="position:absolute;left:64px;top:60px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;font-size:14px;color:#a3aabd">${mark}${g.brand || 'JEVPLAY.GAMES'}</div>
   <div class="text" style="position:absolute;left:64px;top:186px;width:470px">
     <div class="t1" style="font-size:${g.title.length <= 8 ? 92 : g.title.length <= 12 ? 70 : 60}px;white-space:nowrap;line-height:.98;font-weight:850;letter-spacing:-.03em;text-shadow:0 4px 24px #000a">${g.title}</div>
     <div class="t2" style="margin-top:26px;font-size:26px;font-weight:600;color:${g.accent};text-shadow:0 2px 14px #0008">${g.tag}</div>
-    <div class="chip" style="margin-top:34px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff2e;box-shadow:inset 0 1px 0 #ffffff2e;font-size:17px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:#6fdcc8;box-shadow:0 0 10px #6fdcc8"></span>Play against JEV</div>
+    <div class="chip" style="margin-top:34px;display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:#ffffff14;border:1px solid #ffffff2e;box-shadow:inset 0 1px 0 #ffffff2e;font-size:17px;font-weight:600"><span style="width:10px;height:10px;border-radius:50%;background:#6fdcc8;box-shadow:0 0 10px #6fdcc8"></span>Play Jev</div>
   </div>
   <div class="sec s1" style="position:absolute;inset:0;filter:blur(6px);opacity:.62">${tile(g, 210, 'left:500px;top:20px;transform:rotate(11deg)')}</div>
   <div class="sec s2" style="position:absolute;inset:0;filter:blur(8px);opacity:.55">${tile(g, 190, 'left:858px;top:400px;transform:rotate(-13deg)')}</div>
