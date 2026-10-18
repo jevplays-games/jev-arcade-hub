@@ -12,7 +12,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node server.js",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "deploy:godaddy": "node --env-file-if-exists=.env scripts/godaddy-deploy.js"
   },
   "dependencies": {}
 }
