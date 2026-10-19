@@ -88,6 +88,15 @@ root `package.json` with `build` and `start`, port from `PORT`, no `node_modules
 
 The games are deployed separately and each is attached to its own subdomain. The hub never proxies them.
 
+### Continuous deployment
+
+`.github/workflows/deploy.yml` runs `npm test` on every pull request and push. On a push to `main` (or **Run workflow**) it then zips the committed tree with `git archive` and `scripts/godaddy-deploy.js` uploads it through the GoDaddy Hosting API (`https://api.godaddy.com/v1/hosting`), waits for the import, and deploys it to the published app `NODEJS-0n4hbgyu3g`. A failed test, import or build stops the run and leaves the live app unchanged.
+
+- Repository secret `GODADDY_PAT`: a GoDaddy Personal Access Token with `hosting.application:read`, `hosting.source:write` and `hosting.deployment:execute`. Without it the deploy step is skipped with a warning.
+- Optional repository variable `GODADDY_APP_ID` overrides the target app (API IDs carry the `NODEJS-` prefix).
+- Runtime configuration is not in the zip: keep it under the app's **Settings → Secrets** (Preview and Publish) in GoDaddy.
+- Manual deploy: put `GODADDY_APP_ID` and `GODADDY_PAT` in `.env`, then `git archive --format=zip -o deploy.zip HEAD && npm run deploy:godaddy -- deploy.zip`.
+
 ## Repository layout
 
 | Path | What it is |
@@ -107,12 +116,3 @@ Run `npm test` and `npm run build` before opening a pull request. Keep `brand.cs
 repos: change it here, copy it out, compare hashes. Write the opponent as **Jev** and the brand as **jevplay.games**.
 
 <p align="center"><sub>A jevplay.games project · Steward: CompleteTech LLC · MIT licensed<br>Not an official TypeSafe AI publication; the pink, ink and pixel-window styling is a nod to typesafe.ai. Jev, System One and TypeSafe are their respective owners' names.</sub></p>
-
-## Continuous deployment to GoDaddy
-
-`.github/workflows/deploy.yml` runs `npm test` on every pull request and push. On a push to `main` (or **Run workflow**) it then zips the committed tree with `git archive` and `scripts/godaddy-deploy.js` uploads it through the GoDaddy Hosting API (`https://api.godaddy.com/v1/hosting`), waits for the import, and deploys it to the published app `NODEJS-0n4hbgyu3g`. A failed test, import or build stops the run and leaves the live app unchanged.
-
-- Repository secret `GODADDY_PAT`: a GoDaddy Personal Access Token with `hosting.application:read`, `hosting.source:write` and `hosting.deployment:execute`. Without it the deploy step is skipped with a warning.
-- Optional repository variable `GODADDY_APP_ID` overrides the target app (API IDs carry the `NODEJS-` prefix).
-- Runtime configuration is not in the zip: keep it under the app's **Settings → Secrets** (Preview and Publish) in GoDaddy.
-- Manual deploy: put `GODADDY_APP_ID` and `GODADDY_PAT` in `.env`, then `git archive --format=zip -o deploy.zip HEAD && npm run deploy:godaddy -- deploy.zip`.
